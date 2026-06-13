@@ -19,7 +19,7 @@ docker compose up
 ```bash
 cd /home/mister-storm/development/buildtwin-frontend
 npm install
-npm run prepare:brand   # extrai logo de ~/Downloads/buildTwin.png e remove fundo branco
+npm run prepare:brand   # extrai logo (quadrante "O FÍSICO ENCONTRA O DIGITAL") de ~/Downloads/buildTwin.png
 cp .env.example .env.local
 npm run dev
 ```
@@ -104,8 +104,35 @@ Validated endpoints used by this frontend:
 - Authentication
 - Maps (Leaflet / OpenLayers / Cesium)
 - Temporal comparison
-- E2E tests
 - CRUD operations
+
+## Testing
+
+```bash
+npm test              # Vitest (unit + component)
+npm run test:watch    # Vitest watch mode
+npm run test:e2e      # Playwright E2E (starts dev server automatically)
+npm run test:e2e:ui   # Playwright UI mode
+```
+
+First-time E2E setup:
+
+```bash
+npx playwright install chromium
+```
+
+E2E runs in **demo mode** (`BUILDTWIN_DEMO_MODE=true`) — no backend required.
+
+## CI
+
+GitHub Actions runs on push/PR to `main` or `master`:
+
+1. **lint** — ESLint
+2. **test** — Vitest unit + component tests
+3. **build** — Next.js production build
+4. **e2e** — Playwright demo flow + theme toggle
+
+Workflow: [`.github/workflows/ci.yml`](.github/workflows/ci.yml)
 
 ## Scripts
 
@@ -114,4 +141,5 @@ npm run dev      # Development server
 npm run build    # Production build
 npm run lint     # ESLint
 npm run start    # Production server
+npm test         # Run tests
 ```

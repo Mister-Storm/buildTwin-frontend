@@ -49,7 +49,7 @@ Service (DTO) → Mapper → Domain Model → Component
 
 ## Brand assets
 
-- Source: `~/Downloads/buildTwin.png` (Tipografia quadrant, white bg removed)
+- Source: `~/Downloads/buildTwin.png` (quadrante superior esquerdo — "O FÍSICO ENCONTRA O DIGITAL", fundo branco removido)
 - Regenerate: `npm run prepare:brand`
 - Output: `public/brand/logo.png`, `logo-sidebar.png`, `icon.png`
 
@@ -63,6 +63,15 @@ Service (DTO) → Mapper → Domain Model → Component
 
 Strict flags: `strict`, `noImplicitAny`, `exactOptionalPropertyTypes`, `noUncheckedIndexedAccess`. No `any`.
 
+## Testing
+
+```bash
+npm test           # Vitest unit + component
+npm run test:e2e   # Playwright (demo mode, no backend)
+```
+
+PRs must pass CI: lint → test → build → e2e (see `.github/workflows/ci.yml`).
+
 ## Out of scope (current sprint)
 
-Auth, maps (Leaflet/Cesium), temporal comparison, E2E tests, backend changes.
+Auth, maps (Leaflet/Cesium), temporal comparison, backend changes.

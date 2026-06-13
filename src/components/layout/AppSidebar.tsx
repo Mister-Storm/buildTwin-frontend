@@ -27,12 +27,13 @@ export function AppSidebar() {
           ) : (
             <div className="inline-block rounded-lg bg-white px-3 py-2 shadow-sm">
               <Image
-                src="/brand/logo-sidebar.png"
+                src="/brand/logo-sidebar-physical.png"
                 alt="BuildTwin"
                 width={200}
-                height={48}
+                height={72}
                 className="h-auto w-full max-w-[180px]"
                 priority
+                unoptimized
                 onError={() => setLogoError(true)}
               />
             </div>

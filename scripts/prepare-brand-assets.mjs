@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Builds brand assets from buildTwin.png (Downloads).
- * - Detects 2x2 concept sheet and extracts "Tipografia Inteligente" (bottom-right)
+ * - Detects 2x2 concept sheet and extracts "O FÍSICO ENCONTRA O DIGITAL" (top-left)
  * - Removes white/light-grey background → transparent PNG (original brand colors)
  *
  * Usage: npm run prepare:brand
@@ -68,8 +68,8 @@ def extract_logo(raw):
     w, h = raw.size
     # 2x2 concept sheet from buildTwin.png
     if w >= 2000 and h >= 1000 and abs(w / h - 16 / 9) < 0.2:
-        quadrant = raw.crop((w // 2, h // 2, w, h))
-        # Drop concept-sheet title ("A TIPOGRAFIA INTELIGENTE") — keep wordmark only
+        quadrant = raw.crop((0, 0, w // 2, h // 2))
+        # Drop concept-sheet title ("O FÍSICO ENCONTRA O DIGITAL") — keep icon + wordmark
         qw, qh = quadrant.size
         return quadrant.crop((0, int(qh * 0.18), qw, qh))
     return raw
@@ -81,21 +81,39 @@ logo = trim_transparent(logo)
 
 # Full-resolution transparent logo (original colors)
 logo.save(os.path.join(brand_dir, "logo.png"))
+logo.save(os.path.join(brand_dir, "logo-primary.png"))
 
-# Sidebar size
+# Sidebar size (light backgrounds — dark wordmark)
 sidebar = logo.copy()
 ratio = 200 / sidebar.width
 sidebar = sidebar.resize((200, max(1, int(sidebar.height * ratio))), Image.Resampling.LANCZOS)
 sidebar.save(os.path.join(brand_dir, "logo-sidebar.png"))
+sidebar.save(os.path.join(brand_dir, "logo-sidebar-physical.png"))
 
-# Favicon: pin + signal from typography logo (right side)
+# Sidebar on dark backgrounds — light wordmark, keep brand colors on icon
+dark_sidebar = logo.copy()
+pixels = dark_sidebar.load()
+lw, lh = dark_sidebar.size
+for y in range(lh):
+    for x in range(lw):
+        r, g, b, a = pixels[x, y]
+        if a < 10:
+            continue
+        # Lighten dark wordmark pixels (bottom ~35% of logo)
+        if y > lh * 0.55 and max(r, g, b) < 120:
+            pixels[x, y] = (min(255, r + 180), min(255, g + 180), min(255, b + 180), a)
+ratio = 200 / dark_sidebar.width
+dark_sidebar = dark_sidebar.resize((200, max(1, int(dark_sidebar.height * ratio))), Image.Resampling.LANCZOS)
+dark_sidebar.save(os.path.join(brand_dir, "logo-sidebar-dark.png"))
+
+# Favicon: isometric building icon (physical meets digital, above wordmark)
 lw, lh = logo.size
-pin = logo.crop((int(lw * 0.52), 0, lw, int(lh * 0.72)))
-pin = trim_transparent(pin)
-icon_size = max(pin.width, pin.height, 1)
+building = logo.crop((0, 0, lw, int(lh * 0.55)))
+building = trim_transparent(building)
+icon_size = max(building.width, building.height, 1)
 icon = Image.new("RGBA", (icon_size, icon_size), (0, 0, 0, 0))
-offset = ((icon_size - pin.width) // 2, (icon_size - pin.height) // 2)
-icon.paste(pin, offset, pin)
+offset = ((icon_size - building.width) // 2, (icon_size - building.height) // 2)
+icon.paste(building, offset, building)
 icon = icon.resize((512, 512), Image.Resampling.LANCZOS)
 icon.save(os.path.join(brand_dir, "icon.png"))
 icon.save(app_icon)
