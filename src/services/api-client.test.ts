@@ -1,11 +1,19 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { apiFetch, artifactPreviewUrl } from "@/services/api-client";
+import { apiFetch, artifactDownloadUrl, artifactPreviewUrl } from "@/services/api-client";
 import { ApiError } from "@/types/api/common.api";
 
 describe("artifactPreviewUrl", () => {
   it("builds preview path for artifact id", () => {
     expect(artifactPreviewUrl("abc-123")).toBe(
       "/api/v1/artifacts/abc-123/preview",
+    );
+  });
+});
+
+describe("artifactDownloadUrl", () => {
+  it("builds download path for artifact id", () => {
+    expect(artifactDownloadUrl("abc-123")).toBe(
+      "/api/v1/artifacts/abc-123/download",
     );
   });
 });

@@ -2,7 +2,11 @@ import { ApiError, type ApiErrorResponse } from "@/types/api/common.api";
 
 function getApiBaseUrl(): string {
   if (typeof window === "undefined") {
-    return process.env.BUILDTWIN_API_URL ?? "http://localhost:8080";
+    return (
+      process.env.BUILDTWIN_API_URL ??
+      process.env.NEXT_PUBLIC_API_BASE_URL ??
+      "http://localhost:8080"
+    );
   }
   return "";
 }
@@ -42,4 +46,8 @@ export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> 
 
 export function artifactPreviewUrl(artifactId: string): string {
   return `/api/v1/artifacts/${artifactId}/preview`;
+}
+
+export function artifactDownloadUrl(artifactId: string): string {
+  return `/api/v1/artifacts/${artifactId}/download`;
 }

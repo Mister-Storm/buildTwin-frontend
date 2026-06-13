@@ -8,27 +8,31 @@ export type ExecutiveMetric = {
 export type ExecutiveDashboard = {
   activeProjects: ExecutiveMetric;
   lastFlight: ExecutiveMetric;
-  monitoredArea: ExecutiveMetric;
+  processedFlights: ExecutiveMetric;
   completedProcessings: ExecutiveMetric;
-  isMockFallback: boolean;
+  isUnavailable: boolean;
 };
 
-export const MOCK_EXECUTIVE_DASHBOARD: ExecutiveDashboard = {
-  activeProjects: { label: "Obras Ativas", value: "3", subtitle: "Em operação" },
+export const UNAVAILABLE_EXECUTIVE_DASHBOARD: ExecutiveDashboard = {
+  activeProjects: {
+    label: "Obras Ativas",
+    value: "—",
+    subtitle: "Backend indisponível",
+  },
   lastFlight: {
     label: "Último Voo Realizado",
-    value: "12 Jun 2026",
-    subtitle: "Riverside Tower",
+    value: "—",
+    subtitle: "Backend indisponível",
   },
-  monitoredArea: {
-    label: "Área Monitorada",
-    value: "12.4 ha",
-    subtitle: "Estimativa consolidada",
+  processedFlights: {
+    label: "Voos Processados",
+    value: "—",
+    subtitle: "Backend indisponível",
   },
   completedProcessings: {
     label: "Processamentos Concluídos",
-    value: "8",
-    subtitle: "Ortomosaicos prontos",
+    value: "—",
+    subtitle: "Backend indisponível",
   },
-  isMockFallback: true,
+  isUnavailable: true,
 };

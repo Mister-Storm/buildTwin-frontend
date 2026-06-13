@@ -5,8 +5,11 @@ export type OrthomosaicViewModel = {
   flightId: string;
   jobId: string;
   previewArtifactId: string;
+  downloadArtifactId: string | null;
   previewUrl: string;
+  downloadUrl: string | null;
   flightDate: Date | null;
+  operatorName: string | null;
   jobStatus: string;
   jobStatusVariant: StatusVariant;
   fileSizeBytes: number;

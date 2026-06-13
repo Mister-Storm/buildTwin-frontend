@@ -1,5 +1,4 @@
 import type { StatusVariant } from "@/features/domain/models/flight";
-import type { FlightStatusDto } from "@/types/api/flight.api";
 
 export function formatDate(date: Date): string {
   return new Intl.DateTimeFormat("pt-BR", {
@@ -25,7 +24,7 @@ export function formatFileSize(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-export function flightStatusVariant(status: FlightStatusDto | string): StatusVariant {
+export function flightStatusVariant(status: string): StatusVariant {
   switch (status) {
     case "COMPLETED":
       return "success";
@@ -53,7 +52,7 @@ export function jobStatusVariant(status: string | null): StatusVariant {
   }
 }
 
-export function flightStatusLabel(status: FlightStatusDto | string): string {
+export function flightStatusLabel(status: string): string {
   const labels: Record<string, string> = {
     CREATED: "Criado",
     UPLOADING: "Enviando",

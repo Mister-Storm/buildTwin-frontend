@@ -1,3 +1,4 @@
+import { Skeleton } from "@/components/ui/skeleton";
 import { AlertCircle, Inbox, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -77,6 +78,39 @@ export function EmptyState({ title, message, className }: EmptyStateProps) {
         <h3 className="font-semibold">{title}</h3>
         <p className="mt-1 max-w-md text-sm text-muted-foreground">{message}</p>
       </div>
+    </div>
+  );
+}
+
+export function PageSkeleton() {
+  return (
+    <div className="space-y-8">
+      <div className="space-y-2">
+        <Skeleton className="h-8 w-64" />
+        <Skeleton className="h-4 w-96" />
+      </div>
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        {Array.from({ length: 6 }).map((_, index) => (
+          <Skeleton key={index} className="h-36 rounded-xl" />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function ProjectDetailSkeleton() {
+  return (
+    <div className="space-y-8">
+      <div className="space-y-2">
+        <Skeleton className="h-8 w-72" />
+        <Skeleton className="h-4 w-48" />
+      </div>
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        {Array.from({ length: 4 }).map((_, index) => (
+          <Skeleton key={index} className="h-28 rounded-xl" />
+        ))}
+      </div>
+      <Skeleton className="h-48 rounded-xl" />
     </div>
   );
 }

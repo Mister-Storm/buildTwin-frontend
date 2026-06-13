@@ -49,3 +49,14 @@ export type ProcessingArtifactDetailResponseDto = {
   metadata: Record<string, unknown>;
   createdAt: string;
 };
+
+export type LatestFlightJobResponseDto = {
+  jobId: string;
+  flightId: string;
+  jobType: JobTypeDto;
+  status: JobStatusDto;
+  createdAt: string;
+  startedAt: string | null;
+  completedAt: string | null;
+  failureReason: string | null;
+};

@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { formatDate, formatDateTime } from "@/lib/formatters";
 import type { LucideIcon } from "lucide-react";
-import { Calendar, FileImage, HardDrive, Layers } from "lucide-react";
+import { Calendar, Download, FileImage, HardDrive, Layers, User } from "lucide-react";
 
 type ArtifactCardProps = {
   viewModel: OrthomosaicViewModel;
@@ -30,6 +30,13 @@ export function ArtifactCard({ viewModel }: ArtifactCardProps) {
             viewModel.flightDate ? formatDate(viewModel.flightDate) : "—"
           }
         />
+        {viewModel.operatorName ? (
+          <DetailRow
+            icon={User}
+            label="Operador"
+            value={viewModel.operatorName}
+          />
+        ) : null}
         <div className="flex items-center justify-between">
           <span className="text-sm text-muted-foreground">Status</span>
           <StatusBadge
@@ -39,7 +46,7 @@ export function ArtifactCard({ viewModel }: ArtifactCardProps) {
         </div>
         <DetailRow
           icon={HardDrive}
-          label="Tamanho do arquivo"
+          label="Tamanho do preview"
           value={viewModel.fileSizeLabel}
         />
         <DetailRow
@@ -57,6 +64,16 @@ export function ArtifactCard({ viewModel }: ArtifactCardProps) {
             label="Dimensões"
             value={`${viewModel.width} × ${viewModel.height} px`}
           />
+        ) : null}
+        {viewModel.downloadUrl ? (
+          <a
+            href={viewModel.downloadUrl}
+            download
+            className="inline-flex h-8 w-full items-center justify-center gap-2 rounded-lg border border-border bg-background px-3 text-sm font-medium transition-colors hover:bg-muted"
+          >
+            <Download className="size-4" />
+            Baixar ortomosaico
+          </a>
         ) : null}
       </CardContent>
     </Card>

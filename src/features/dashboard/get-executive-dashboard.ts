@@ -1,6 +1,7 @@
 import type { ExecutiveDashboard } from "@/features/domain/models/dashboard";
-import { MOCK_EXECUTIVE_DASHBOARD } from "@/features/domain/models/dashboard";
+import { UNAVAILABLE_EXECUTIVE_DASHBOARD } from "@/features/domain/models/dashboard";
 import { formatDate } from "@/lib/formatters";
+import { debugLog } from "@/lib/debug";
 import { getProjectDashboard } from "@/services/dashboard.service";
 import { listFlightsByProject } from "@/services/flights.service";
 import { listProjects } from "@/services/projects.service";
@@ -17,6 +18,7 @@ export async function getExecutiveDashboard(): Promise<ExecutiveDashboard> {
 
     const flightAggregates: FlightAggregate[] = [];
     let completedProcessings = 0;
+    let processedFlightsTotal = 0;
 
     await Promise.all(
       activeProjects.map(async (project) => {
@@ -25,6 +27,8 @@ export async function getExecutiveDashboard(): Promise<ExecutiveDashboard> {
           getProjectDashboard(project.id),
         ]);
 
+        processedFlightsTotal += dashboard.processedFlights;
+
         for (const flight of flights) {
           flightAggregates.push({
             date: new Date(flight.flightDate),
@@ -32,17 +36,18 @@ export async function getExecutiveDashboard(): Promise<ExecutiveDashboard> {
           });
         }
 
-        for (const recent of dashboard.recentFlights) {
-          if (recent.latestJobStatus === "COMPLETED") {
-            completedProcessings += 1;
-          }
-        }
+        completedProcessings += dashboard.processedFlights;
       }),
     );
 
     const lastFlight = flightAggregates.sort(
       (a, b) => b.date.getTime() - a.date.getTime(),
     )[0];
+
+    debugLog("getExecutiveDashboard", {
+      activeProjects: activeProjects.length,
+      completedProcessings,
+    });
 
     return {
       activeProjects: {
@@ -61,19 +66,22 @@ export async function getExecutiveDashboard(): Promise<ExecutiveDashboard> {
             value: "—",
             subtitle: "Nenhum voo registrado",
           },
-      monitoredArea: {
-        label: "Área Monitorada",
-        value: "12.4 ha",
-        subtitle: "Estimativa consolidada (mock)",
+      processedFlights: {
+        label: "Voos Processados",
+        value: String(processedFlightsTotal),
+        subtitle: "Com ortomosaico concluído",
       },
       completedProcessings: {
         label: "Processamentos Concluídos",
         value: String(completedProcessings),
-        subtitle: "Ortomosaicos prontos",
+        subtitle: "Jobs finalizados com sucesso",
       },
-      isMockFallback: false,
+      isUnavailable: false,
     };
-  } catch {
-    return MOCK_EXECUTIVE_DASHBOARD;
+  } catch (error) {
+    debugLog("getExecutiveDashboard: unavailable", {
+      error: error instanceof Error ? error.message : String(error),
+    });
+    return UNAVAILABLE_EXECUTIVE_DASHBOARD;
   }
 }

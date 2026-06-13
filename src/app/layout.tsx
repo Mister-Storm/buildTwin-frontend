@@ -1,7 +1,7 @@
 import { Inter, Roboto_Mono } from "next/font/google";
 import type { Metadata } from "next";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { MockOrthomosaicResolver } from "@/features/domain/resolvers/mock-orthomosaic-resolver";
+import { ApiOrthomosaicResolver } from "@/features/domain/resolvers/api-orthomosaic-resolver";
 import { setOrthomosaicResolver } from "@/features/domain/resolvers/orthomosaic-resolver";
 import { ThemeProvider } from "@/providers/theme-provider";
 import "./globals.css";
@@ -27,8 +27,7 @@ export const metadata: Metadata = {
   },
 };
 
-const orthomosaicResolver = new MockOrthomosaicResolver();
-setOrthomosaicResolver(orthomosaicResolver);
+setOrthomosaicResolver(new ApiOrthomosaicResolver());
 
 export default function RootLayout({
   children,

@@ -1,20 +1,23 @@
 import type { ProjectDashboardDto } from "@/types/api/dashboard.api";
-import type { FlightResponseDto } from "@/types/api/flight.api";
+import type { ProjectFlightListItemDto } from "@/types/api/flight.api";
 import type { ProjectResponseDto } from "@/types/api/project.api";
 import {
   DEMO_FLIGHT_ID,
+  DEMO_JOB_ID,
+  DEMO_PREVIEW_ARTIFACT_ID,
   DEMO_PROJECT_ID,
 } from "@/features/demo/demo-seed";
 
+/** Legacy demo fixtures — not used in production navigation (Sprint 6). */
 export const DEMO_PROJECT_DTO: ProjectResponseDto = {
   id: DEMO_PROJECT_ID,
-  companyId: "eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee",
+  companyId: "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
   name: "Riverside Tower",
   location: {
-    address: "123 Builder Ave",
+    address: "1200 Congress Ave",
     city: "Austin",
     state: "TX",
-    country: "US",
+    country: "USA",
     latitude: 30.2672,
     longitude: -97.7431,
   },
@@ -23,30 +26,14 @@ export const DEMO_PROJECT_DTO: ProjectResponseDto = {
   archivedAt: null,
 };
 
-export const DEMO_FLIGHTS_DTO: FlightResponseDto[] = [
+export const DEMO_FLIGHTS_DTO: ProjectFlightListItemDto[] = [
   {
-    id: DEMO_FLIGHT_ID,
-    projectId: DEMO_PROJECT_ID,
+    flightId: DEMO_FLIGHT_ID,
     flightDate: "2026-06-12",
     operatorName: "Jane Doe",
-    status: "COMPLETED",
     imageCount: 42,
-  },
-  {
-    id: "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbe",
-    projectId: DEMO_PROJECT_ID,
-    flightDate: "2026-05-01",
-    operatorName: "Jane Doe",
-    status: "COMPLETED",
-    imageCount: 38,
-  },
-  {
-    id: "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbf",
-    projectId: DEMO_PROJECT_ID,
-    flightDate: "2026-04-01",
-    operatorName: "John Smith",
-    status: "COMPLETED",
-    imageCount: 35,
+    latestProcessingStatus: "COMPLETED",
+    latestJobId: DEMO_JOB_ID,
   },
 ];
 
@@ -54,23 +41,24 @@ export const DEMO_DASHBOARD_DTO: ProjectDashboardDto = {
   projectId: DEMO_PROJECT_ID,
   projectName: "Riverside Tower",
   archived: false,
-  totalFlights: 3,
-  flightsByStatus: {
-    CREATED: 0,
-    UPLOADING: 0,
-    PROCESSING: 0,
-    COMPLETED: 3,
-    FAILED: 0,
-  },
-  recentFlights: DEMO_FLIGHTS_DTO.map((flight) => ({
-    id: flight.id,
-    flightDate: flight.flightDate,
-    status: flight.status,
-    imageCount: flight.imageCount,
-    latestJobStatus:
-      flight.id === DEMO_FLIGHT_ID ? "COMPLETED" : "COMPLETED",
-    hasReport: flight.id === DEMO_FLIGHT_ID,
-  })),
+  totalFlights: 1,
+  flightsByStatus: { COMPLETED: 1 },
+  processedFlights: 1,
+  pendingFlights: 0,
+  failedFlights: 0,
+  latestFlightDate: "2026-06-12",
+  recentFlights: [
+    {
+      flightId: DEMO_FLIGHT_ID,
+      flightDate: "2026-06-12",
+      imageCount: 42,
+      latestProcessingStatus: "COMPLETED",
+      latestJobId: DEMO_JOB_ID,
+      hasReport: true,
+    },
+  ],
 };
 
 export const DEMO_PROJECTS_DTO: ProjectResponseDto[] = [DEMO_PROJECT_DTO];
+
+export { DEMO_PREVIEW_ARTIFACT_ID };

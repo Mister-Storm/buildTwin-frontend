@@ -1,11 +1,10 @@
 import { expect, test } from "@playwright/test";
-import {
-  DEMO_FLIGHT_ID,
-  DEMO_PROJECT_ID,
-} from "../src/features/demo/demo-seed";
 
-test.describe("Investor demo flow", () => {
-  test("navigates dashboard → projects → detail → orthomosaic", async ({
+const PROJECT_ID = "11111111-1111-4111-8111-111111111111";
+const FLIGHT_ID = "22222222-2222-4222-8222-222222222222";
+
+test.describe("Real API integration flow", () => {
+  test("navigates dashboard → projects → detail → orthomosaic with API data", async ({
     page,
   }) => {
     await page.goto("/");
@@ -13,30 +12,32 @@ test.describe("Investor demo flow", () => {
     await expect(
       page.getByRole("heading", { name: "See Your Construction Site Evolve" }),
     ).toBeVisible();
-    await expect(page.getByText("Visão Executiva")).toBeVisible();
 
     await page.getByRole("link", { name: "Ver Obras" }).click();
     await expect(page).toHaveURL("/projects");
-    await expect(page.getByRole("heading", { name: "Projetos" })).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: /Obra Integração/i }),
+    ).toBeVisible();
 
-    await page.getByRole("link", { name: /Riverside Tower/i }).click();
-    await expect(page).toHaveURL(
-      `/projects/${DEMO_PROJECT_ID}`,
-    );
+    await page.getByRole("link", { name: /Obra Integração/i }).click();
+    await expect(page).toHaveURL(`/projects/${PROJECT_ID}`);
     await expect(
       page.getByRole("heading", { name: "Evolução Temporal" }),
     ).toBeVisible();
+    await expect(page.getByText("Operador E2E")).toBeVisible();
 
-    await page.getByRole("link", { name: "View Orthomosaic" }).click();
+    await page.getByRole("link", { name: "Ver Ortomosaico" }).click();
     await expect(page).toHaveURL(
-      `/projects/${DEMO_PROJECT_ID}/orthomosaic?flightId=${DEMO_FLIGHT_ID}`,
+      `/projects/${PROJECT_ID}/orthomosaic?flightId=${FLIGHT_ID}`,
     );
 
     await expect(
-      page.getByRole("img", { name: /Ortomosaico da obra Riverside Tower/i }),
+      page.getByRole("img", { name: /Ortomosaico da obra Obra Integração/i }),
     ).toBeVisible();
+    await expect(page.getByText("Detalhes do Ortomosaico")).toBeVisible();
+    await expect(page.getByText("Operador E2E")).toBeVisible();
     await expect(
-      page.getByText("Detalhes do Ortomosaico"),
+      page.getByRole("link", { name: /Baixar ortomosaico/i }),
     ).toBeVisible();
   });
 });

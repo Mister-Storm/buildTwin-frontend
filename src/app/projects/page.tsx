@@ -1,15 +1,27 @@
 import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { DemoBanner } from "@/components/shared/DemoBanner";
-import { EmptyState } from "@/components/shared/States";
+import { EmptyState, ErrorState } from "@/components/shared/States";
 import { ProjectCard } from "@/components/shared/ProjectCard";
 import { toProjectSummary } from "@/features/domain/mappers/project.mapper";
+import type { ProjectSummary } from "@/features/domain/models/project";
 import { listProjects } from "@/services/projects.service";
-import { DEMO_ENABLED } from "@/features/demo/demo-seed";
+import { ApiError } from "@/types/api/common.api";
 
 export default async function ProjectsPage() {
-  const dtos = await listProjects();
-  const projects = dtos.map(toProjectSummary);
+  let projects: ProjectSummary[] = [];
+  let loadError: string | null = null;
+
+  try {
+    const dtos = await listProjects();
+    projects = dtos.map(toProjectSummary);
+  } catch (error) {
+    projects = [];
+    if (error instanceof ApiError) {
+      loadError = error.message;
+    } else {
+      loadError = "Não foi possível carregar as obras.";
+    }
+  }
 
   return (
     <AppShell
@@ -24,20 +36,27 @@ export default async function ProjectsPage() {
           description="Obras monitoradas pela plataforma BuildTwin."
         />
 
-        {DEMO_ENABLED ? <DemoBanner /> : null}
+        {loadError ? (
+          <ErrorState
+            title="Backend indisponível"
+            message={loadError}
+          />
+        ) : null}
 
-        {projects.length === 0 ? (
+        {!loadError && projects.length === 0 ? (
           <EmptyState
             title="Nenhuma obra encontrada"
-            message="Cadastre um projeto no backend BuildTwin para iniciar a demonstração."
+            message="Cadastre um projeto no backend BuildTwin para iniciar."
           />
-        ) : (
+        ) : null}
+
+        {projects.length > 0 ? (
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {projects.map((project) => (
               <ProjectCard key={project.id} project={project} />
             ))}
           </div>
-        )}
+        ) : null}
       </div>
     </AppShell>
   );

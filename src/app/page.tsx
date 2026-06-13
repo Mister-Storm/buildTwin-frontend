@@ -3,14 +3,13 @@ import {
   Activity,
   Building2,
   Calendar,
-  Map,
+  CheckCircle2,
 } from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { MetricCard } from "@/components/shared/MetricCard";
-import { DemoBanner } from "@/components/shared/DemoBanner";
+import { ErrorState } from "@/components/shared/States";
 import { getExecutiveDashboard } from "@/features/dashboard/get-executive-dashboard";
-import { DEMO_ENABLED } from "@/features/demo/demo-seed";
 
 export default async function DashboardPage() {
   const dashboard = await getExecutiveDashboard();
@@ -45,16 +44,11 @@ export default async function DashboardPage() {
           description="Indicadores operacionais da plataforma BuildTwin."
         />
 
-        {DEMO_ENABLED && dashboard.isMockFallback ? (
-          <DemoBanner message="Backend indisponível — exibindo KPIs de demonstração." />
-        ) : DEMO_ENABLED ? (
-          <DemoBanner message="Obra demo disponível: Riverside Tower — acesse Projetos para ver o ortomosaico." />
-        ) : null}
-
-        {dashboard.isMockFallback && !DEMO_ENABLED ? (
-          <p className="rounded-lg border border-brand-warning/30 bg-brand-warning/10 px-4 py-2 text-sm text-brand-warning">
-            Backend indisponível — exibindo dados de demonstração.
-          </p>
+        {dashboard.isUnavailable ? (
+          <ErrorState
+            title="Backend indisponível"
+            message="Não foi possível carregar os indicadores. Verifique se o backend está rodando em http://localhost:8080."
+          />
         ) : null}
 
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -71,10 +65,10 @@ export default async function DashboardPage() {
             icon={Calendar}
           />
           <MetricCard
-            label={dashboard.monitoredArea.label}
-            value={dashboard.monitoredArea.value}
-            subtitle={dashboard.monitoredArea.subtitle}
-            icon={Map}
+            label={dashboard.processedFlights.label}
+            value={dashboard.processedFlights.value}
+            subtitle={dashboard.processedFlights.subtitle}
+            icon={CheckCircle2}
           />
           <MetricCard
             label={dashboard.completedProcessings.label}

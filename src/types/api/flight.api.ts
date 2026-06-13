@@ -1,15 +1,28 @@
-export type FlightStatusDto =
-  | "CREATED"
-  | "UPLOADING"
-  | "PROCESSING"
-  | "COMPLETED"
-  | "FAILED";
+export type JobStatusDto = "PENDING" | "RUNNING" | "COMPLETED" | "FAILED";
 
-export type FlightResponseDto = {
-  id: string;
+export type ProjectFlightListItemDto = {
+  flightId: string;
+  flightDate: string;
+  operatorName: string;
+  imageCount: number;
+  latestProcessingStatus: JobStatusDto | null;
+  latestJobId: string | null;
+};
+
+export type FlightLatestJobSummaryDto = {
+  jobId: string;
+  status: JobStatusDto;
+  createdAt: string;
+  startedAt: string | null;
+  completedAt: string | null;
+};
+
+export type FlightDetailsResponseDto = {
+  flightId: string;
   projectId: string;
   flightDate: string;
   operatorName: string;
-  status: FlightStatusDto;
   imageCount: number;
+  createdAt: string | null;
+  latestJob: FlightLatestJobSummaryDto | null;
 };

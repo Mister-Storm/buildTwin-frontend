@@ -48,7 +48,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     env:
-      BUILDTWIN_DEMO_MODE: "true"
       BUILDTWIN_API_URL: http://localhost:8080
     steps:
       - name: Checkout
@@ -71,7 +70,6 @@ jobs:
     needs: build
     env:
       CI: true
-      BUILDTWIN_DEMO_MODE: "true"
       BUILDTWIN_API_URL: http://localhost:8080
     steps:
       - name: Checkout

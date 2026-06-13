@@ -11,6 +11,7 @@ export type FlightTimelineEntry = {
   processingVariant: StatusVariant;
   hasOrthomosaic: boolean;
   isLatest: boolean;
+  latestJobId: string | null;
 };
 
 export type ProjectDashboardView = {
@@ -19,5 +20,9 @@ export type ProjectDashboardView = {
   archived: boolean;
   totalFlights: number;
   flightsByStatus: Record<string, number>;
+  processedFlights: number;
+  pendingFlights: number;
+  failedFlights: number;
+  latestFlightDate: Date | null;
   recentFlights: FlightTimelineEntry[];
 };

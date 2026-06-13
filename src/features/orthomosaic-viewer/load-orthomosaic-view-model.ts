@@ -1,40 +1,35 @@
 import type { OrthomosaicViewModel } from "@/features/domain/models/orthomosaic";
 import type { OrthomosaicResolution } from "@/features/domain/models/orthomosaic";
-import {
-  buildDemoOrthomosaicViewModel,
-  canUseDemoOrthomosaic,
-} from "@/features/demo/demo-orthomosaic";
 import { getOrthomosaicResolver } from "@/features/domain/resolvers/orthomosaic-resolver";
+import {
+  findOrthomosaicDownloadArtifactId,
+  findPreviewArtifactId,
+} from "@/features/orthomosaic-viewer/artifact-utils";
+import { debugLog } from "@/lib/debug";
+import {
+  artifactDownloadUrl,
+  artifactPreviewUrl,
+} from "@/services/api-client";
+import { getArtifact } from "@/services/artifacts.service";
+import { getFlight } from "@/services/flights.service";
+import { getJob } from "@/services/jobs.service";
+import { ApiError } from "@/types/api/common.api";
 import {
   formatFileSize,
   jobStatusLabel,
   jobStatusVariant,
 } from "@/lib/formatters";
-import { artifactPreviewUrl } from "@/services/api-client";
-import { getArtifact } from "@/services/artifacts.service";
-import { getFlight } from "@/services/flights.service";
-import { getJob } from "@/services/jobs.service";
-import type { ArtifactTypeDto } from "@/types/api/processing.api";
 
-const PREVIEW_TYPES: readonly ArtifactTypeDto[] = [
-  "ORTHOMOSAIC_PREVIEW",
-  "ORTHOMOSAIC_THUMBNAIL",
-];
+export type OrthomosaicLoadError =
+  | "NO_RESOLUTION"
+  | "NO_PREVIEW"
+  | "JOB_NOT_FOUND"
+  | "ARTIFACT_NOT_FOUND"
+  | "API_UNAVAILABLE";
 
-function findPreviewArtifactId(
-  artifacts: { artifactId: string; artifactType: ArtifactTypeDto }[],
-  preferredId?: string,
-): string | null {
-  if (preferredId) {
-    const exists = artifacts.some((a) => a.artifactId === preferredId);
-    if (exists) return preferredId;
-  }
-  for (const type of PREVIEW_TYPES) {
-    const match = artifacts.find((a) => a.artifactType === type);
-    if (match) return match.artifactId;
-  }
-  return null;
-}
+export type OrthomosaicLoadResult =
+  | { status: "success"; viewModel: OrthomosaicViewModel }
+  | { status: "empty"; reason: OrthomosaicLoadError };
 
 function readMetadataNumber(
   metadata: Record<string, unknown>,
@@ -44,10 +39,18 @@ function readMetadataNumber(
   return typeof value === "number" ? value : null;
 }
 
+function toLoadError(error: unknown): OrthomosaicLoadError {
+  if (error instanceof ApiError) {
+    if (error.status === 404) return "JOB_NOT_FOUND";
+    return "API_UNAVAILABLE";
+  }
+  return "API_UNAVAILABLE";
+}
+
 export async function loadOrthomosaicViewModel(
   projectId: string,
   flightId?: string,
-): Promise<OrthomosaicViewModel | null> {
+): Promise<OrthomosaicLoadResult> {
   const resolver = getOrthomosaicResolver();
 
   let resolution: OrthomosaicResolution | null;
@@ -57,10 +60,9 @@ export async function loadOrthomosaicViewModel(
     resolution = await resolver.resolveLatestForProject(projectId);
   }
 
-  if (!resolution) return null;
-
-  if (canUseDemoOrthomosaic(projectId, resolution.flightId)) {
-    return buildDemoOrthomosaicViewModel(projectId, resolution.flightId);
+  if (!resolution) {
+    debugLog("loadOrthomosaicViewModel: no resolution", { projectId, flightId });
+    return { status: "empty", reason: "NO_RESOLUTION" };
   }
 
   try {
@@ -70,7 +72,11 @@ export async function loadOrthomosaicViewModel(
       resolution.previewArtifactId,
     );
 
-    if (!previewArtifactId) return null;
+    if (!previewArtifactId) {
+      return { status: "empty", reason: "NO_PREVIEW" };
+    }
+
+    const downloadArtifactId = findOrthomosaicDownloadArtifactId(job.artifacts);
 
     const [artifact, flight] = await Promise.all([
       getArtifact(previewArtifactId),
@@ -78,24 +84,34 @@ export async function loadOrthomosaicViewModel(
     ]);
 
     return {
-      projectId,
-      flightId: resolution.flightId,
-      jobId: resolution.jobId,
-      previewArtifactId,
-      previewUrl: artifactPreviewUrl(previewArtifactId),
-      flightDate: flight ? new Date(flight.flightDate) : null,
-      jobStatus: jobStatusLabel(job.status),
-      jobStatusVariant: jobStatusVariant(job.status),
-      fileSizeBytes: artifact.fileSize,
-      fileSizeLabel: formatFileSize(artifact.fileSize),
-      processedAt: job.completedAt ? new Date(job.completedAt) : null,
-      width: readMetadataNumber(artifact.metadata, "width"),
-      height: readMetadataNumber(artifact.metadata, "height"),
+      status: "success",
+      viewModel: {
+        projectId,
+        flightId: resolution.flightId,
+        jobId: resolution.jobId,
+        previewArtifactId,
+        downloadArtifactId,
+        previewUrl: artifactPreviewUrl(previewArtifactId),
+        downloadUrl: downloadArtifactId
+          ? artifactDownloadUrl(downloadArtifactId)
+          : null,
+        flightDate: flight ? new Date(flight.flightDate) : null,
+        operatorName: flight?.operatorName ?? null,
+        jobStatus: jobStatusLabel(job.status),
+        jobStatusVariant: jobStatusVariant(job.status),
+        fileSizeBytes: artifact.fileSize,
+        fileSizeLabel: formatFileSize(artifact.fileSize),
+        processedAt: job.completedAt ? new Date(job.completedAt) : null,
+        width: readMetadataNumber(artifact.metadata, "width"),
+        height: readMetadataNumber(artifact.metadata, "height"),
+      },
     };
-  } catch {
-    if (canUseDemoOrthomosaic(projectId, resolution.flightId)) {
-      return buildDemoOrthomosaicViewModel(projectId, resolution.flightId);
-    }
-    return null;
+  } catch (error) {
+    debugLog("loadOrthomosaicViewModel: failed", {
+      projectId,
+      flightId,
+      error: error instanceof Error ? error.message : String(error),
+    });
+    return { status: "empty", reason: toLoadError(error) };
   }
 }

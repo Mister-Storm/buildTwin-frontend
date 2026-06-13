@@ -1,9 +1,11 @@
+import type { JobStatusDto } from "@/types/api/flight.api";
+
 export type DashboardFlightSummaryDto = {
-  id: string;
+  flightId: string;
   flightDate: string;
-  status: string;
   imageCount: number;
-  latestJobStatus: string | null;
+  latestProcessingStatus: JobStatusDto | null;
+  latestJobId: string | null;
   hasReport: boolean;
 };
 
@@ -13,5 +15,9 @@ export type ProjectDashboardDto = {
   archived: boolean;
   totalFlights: number;
   flightsByStatus: Record<string, number>;
+  processedFlights: number;
+  pendingFlights: number;
+  failedFlights: number;
+  latestFlightDate: string | null;
   recentFlights: DashboardFlightSummaryDto[];
 };

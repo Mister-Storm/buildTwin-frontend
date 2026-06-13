@@ -93,7 +93,7 @@ function TimelineNode({ flight, projectId, orientation }: TimelineNodeProps) {
         <p className="text-sm font-semibold">{formatDate(flight.date)}</p>
         <StatusBadge label={flight.statusLabel} variant={flight.statusVariant} />
         <p className="text-xs text-muted-foreground">
-          {flight.imageCount} imgs · {flight.processingStatus}
+          {flight.operatorName} · {flight.imageCount} imgs · {flight.processingStatus}
         </p>
         {flight.hasOrthomosaic ? (
           <p className="text-xs font-medium text-brand-accent">Ortomosaico disponível</p>

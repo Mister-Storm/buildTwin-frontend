@@ -4,8 +4,7 @@ import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { FlightTimeline } from "@/components/shared/FlightTimeline";
 import { StatusBadge } from "@/components/shared/StatusBadge";
-import { DemoBanner } from "@/components/shared/DemoBanner";
-import { EmptyState } from "@/components/shared/States";
+import { EmptyState, ErrorState } from "@/components/shared/States";
 import {
   Card,
   CardContent,
@@ -14,20 +13,18 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { toProjectDashboardView } from "@/features/domain/mappers/dashboard.mapper";
-import { mergeFlightsWithDashboard } from "@/features/domain/mappers/flight.mapper";
+import { projectFlightsToTimeline } from "@/features/domain/mappers/flight.mapper";
 import { toProjectDetail } from "@/features/domain/mappers/project.mapper";
 import type { FlightTimelineEntry } from "@/features/domain/models/flight";
 import type { ProjectDetail } from "@/features/domain/models/project";
 import type { OrthomosaicResolution } from "@/features/domain/models/orthomosaic";
-import { DEMO_ENABLED, isDemoProject } from "@/features/demo/demo-seed";
 import { getOrthomosaicResolver } from "@/features/domain/resolvers/orthomosaic-resolver";
-import { MockOrthomosaicResolver } from "@/features/domain/resolvers/mock-orthomosaic-resolver";
 import { getProjectDashboard } from "@/services/dashboard.service";
 import { listFlightsByProject } from "@/services/flights.service";
 import { getProject } from "@/services/projects.service";
 import { ApiError } from "@/types/api/common.api";
 import { formatDate, projectStatusLabel } from "@/lib/formatters";
-import { ImageIcon, MapPin } from "lucide-react";
+import { Calendar, CheckCircle2, Clock, ImageIcon, MapPin, XCircle } from "lucide-react";
 
 type ProjectDetailPageProps = {
   params: Promise<{ projectId: string }>;
@@ -35,8 +32,7 @@ type ProjectDetailPageProps = {
 
 type ProjectDetailData = {
   project: ProjectDetail;
-  totalFlights: number;
-  flightsByStatus: Record<string, number>;
+  dashboard: ReturnType<typeof toProjectDashboardView>;
   timeline: FlightTimelineEntry[];
   latestResolution: OrthomosaicResolution | null;
 };
@@ -49,24 +45,18 @@ async function loadProjectDetail(projectId: string): Promise<ProjectDetailData> 
   ]);
 
   const resolver = getOrthomosaicResolver();
-  const orthomosaicFlightIds =
-    resolver instanceof MockOrthomosaicResolver
-      ? resolver.getMappedFlightIds()
-      : new Set<string>();
+  const orthomosaicFlightIds = resolver.getOrthomosaicFlightIds
+    ? await resolver.getOrthomosaicFlightIds(projectId)
+    : new Set<string>();
 
   const project = toProjectDetail(projectDto);
   const dashboard = toProjectDashboardView(dashboardDto, orthomosaicFlightIds);
-  const timeline = mergeFlightsWithDashboard(
-    flightsDto,
-    dashboardDto.recentFlights,
-    orthomosaicFlightIds,
-  );
+  const timeline = projectFlightsToTimeline(flightsDto, orthomosaicFlightIds);
   const latestResolution = await resolver.resolveLatestForProject(projectId);
 
   return {
     project,
-    totalFlights: dashboard.totalFlights,
-    flightsByStatus: dashboard.flightsByStatus,
+    dashboard,
     timeline,
     latestResolution,
   };
@@ -77,18 +67,36 @@ export default async function ProjectDetailPage({
 }: ProjectDetailPageProps) {
   const { projectId } = await params;
 
-  let data: ProjectDetailData;
+  let data: ProjectDetailData | null = null;
+  let loadError: string | null = null;
+
   try {
     data = await loadProjectDetail(projectId);
   } catch (error) {
     if (error instanceof ApiError && error.status === 404) {
       notFound();
     }
-    throw error;
+    loadError =
+      error instanceof ApiError
+        ? error.message
+        : "Não foi possível carregar os dados da obra.";
   }
 
-  const { project, totalFlights, flightsByStatus, timeline, latestResolution } =
-    data;
+  if (loadError || !data) {
+    return (
+      <AppShell
+        breadcrumbs={[
+          { label: "Dashboard", href: "/" },
+          { label: "Projetos", href: "/projects" },
+          { label: "Obra" },
+        ]}
+      >
+        <ErrorState title="Erro ao carregar obra" message={loadError ?? ""} />
+      </AppShell>
+    );
+  }
+
+  const { project, dashboard, timeline, latestResolution } = data;
   const statusVariant = project.status === "active" ? "success" : "neutral";
 
   return (
@@ -110,17 +118,13 @@ export default async function ProjectDetailPage({
                 className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-brand-accent px-3 text-sm font-medium text-white transition-opacity hover:opacity-90"
               >
                 <ImageIcon className="size-4" />
-                View Orthomosaic
+                Ver Ortomosaico
               </Link>
             ) : undefined
           }
         />
 
-        {DEMO_ENABLED && isDemoProject(projectId) ? (
-          <DemoBanner message="Obra de demonstração — clique em View Orthomosaic ou em um voo na timeline para ver o preview." />
-        ) : null}
-
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <Card className="border-border/60">
             <CardHeader className="pb-2">
               <CardDescription>Status da Obra</CardDescription>
@@ -138,15 +142,60 @@ export default async function ProjectDetailPage({
           <Card className="border-border/60">
             <CardHeader className="pb-2">
               <CardDescription>Total de Voos</CardDescription>
-              <CardTitle className="text-3xl font-bold">{totalFlights}</CardTitle>
+              <CardTitle className="text-3xl font-bold">
+                {dashboard.totalFlights}
+              </CardTitle>
             </CardHeader>
           </Card>
+          <Card className="border-border/60">
+            <CardHeader className="pb-2">
+              <CardDescription className="flex items-center gap-1">
+                <CheckCircle2 className="size-3.5" />
+                Processados
+              </CardDescription>
+              <CardTitle className="text-3xl font-bold text-brand-accent">
+                {dashboard.processedFlights}
+              </CardTitle>
+            </CardHeader>
+          </Card>
+          <Card className="border-border/60">
+            <CardHeader className="pb-2">
+              <CardDescription className="flex items-center gap-1">
+                <Clock className="size-3.5" />
+                Pendentes / Falhas
+              </CardDescription>
+              <CardTitle className="flex items-baseline gap-2 text-2xl font-bold">
+                <span>{dashboard.pendingFlights}</span>
+                <span className="text-base font-normal text-muted-foreground">
+                  /
+                </span>
+                <span className="flex items-center gap-1 text-destructive">
+                  <XCircle className="size-4" />
+                  {dashboard.failedFlights}
+                </span>
+              </CardTitle>
+            </CardHeader>
+          </Card>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2">
           <Card className="border-border/60">
             <CardHeader className="pb-2">
               <CardDescription>Localização</CardDescription>
               <CardTitle className="flex items-start gap-2 text-base font-medium">
                 <MapPin className="mt-0.5 size-4 shrink-0 text-brand-support" />
                 {project.address}
+              </CardTitle>
+            </CardHeader>
+          </Card>
+          <Card className="border-border/60">
+            <CardHeader className="pb-2">
+              <CardDescription>Último Voo</CardDescription>
+              <CardTitle className="flex items-center gap-2 text-base font-medium">
+                <Calendar className="size-4 text-brand-support" />
+                {dashboard.latestFlightDate
+                  ? formatDate(dashboard.latestFlightDate)
+                  : "Nenhum voo registrado"}
               </CardTitle>
             </CardHeader>
           </Card>
@@ -172,7 +221,7 @@ export default async function ProjectDetailPage({
         <section className="space-y-4">
           <h2 className="text-xl font-semibold">Status por Fase</h2>
           <div className="flex flex-wrap gap-2">
-            {Object.entries(flightsByStatus).map(([status, count]) => (
+            {Object.entries(dashboard.flightsByStatus).map(([status, count]) => (
               <StatusBadge
                 key={status}
                 label={`${status}: ${count}`}
