@@ -1,0 +1,22 @@
+/**
+ * Demo seed data for investor demo when backend is offline or empty.
+ * IDs are stable so ORTHOMOSAIC_MAPPINGS and navigation stay consistent.
+ */
+export const DEMO_PROJECT_ID = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa";
+export const DEMO_FLIGHT_ID = "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb";
+export const DEMO_JOB_ID = "cccccccc-cccc-4ccc-8ccc-cccccccccccc";
+export const DEMO_PREVIEW_ARTIFACT_ID =
+  "dddddddd-dddd-4ddd-8ddd-dddddddddddd";
+
+export const DEMO_ORTHOMOSAIC_PREVIEW_URL = "/demo/orthomosaic-preview.jpg";
+
+export const DEMO_ENABLED =
+  process.env.BUILDTWIN_DEMO_MODE !== "false";
+
+export function isDemoProject(projectId: string): boolean {
+  return projectId === DEMO_PROJECT_ID;
+}
+
+export function isDemoFlight(flightId: string): boolean {
+  return flightId === DEMO_FLIGHT_ID;
+}

@@ -1,0 +1,38 @@
+---
+description: BuildTwin frontend conventions, architecture, and CSP/demo context
+alwaysApply: true
+---
+
+# BuildTwin Frontend
+
+Separate repo at `/home/mister-storm/development/buildtwin-frontend`. Backend is BuildTwin Kotlin at `:8080`.
+
+## Data flow
+
+UI components consume **domain models** from `src/features/domain/models/`, never `src/types/api/` DTOs directly. Mappers live in `src/features/domain/mappers/`.
+
+## API integration
+
+- Browser calls `/api/v1/*` (Next.js rewrite → `BUILDTWIN_API_URL`)
+- Server Components fetch `BUILDTWIN_API_URL` directly
+
+## OrthomosaicResolver
+
+Pages depend on `OrthomosaicResolver` interface only. Default: `MockOrthomosaicResolver` with demo mappings. Viewer always validates via real APIs when backend is up.
+
+## Demo mode
+
+When backend offline, `DEMO_ENABLED` (default) serves Riverside Tower project. Orthomosaic preview: `/demo/orthomosaic-preview.jpg`.
+
+## Logo
+
+Run `npm run prepare:brand` after updating `~/Downloads/buildTwin.png`. Uses original brand colors with transparent background — do not invert colors.
+
+## CSP (next.config.ts)
+
+- Dev: `unsafe-inline` + `unsafe-eval` + `ws:` (React/Turbopack HMR)
+- Prod: no `unsafe-eval`
+
+## Forbidden
+
+`any`, `dangerouslySetInnerHTML`, `eval` in app code, direct DOM manipulation.
