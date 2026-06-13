@@ -12,20 +12,51 @@ test.describe("Operational workflow UI", () => {
     await expect(
       page.getByRole("heading", { name: "Demonstração para Construtoras" }),
     ).toBeVisible();
-    await expect(page.getByText("Ambiente")).toBeVisible();
-    await expect(page.getByText("PostgreSQL")).toBeVisible();
-    await expect(page.getByText("Processor")).toBeVisible();
-    await expect(page.getByText("Checklist de Demonstração")).toBeVisible();
-    await expect(page.getByText("Backend")).toBeVisible();
-    await expect(page.getByText("Estatísticas Operacionais")).toBeVisible();
-    await expect(page.getByText("Últimos Processamentos")).toBeVisible();
+
+    const environmentSection = page
+      .locator("section")
+      .filter({ has: page.getByRole("heading", { name: "Ambiente" }) });
+
+    await expect(environmentSection).toBeVisible();
+    await expect(
+      environmentSection.getByText("PostgreSQL", { exact: true }),
+    ).toBeVisible();
+    await expect(
+      environmentSection.getByText("Processor", { exact: true }),
+    ).toBeVisible();
+
+    const checklistCard = page.locator("div.rounded-xl.border").filter({
+      has: page.getByRole("heading", { name: "Checklist de Demonstração" }),
+    });
+
+    await expect(checklistCard.getByRole("list").getByText("Backend")).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Checklist de Demonstração" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Estatísticas Operacionais" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Últimos Processamentos" }),
+    ).toBeVisible();
   });
 
   test("demo self-test button runs checks", async ({ page }) => {
     await page.goto("/demo");
     await page.getByRole("button", { name: "Executar Self-Test" }).click();
-    await expect(page.getByText("Resultado: Sucesso")).toBeVisible();
-    await expect(page.getByText("postgres")).toBeVisible();
+
+    const resultPanel = page
+      .locator("div.rounded-lg.border")
+      .filter({ hasText: "Resultado: Sucesso" })
+      .first();
+
+    await expect(resultPanel).toBeVisible();
+    await expect(
+      resultPanel.getByText("postgres", { exact: true }),
+    ).toBeVisible();
+    await expect(
+      resultPanel.getByText("minio", { exact: true }),
+    ).toBeVisible();
   });
 
   test("projects page shows Nova Obra and opens flight detail", async ({
