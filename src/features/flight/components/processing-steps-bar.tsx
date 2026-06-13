@@ -1,5 +1,6 @@
 import { Check, Circle } from "lucide-react";
 import type { ProcessingStep } from "@/features/flight/job-status-utils";
+import { formatDateTime } from "@/lib/formatters";
 import { cn } from "@/lib/utils";
 
 type ProcessingStepsBarProps = {
@@ -25,14 +26,21 @@ export function ProcessingStepsBar({ steps }: ProcessingStepsBarProps) {
               <Circle className="size-3" />
             )}
           </span>
-          <span
-            className={cn(
-              "text-sm",
-              step.completed ? "font-medium" : "text-muted-foreground",
-            )}
-          >
-            {step.label}
-          </span>
+          <div className="min-w-0">
+            <span
+              className={cn(
+                "text-sm",
+                step.completed ? "font-medium" : "text-muted-foreground",
+              )}
+            >
+              {step.label}
+            </span>
+            {step.timestamp ? (
+              <p className="text-xs text-muted-foreground">
+                {formatDateTime(new Date(step.timestamp))}
+              </p>
+            ) : null}
+          </div>
         </li>
       ))}
     </ol>

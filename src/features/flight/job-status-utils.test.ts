@@ -18,13 +18,23 @@ describe("jobStatusFriendlyMessage", () => {
 
 describe("buildProcessingSteps", () => {
   it("marks all steps complete when job COMPLETED", () => {
-    const steps = buildProcessingSteps(5, "COMPLETED");
+    const steps = buildProcessingSteps({
+      imageCount: 5,
+      jobStatus: "COMPLETED",
+      createdAt: "2026-06-12T10:00:00Z",
+      startedAt: "2026-06-12T10:01:00Z",
+      completedAt: "2026-06-12T11:00:00Z",
+    });
+    expect(steps).toHaveLength(7);
     expect(steps.every((s) => s.completed)).toBe(true);
   });
 
   it("marks upload step when images exist", () => {
-    const steps = buildProcessingSteps(3, null);
+    const steps = buildProcessingSteps({
+      imageCount: 3,
+      jobStatus: null,
+    });
     expect(steps[0]?.completed).toBe(true);
-    expect(steps[3]?.completed).toBe(false);
+    expect(steps[6]?.completed).toBe(false);
   });
 });

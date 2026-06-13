@@ -202,6 +202,79 @@ const routes = new Map([
       res.end(PNG_1X1);
     },
   ],
+  [
+    "GET /api/v1/system/readiness",
+    (_req, res) => json(res, 200, { status: "UP" }),
+  ],
+  [
+    "GET /api/v1/system/overview",
+    (_req, res) =>
+      json(res, 200, {
+        timestamp: "2026-06-13T12:00:00Z",
+        overallStatus: "UP",
+        components: {
+          backend: { status: "UP", version: "0.1.0-SNAPSHOT" },
+          postgres: { status: "UP" },
+          minio: { status: "UP" },
+          worker: {
+            status: "UP",
+            version: "0.1.0-SNAPSHOT",
+            lastSeenAt: "2026-06-13T11:59:45Z",
+            currentStatus: "IDLE",
+            processedJobsCount: 1,
+            lastJobId: JOB_ID,
+            lastJobFinishedAt: "2026-06-12T11:00:00Z",
+          },
+          processor: { status: "UP", version: "0.1.0" },
+        },
+        operations: {
+          projects: 1,
+          flights: 1,
+          jobs: 1,
+          processedJobs: 1,
+          pendingJobs: 0,
+          failedJobs: 0,
+          recentJobs: [
+            {
+              projectId: PROJECT_ID,
+              projectName: "Obra Integração",
+              flightId: FLIGHT_ID,
+              flightDate: "2026-06-12",
+              operatorName: "Operador E2E",
+              status: "COMPLETED",
+              jobId: JOB_ID,
+            },
+          ],
+        },
+      }),
+  ],
+  [
+    "GET /api/v1/system/operations-summary",
+    (_req, res) =>
+      json(res, 200, {
+        projects: 1,
+        flights: 1,
+        jobs: 1,
+        processedJobs: 1,
+        pendingJobs: 0,
+        failedJobs: 0,
+        recentJobs: [],
+      }),
+  ],
+  [
+    "POST /api/v1/system/self-test",
+    (_req, res) =>
+      json(res, 200, {
+        success: true,
+        timestamp: "2026-06-13T12:00:00Z",
+        checks: [
+          { component: "postgres", status: "PASS", message: "SELECT 1 OK" },
+          { component: "minio", status: "PASS", message: "Bucket exists" },
+          { component: "processor", status: "PASS" },
+          { component: "worker", status: "PASS", message: "Heartbeat 15s ago" },
+        ],
+      }),
+  ],
 ]);
 
 const server = http.createServer((req, res) => {

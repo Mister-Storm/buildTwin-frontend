@@ -27,7 +27,15 @@ test.describe("Real API integration flow", () => {
     await expect(
       page.getByRole("heading", { name: "Evolução Temporal" }),
     ).toBeVisible();
-    await expect(page.getByText("Operador E2E")).toBeVisible();
+    await expect(
+      page
+        .locator("section")
+        .filter({
+          has: page.getByRole("heading", { name: "Evolução Temporal" }),
+        })
+        .getByText("Operador E2E")
+        .first(),
+    ).toBeVisible();
 
     await page.getByRole("link", { name: "Ver Ortomosaico" }).click();
     await expect(page).toHaveURL(
@@ -38,7 +46,7 @@ test.describe("Real API integration flow", () => {
       page.getByRole("img", { name: /Ortomosaico da obra Obra Integração/i }),
     ).toBeVisible();
     await expect(page.getByText("Detalhes do Ortomosaico")).toBeVisible();
-    await expect(page.getByText("Operador E2E")).toBeVisible();
+    await expect(page.getByText("Operador E2E").first()).toBeVisible();
     await expect(
       page.getByRole("link", { name: /Baixar ortomosaico/i }),
     ).toBeVisible();

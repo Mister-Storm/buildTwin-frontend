@@ -13,6 +13,7 @@ import {
   buildProcessingSteps,
   jobStatusFriendlyMessage,
 } from "@/features/flight/job-status-utils";
+import { mapFailureReasonToFriendlyMessage } from "@/features/system/failure-reason-mapper";
 import { formatDateTime, jobStatusVariant } from "@/lib/formatters";
 import type { LatestFlightJobResponseDto } from "@/types/api/processing.api";
 
@@ -29,7 +30,13 @@ export function JobStatusPanel({
   isPolling = false,
   error,
 }: JobStatusPanelProps) {
-  const steps = buildProcessingSteps(imageCount, job?.status ?? null);
+  const steps = buildProcessingSteps({
+    imageCount,
+    jobStatus: job?.status ?? null,
+    createdAt: job?.createdAt,
+    startedAt: job?.startedAt,
+    completedAt: job?.completedAt,
+  });
 
   return (
     <Card className="border-border/60" id="job-status-panel">
@@ -60,9 +67,15 @@ export function JobStatusPanel({
               </p>
             ) : null}
             {job.status === "FAILED" && job.failureReason ? (
-              <p className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-                {job.failureReason}
-              </p>
+              <div className="space-y-2 rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm">
+                <p className="font-medium text-destructive">
+                  {mapFailureReasonToFriendlyMessage(job.failureReason)}
+                </p>
+                <details className="text-xs text-muted-foreground">
+                  <summary className="cursor-pointer">Detalhes técnicos</summary>
+                  <p className="mt-1 break-all">{job.failureReason}</p>
+                </details>
+              </div>
             ) : null}
           </>
         ) : (

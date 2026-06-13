@@ -19,14 +19,31 @@ export type ProcessingStep = {
   id: string;
   label: string;
   completed: boolean;
+  timestamp?: string | null | undefined;
 };
 
-export function buildProcessingSteps(
-  imageCount: number,
-  jobStatus: JobStatusDto | null,
-): ProcessingStep[] {
+type BuildProcessingStepsInput = {
+  imageCount: number;
+  jobStatus: JobStatusDto | null;
+  createdAt?: string | null | undefined;
+  startedAt?: string | null | undefined;
+  completedAt?: string | null | undefined;
+};
+
+export function buildProcessingSteps({
+  imageCount,
+  jobStatus,
+  createdAt,
+  startedAt,
+  completedAt,
+}: BuildProcessingStepsInput): ProcessingStep[] {
   const hasJob =
     jobStatus === "PENDING" ||
+    jobStatus === "RUNNING" ||
+    jobStatus === "COMPLETED" ||
+    jobStatus === "FAILED";
+
+  const isRunningOrDone =
     jobStatus === "RUNNING" ||
     jobStatus === "COMPLETED" ||
     jobStatus === "FAILED";
@@ -41,16 +58,37 @@ export function buildProcessingSteps(
       id: "job-created",
       label: "Job criado",
       completed: hasJob,
+      timestamp: createdAt,
     },
     {
-      id: "processing",
-      label: "Processando imagens",
+      id: "worker-started",
+      label: "Worker iniciou processamento",
+      completed: Boolean(startedAt) || isRunningOrDone,
+      timestamp: startedAt,
+    },
+    {
+      id: "processor-received",
+      label: "Processor recebeu requisição",
+      completed: isRunningOrDone,
+      timestamp: startedAt,
+    },
+    {
+      id: "nodeodm-running",
+      label: "NodeODM executando",
       completed: jobStatus === "RUNNING" || jobStatus === "COMPLETED",
+      timestamp: startedAt,
     },
     {
-      id: "result",
-      label: "Gerando resultado",
+      id: "artifacts-generated",
+      label: "Artefatos gerados",
       completed: jobStatus === "COMPLETED",
+      timestamp: completedAt,
+    },
+    {
+      id: "completed",
+      label: "Processamento concluído",
+      completed: jobStatus === "COMPLETED",
+      timestamp: completedAt,
     },
   ];
 }
