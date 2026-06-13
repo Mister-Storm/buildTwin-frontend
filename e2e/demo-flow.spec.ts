@@ -12,8 +12,11 @@ test.describe("Real API integration flow", () => {
     await expect(
       page.getByRole("heading", { name: "See Your Construction Site Evolve" }),
     ).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "Demo Comercial" }),
+    ).toBeVisible();
 
-    await page.getByRole("link", { name: "Ver Obras" }).click();
+    await page.getByRole("link", { name: "Projetos" }).click();
     await expect(page).toHaveURL("/projects");
     await expect(
       page.getByRole("link", { name: /Obra Integração/i }),
