@@ -2,8 +2,6 @@ import { describe, expect, it } from "vitest";
 import { projectFlightsToTimeline } from "@/features/domain/mappers/flight.mapper";
 import type { ProjectFlightListItemDto } from "@/types/api/flight.api";
 
-const projectId = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa";
-
 const flights: ProjectFlightListItemDto[] = [
   {
     flightId: "flight-old",
