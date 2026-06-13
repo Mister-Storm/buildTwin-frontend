@@ -4,10 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Building2, LayoutDashboard } from "lucide-react";
+import { Building2, LayoutDashboard, Presentation } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
+  { href: "/demo", label: "Demo", icon: Presentation },
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/projects", label: "Projetos", icon: Building2 },
 ] as const;
@@ -19,7 +20,7 @@ export function AppSidebar() {
   return (
     <aside className="flex w-64 shrink-0 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground">
       <div className="border-b border-sidebar-border px-4 py-5">
-        <Link href="/" className="block">
+        <Link href="/demo" className="block">
           {logoError ? (
             <span className="text-xl font-bold tracking-tight text-white">
               BuildTwin
@@ -49,7 +50,9 @@ export function AppSidebar() {
       <nav className="flex-1 space-y-1 p-4">
         {navItems.map(({ href, label, icon: Icon }) => {
           const active =
-            href === "/" ? pathname === "/" : pathname.startsWith(href);
+            href === "/"
+              ? pathname === "/"
+              : pathname === href || pathname.startsWith(`${href}/`);
           return (
             <Link
               key={href}
@@ -69,7 +72,7 @@ export function AppSidebar() {
       </nav>
       <div className="border-t border-sidebar-border p-4">
         <p className="text-xs text-sidebar-foreground/60">
-          Investor Demo · Sprint 5A
+          MVP Demo Ready · Sprint 6A
         </p>
       </div>
     </aside>

@@ -1,6 +1,9 @@
 import { apiFetch } from "@/services/api-client";
 import { debugLog } from "@/lib/debug";
-import type { ProjectResponseDto } from "@/types/api/project.api";
+import type {
+  CreateProjectRequestDto,
+  ProjectResponseDto,
+} from "@/types/api/project.api";
 
 export async function listProjects(
   includeArchived = false,
@@ -14,4 +17,20 @@ export async function listProjects(
 export async function getProject(id: string): Promise<ProjectResponseDto> {
   debugLog("getProject", { id });
   return apiFetch<ProjectResponseDto>(`/projects/${id}`);
+}
+
+export async function createProject(
+  dto: CreateProjectRequestDto,
+): Promise<ProjectResponseDto> {
+  debugLog("createProject", { name: dto.name });
+  return apiFetch<ProjectResponseDto>("/projects", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(dto),
+  });
+}
+
+export async function archiveProject(id: string): Promise<void> {
+  debugLog("archiveProject", { id });
+  await apiFetch<void>(`/projects/${id}`, { method: "DELETE" });
 }

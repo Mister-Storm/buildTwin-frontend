@@ -1,6 +1,6 @@
 import { ApiError, type ApiErrorResponse } from "@/types/api/common.api";
 
-function getApiBaseUrl(): string {
+export function getApiBaseUrl(): string {
   if (typeof window === "undefined") {
     return (
       process.env.BUILDTWIN_API_URL ??
@@ -11,9 +11,26 @@ function getApiBaseUrl(): string {
   return "";
 }
 
-export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
+function buildApiUrl(path: string): string {
   const base = getApiBaseUrl();
-  const url = `${base}/api/v1${path}`;
+  return `${base}/api/v1${path}`;
+}
+
+async function parseApiError(response: Response): Promise<ApiError> {
+  let message = response.statusText;
+  let code = "UNKNOWN_ERROR";
+  try {
+    const body = (await response.json()) as ApiErrorResponse;
+    message = body.message;
+    code = body.error;
+  } catch {
+    // keep defaults
+  }
+  return new ApiError(response.status, code, message);
+}
+
+export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
+  const url = buildApiUrl(path);
 
   const response = await fetch(url, {
     ...init,
@@ -25,16 +42,7 @@ export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> 
   });
 
   if (!response.ok) {
-    let message = response.statusText;
-    let code = "UNKNOWN_ERROR";
-    try {
-      const body = (await response.json()) as ApiErrorResponse;
-      message = body.message;
-      code = body.error;
-    } catch {
-      // keep defaults
-    }
-    throw new ApiError(response.status, code, message);
+    throw await parseApiError(response);
   }
 
   if (response.status === 204) {
@@ -42,6 +50,58 @@ export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> 
   }
 
   return (await response.json()) as T;
+}
+
+export type UploadProgressCallback = (progress: {
+  loaded: number;
+  total: number;
+  percent: number;
+}) => void;
+
+export function apiUpload<T>(
+  path: string,
+  formData: FormData,
+  onProgress?: UploadProgressCallback,
+): Promise<T> {
+  const url = buildApiUrl(path);
+
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", url);
+    xhr.setRequestHeader("Accept", "application/json");
+
+    xhr.upload.onprogress = (event) => {
+      if (!onProgress || !event.lengthComputable) return;
+      onProgress({
+        loaded: event.loaded,
+        total: event.total,
+        percent: Math.round((event.loaded / event.total) * 100),
+      });
+    };
+
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        try {
+          resolve(JSON.parse(xhr.responseText) as T);
+        } catch {
+          reject(new ApiError(xhr.status, "PARSE_ERROR", "Resposta inválida"));
+        }
+        return;
+      }
+      try {
+        const body = JSON.parse(xhr.responseText) as ApiErrorResponse;
+        reject(new ApiError(xhr.status, body.error, body.message));
+      } catch {
+        reject(new ApiError(xhr.status, "UNKNOWN_ERROR", xhr.statusText));
+      }
+    };
+
+    xhr.onerror = () => {
+      reject(new ApiError(0, "NETWORK_ERROR", "Falha de rede no upload"));
+    };
+
+    xhr.send(formData);
+  });
 }
 
 export function artifactPreviewUrl(artifactId: string): string {

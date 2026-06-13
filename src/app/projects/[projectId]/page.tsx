@@ -1,10 +1,9 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { FlightTimeline } from "@/components/shared/FlightTimeline";
 import { StatusBadge } from "@/components/shared/StatusBadge";
-import { EmptyState, ErrorState } from "@/components/shared/States";
+import { ErrorState } from "@/components/shared/States";
 import {
   Card,
   CardContent,
@@ -12,6 +11,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { ProjectFlightsEmpty } from "@/features/flight/project-flights-empty";
+import { ProjectDetailActions } from "@/features/project/project-detail-actions";
 import { toProjectDashboardView } from "@/features/domain/mappers/dashboard.mapper";
 import { projectFlightsToTimeline } from "@/features/domain/mappers/flight.mapper";
 import { toProjectDetail } from "@/features/domain/mappers/project.mapper";
@@ -24,7 +25,7 @@ import { listFlightsByProject } from "@/services/flights.service";
 import { getProject } from "@/services/projects.service";
 import { ApiError } from "@/types/api/common.api";
 import { formatDate, projectStatusLabel } from "@/lib/formatters";
-import { Calendar, CheckCircle2, Clock, ImageIcon, MapPin, XCircle } from "lucide-react";
+import { Calendar, CheckCircle2, Clock, MapPin, XCircle } from "lucide-react";
 
 type ProjectDetailPageProps = {
   params: Promise<{ projectId: string }>;
@@ -112,15 +113,12 @@ export default async function ProjectDetailPage({
           title={project.name}
           description={`${project.city}, ${project.state} · ${project.country}`}
           actions={
-            latestResolution ? (
-              <Link
-                href={`/projects/${projectId}/orthomosaic?flightId=${latestResolution.flightId}`}
-                className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-brand-accent px-3 text-sm font-medium text-white transition-opacity hover:opacity-90"
-              >
-                <ImageIcon className="size-4" />
-                Ver Ortomosaico
-              </Link>
-            ) : undefined
+            <ProjectDetailActions
+              projectId={projectId}
+              projectName={project.name}
+              isArchived={project.status === "archived"}
+              latestResolution={latestResolution}
+            />
           }
         />
 
@@ -211,10 +209,7 @@ export default async function ProjectDetailPage({
           {timeline.length > 0 ? (
             <FlightTimeline projectId={projectId} flights={timeline} />
           ) : (
-            <EmptyState
-              title="Nenhum voo registrado"
-              message="Esta obra ainda não possui voos de drone cadastrados."
-            />
+            <ProjectFlightsEmpty projectId={projectId} />
           )}
         </section>
 

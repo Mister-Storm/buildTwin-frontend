@@ -31,10 +31,10 @@ export default async function DashboardPage() {
               inteligência de obra.
             </p>
             <Link
-              href="/projects"
+              href="/demo"
               className="mt-6 inline-flex items-center rounded-lg bg-brand-accent px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
             >
-              Ver Obras
+              Demo Comercial
             </Link>
           </div>
         </section>

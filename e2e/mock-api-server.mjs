@@ -18,6 +18,21 @@ function json(res, status, body) {
 
 const routes = new Map([
   [
+    "GET /api/v1/companies",
+    (_req, res) =>
+      json(res, 200, [
+        {
+          id: "66666666-6666-4666-8666-666666666666",
+          name: "Construtora Parceira",
+          createdAt: "2026-01-01T00:00:00Z",
+        },
+      ]),
+  ],
+  [
+    `GET /api/v1/flights/${FLIGHT_ID}/images`,
+    (_req, res) => json(res, 200, []),
+  ],
+  [
     "GET /api/v1/projects",
     (_req, res) =>
       json(res, 200, [

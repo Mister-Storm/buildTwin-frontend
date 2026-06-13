@@ -56,7 +56,7 @@ type TimelineNodeProps = {
 };
 
 function TimelineNode({ flight, projectId, orientation }: TimelineNodeProps) {
-  const href = `/projects/${projectId}/orthomosaic?flightId=${flight.id}`;
+  const href = `/projects/${projectId}/flights/${flight.id}`;
   const isHighlighted = flight.isLatest || flight.hasOrthomosaic;
 
   return (

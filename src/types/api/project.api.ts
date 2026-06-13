@@ -13,6 +13,17 @@ export type CompanyResponseDto = {
   createdAt: string;
 };
 
+export type CreateCompanyRequestDto = {
+  name: string;
+};
+
+export type CreateProjectRequestDto = {
+  companyId: string;
+  name: string;
+  location: LocationDto;
+  startDate: string;
+};
+
 export type ProjectResponseDto = {
   id: string;
   companyId: string;

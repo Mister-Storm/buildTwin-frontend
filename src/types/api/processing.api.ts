@@ -60,3 +60,11 @@ export type LatestFlightJobResponseDto = {
   completedAt: string | null;
   failureReason: string | null;
 };
+
+export type StartProcessingJobResponseDto = {
+  jobId: string;
+  flightId: string;
+  jobType: JobTypeDto;
+  status: JobStatusDto;
+  createdAt: string;
+};
