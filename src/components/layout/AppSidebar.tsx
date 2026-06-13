@@ -72,7 +72,7 @@ export function AppSidebar() {
       </nav>
       <div className="border-t border-sidebar-border p-4">
         <p className="text-xs text-sidebar-foreground/60">
-          MVP Demo Ready · Sprint 6A
+          Pilot Readiness · Sprint 6C
         </p>
       </div>
     </aside>

@@ -4,14 +4,28 @@ const PROJECT_ID = "11111111-1111-4111-8111-111111111111";
 const FLIGHT_ID = "22222222-2222-4222-8222-222222222222";
 
 test.describe("Operational workflow UI", () => {
-  test("demo page shows executive summary and checklist", async ({ page }) => {
+  test("demo page shows environment health and infra checklist", async ({
+    page,
+  }) => {
     await page.goto("/demo");
 
     await expect(
       page.getByRole("heading", { name: "Demonstração para Construtoras" }),
     ).toBeVisible();
-    await expect(page.getByText("Checklist da Demonstração")).toBeVisible();
-    await expect(page.getByText("Projeto criado")).toBeVisible();
+    await expect(page.getByText("Ambiente")).toBeVisible();
+    await expect(page.getByText("PostgreSQL")).toBeVisible();
+    await expect(page.getByText("Processor")).toBeVisible();
+    await expect(page.getByText("Checklist de Demonstração")).toBeVisible();
+    await expect(page.getByText("Backend")).toBeVisible();
+    await expect(page.getByText("Estatísticas Operacionais")).toBeVisible();
+    await expect(page.getByText("Últimos Processamentos")).toBeVisible();
+  });
+
+  test("demo self-test button runs checks", async ({ page }) => {
+    await page.goto("/demo");
+    await page.getByRole("button", { name: "Executar Self-Test" }).click();
+    await expect(page.getByText("Resultado: Sucesso")).toBeVisible();
+    await expect(page.getByText("postgres")).toBeVisible();
   });
 
   test("projects page shows Nova Obra and opens flight detail", async ({

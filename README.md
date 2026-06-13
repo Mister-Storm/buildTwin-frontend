@@ -24,9 +24,21 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000/demo](http://localhost:3000/demo) for the operational demo dashboard (Sprint 6C).
 
-## Demo Mode (backend offline)
+## Demo dashboard (`/demo`)
+
+The demo page consumes a single backend call: `GET /api/v1/system/overview`.
+
+Sections:
+- **Ambiente** — health cards (Backend, PostgreSQL, MinIO, Worker, Processor)
+- **Estatísticas operacionais** — projects, flights, jobs, failed jobs
+- **Últimos processamentos** — cross-project recent jobs table
+- **Checklist infra** + **Self-test** button (`POST /api/v1/system/self-test`)
+
+Processor `DEGRADED` means NodeODM is unavailable (shown in Processor card details).
+
+## Legacy demo mode
 
 When `BUILDTWIN_DEMO_MODE` is not `false`, the app includes a sample project **Riverside Tower** with 3 flights and a demo orthomosaic preview.
 
