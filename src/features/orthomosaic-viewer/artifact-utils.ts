@@ -17,7 +17,7 @@ export function findPreviewArtifactId(
     const match = artifacts.find((a) => a.artifactType === type);
     if (match) return match.artifactId;
   }
-  return null;
+  return findOrthomosaicDownloadArtifactId(artifacts);
 }
 
 export function findOrthomosaicDownloadArtifactId(

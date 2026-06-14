@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Play } from "lucide-react";
+import { Play, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -33,7 +33,14 @@ export function FlightProcessPanel({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const isActive = jobStatus === "PENDING" || jobStatus === "RUNNING";
+  const isFailed = jobStatus === "FAILED";
   const disabled = imageCount === 0 || isActive || isSubmitting;
+  const buttonLabel = isSubmitting
+    ? "Iniciando..."
+    : isFailed
+      ? "Reprocessar Voo"
+      : "Processar Voo";
+  const ButtonIcon = isFailed ? RotateCcw : Play;
 
   async function handleProcess() {
     setError(null);
@@ -61,7 +68,9 @@ export function FlightProcessPanel({
       <CardHeader>
         <CardTitle className="text-lg">Processamento</CardTitle>
         <CardDescription>
-          Dispare a geração do ortomosaico após o upload das imagens.
+          {isFailed
+            ? "O processamento anterior falhou. Dispare novamente com as imagens atuais do voo."
+            : "Dispare a geração do ortomosaico após o upload das imagens."}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
@@ -70,8 +79,8 @@ export function FlightProcessPanel({
           disabled={disabled}
           onClick={handleProcess}
         >
-          <Play className="size-4" />
-          {isSubmitting ? "Iniciando..." : "Processar Voo"}
+          <ButtonIcon className="size-4" />
+          {buttonLabel}
         </Button>
         {imageCount === 0 ? (
           <p className="text-sm text-muted-foreground">

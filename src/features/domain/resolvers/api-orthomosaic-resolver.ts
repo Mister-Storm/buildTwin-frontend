@@ -85,6 +85,9 @@ export class ApiOrthomosaicResolver implements OrthomosaicResolver {
   ): Promise<OrthomosaicResolution | null> {
     try {
       const job = await getJob(jobId);
+      if (job.status !== "COMPLETED") {
+        return null;
+      }
       const previewArtifactId = findPreviewArtifactId(
         job.artifacts,
         preferredPreviewId,
