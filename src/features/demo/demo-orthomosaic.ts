@@ -7,11 +7,14 @@ import {
   DEMO_PROJECT_ID,
   isDemoProject,
 } from "@/features/demo/demo-seed";
+import { parseDateOnly } from "@/lib/formatters";
 
 export function buildDemoOrthomosaicViewModel(
   projectId: string = DEMO_PROJECT_ID,
   flightId: string = DEMO_FLIGHT_ID,
 ): OrthomosaicViewModel {
+  const flightDate = parseDateOnly("2026-06-12");
+
   return {
     projectId,
     flightId,
@@ -20,7 +23,7 @@ export function buildDemoOrthomosaicViewModel(
     downloadArtifactId: null,
     previewUrl: DEMO_ORTHOMOSAIC_PREVIEW_URL,
     downloadUrl: null,
-    flightDate: new Date("2026-06-12"),
+    flightDate,
     operatorName: "Jane Doe",
     jobStatus: "Concluído",
     jobStatusVariant: "success",
@@ -29,6 +32,15 @@ export function buildDemoOrthomosaicViewModel(
     processedAt: new Date("2026-06-12T14:30:00Z"),
     width: 1600,
     height: 900,
+    captureDateLabel: "12 de jun. de 2026",
+    areaLabel: "Não disponível",
+    gsdLabel: "Não disponível",
+    crs: "Não disponível",
+    dimensionsLabel: "Não disponível",
+    epsg: null,
+    centerLat: null,
+    centerLon: null,
+    bounds: null,
   };
 }
 

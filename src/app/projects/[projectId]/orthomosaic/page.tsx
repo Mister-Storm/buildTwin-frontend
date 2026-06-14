@@ -3,6 +3,7 @@ import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { ArtifactCard } from "@/components/shared/ArtifactCard";
 import { ErrorState } from "@/components/shared/States";
+import { OrthomosaicMetricsCard } from "@/features/orthomosaic-viewer/OrthomosaicMetricsCard";
 import {
   loadOrthomosaicViewModel,
   type OrthomosaicLoadError,
@@ -82,7 +83,9 @@ export default async function OrthomosaicPage({
             message={ERROR_MESSAGES[result.reason].message}
           />
         ) : (
-          <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
+          <div className="space-y-6">
+            <OrthomosaicMetricsCard viewModel={result.viewModel} />
+            <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
             <div className="relative flex min-h-[480px] items-center justify-center overflow-hidden rounded-2xl border border-border/60 bg-primary shadow-inner">
               {/* map-container: future Leaflet | OpenLayers | Cesium */}
               {/* eslint-disable-next-line @next/next/no-img-element -- API binary preview stream via rewrite proxy */}
@@ -93,6 +96,7 @@ export default async function OrthomosaicPage({
               />
             </div>
             <ArtifactCard viewModel={result.viewModel} />
+            </div>
           </div>
         )}
       </div>

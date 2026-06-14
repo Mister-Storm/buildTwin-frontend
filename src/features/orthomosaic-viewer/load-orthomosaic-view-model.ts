@@ -5,6 +5,7 @@ import {
   findOrthomosaicDownloadArtifactId,
   findPreviewArtifactId,
 } from "@/features/orthomosaic-viewer/artifact-utils";
+import { mapOrthomosaicSurveyFields } from "@/features/orthomosaic-viewer/orthomosaic-metadata.mapper";
 import { debugLog } from "@/lib/debug";
 import {
   artifactDownloadUrl,
@@ -18,6 +19,7 @@ import {
   formatFileSize,
   jobStatusLabel,
   jobStatusVariant,
+  parseDateOnly,
 } from "@/lib/formatters";
 
 export type OrthomosaicLoadError =
@@ -30,14 +32,6 @@ export type OrthomosaicLoadError =
 export type OrthomosaicLoadResult =
   | { status: "success"; viewModel: OrthomosaicViewModel }
   | { status: "empty"; reason: OrthomosaicLoadError };
-
-function readMetadataNumber(
-  metadata: Record<string, unknown>,
-  key: string,
-): number | null {
-  const value = metadata[key];
-  return typeof value === "number" ? value : null;
-}
 
 function toLoadError(error: unknown): OrthomosaicLoadError {
   if (error instanceof ApiError) {
@@ -78,10 +72,19 @@ export async function loadOrthomosaicViewModel(
 
     const downloadArtifactId = findOrthomosaicDownloadArtifactId(job.artifacts);
 
-    const [artifact, flight] = await Promise.all([
+    const [previewArtifact, orthomosaicArtifact, flight] = await Promise.all([
       getArtifact(previewArtifactId),
+      downloadArtifactId
+        ? getArtifact(downloadArtifactId).catch(() => null)
+        : Promise.resolve(null),
       getFlight(resolution.flightId).catch(() => null),
     ]);
+
+    const flightDate = flight ? parseDateOnly(flight.flightDate) : null;
+    const surveyFields = mapOrthomosaicSurveyFields(
+      orthomosaicArtifact?.metadata ?? {},
+      flightDate,
+    );
 
     return {
       status: "success",
@@ -95,15 +98,24 @@ export async function loadOrthomosaicViewModel(
         downloadUrl: downloadArtifactId
           ? artifactDownloadUrl(downloadArtifactId)
           : null,
-        flightDate: flight ? new Date(flight.flightDate) : null,
+        flightDate,
         operatorName: flight?.operatorName ?? null,
         jobStatus: jobStatusLabel(job.status),
         jobStatusVariant: jobStatusVariant(job.status),
-        fileSizeBytes: artifact.fileSize,
-        fileSizeLabel: formatFileSize(artifact.fileSize),
+        fileSizeBytes: previewArtifact.fileSize,
+        fileSizeLabel: formatFileSize(previewArtifact.fileSize),
         processedAt: job.completedAt ? new Date(job.completedAt) : null,
-        width: readMetadataNumber(artifact.metadata, "width"),
-        height: readMetadataNumber(artifact.metadata, "height"),
+        width: surveyFields.width ?? null,
+        height: surveyFields.height ?? null,
+        captureDateLabel: surveyFields.captureDateLabel,
+        areaLabel: surveyFields.areaLabel,
+        gsdLabel: surveyFields.gsdLabel,
+        crs: surveyFields.crs,
+        dimensionsLabel: surveyFields.dimensionsLabel,
+        epsg: surveyFields.epsg,
+        centerLat: surveyFields.centerLat,
+        centerLon: surveyFields.centerLon,
+        bounds: surveyFields.bounds,
       },
     };
   } catch (error) {
