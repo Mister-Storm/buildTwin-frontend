@@ -23,6 +23,7 @@ import { getOrthomosaicResolver } from "@/features/domain/resolvers/orthomosaic-
 import { getProjectDashboard } from "@/services/dashboard.service";
 import { listFlightsByProject } from "@/services/flights.service";
 import { getProject } from "@/services/projects.service";
+import { getProjectTimeline } from "@/services/timeline.service";
 import { ApiError } from "@/types/api/common.api";
 import { formatDate, projectStatusLabel } from "@/lib/formatters";
 import { Calendar, CheckCircle2, Clock, MapPin, XCircle } from "lucide-react";
@@ -36,13 +37,15 @@ type ProjectDetailData = {
   dashboard: ReturnType<typeof toProjectDashboardView>;
   timeline: FlightTimelineEntry[];
   latestResolution: OrthomosaicResolution | null;
+  processedSurveyCount: number;
 };
 
 async function loadProjectDetail(projectId: string): Promise<ProjectDetailData> {
-  const [projectDto, dashboardDto, flightsDto] = await Promise.all([
+  const [projectDto, dashboardDto, flightsDto, timelineDto] = await Promise.all([
     getProject(projectId),
     getProjectDashboard(projectId),
     listFlightsByProject(projectId),
+    getProjectTimeline(projectId).catch(() => ({ projectId, timeline: [] })),
   ]);
 
   const resolver = getOrthomosaicResolver();
@@ -60,6 +63,7 @@ async function loadProjectDetail(projectId: string): Promise<ProjectDetailData> 
     dashboard,
     timeline,
     latestResolution,
+    processedSurveyCount: timelineDto.timeline.length,
   };
 }
 
@@ -97,7 +101,7 @@ export default async function ProjectDetailPage({
     );
   }
 
-  const { project, dashboard, timeline, latestResolution } = data;
+  const { project, dashboard, timeline, latestResolution, processedSurveyCount } = data;
   const statusVariant = project.status === "active" ? "success" : "neutral";
 
   return (
@@ -118,6 +122,7 @@ export default async function ProjectDetailPage({
               projectName={project.name}
               isArchived={project.status === "archived"}
               latestResolution={latestResolution}
+              processedSurveyCount={processedSurveyCount}
             />
           }
         />

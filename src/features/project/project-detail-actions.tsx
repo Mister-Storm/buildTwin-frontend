@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { CreateFlightDialog } from "@/features/flight/create-flight-dialog";
 import { ArchiveProjectDialog } from "@/features/project/archive-project-dialog";
-import { ImageIcon } from "lucide-react";
+import { GitCompareArrows, ImageIcon } from "lucide-react";
 import type { OrthomosaicResolution } from "@/features/domain/models/orthomosaic";
 
 type ProjectDetailActionsProps = {
@@ -11,6 +11,7 @@ type ProjectDetailActionsProps = {
   projectName: string;
   isArchived: boolean;
   latestResolution: OrthomosaicResolution | null;
+  processedSurveyCount?: number;
 };
 
 export function ProjectDetailActions({
@@ -18,6 +19,7 @@ export function ProjectDetailActions({
   projectName,
   isArchived,
   latestResolution,
+  processedSurveyCount = 0,
 }: ProjectDetailActionsProps) {
   return (
     <div className="flex flex-wrap items-center gap-2">
@@ -37,6 +39,15 @@ export function ProjectDetailActions({
         >
           <ImageIcon className="size-4" />
           Ver Ortomosaico
+        </Link>
+      ) : null}
+      {processedSurveyCount >= 2 ? (
+        <Link
+          href={`/projects/${projectId}/compare`}
+          className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-border/60 px-3 text-sm font-medium transition-colors hover:bg-muted/50"
+        >
+          <GitCompareArrows className="size-4" />
+          Comparar levantamentos
         </Link>
       ) : null}
     </div>
