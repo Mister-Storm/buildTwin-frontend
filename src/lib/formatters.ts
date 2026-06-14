@@ -1,5 +1,17 @@
 import type { StatusVariant } from "@/features/domain/models/flight";
 
+/** Parses API date-only strings (YYYY-MM-DD) as local calendar dates. */
+export function parseDateOnly(dateString: string): Date {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateString);
+  if (!match) {
+    throw new Error(`Invalid date-only string: ${dateString}`);
+  }
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  return new Date(year, month - 1, day);
+}
+
 export function formatDate(date: Date): string {
   return new Intl.DateTimeFormat("pt-BR", {
     day: "2-digit",

@@ -1,5 +1,12 @@
 import type { StatusVariant } from "@/features/domain/models/flight";
 
+export type OrthomosaicBounds = {
+  minLat: number;
+  maxLat: number;
+  minLon: number;
+  maxLon: number;
+};
+
 export type OrthomosaicViewModel = {
   projectId: string;
   flightId: string;
@@ -17,6 +24,15 @@ export type OrthomosaicViewModel = {
   processedAt: Date | null;
   width: number | null;
   height: number | null;
+  captureDateLabel: string | null;
+  areaLabel: string | null;
+  gsdLabel: string | null;
+  crs: string | null;
+  dimensionsLabel: string | null;
+  epsg: number | null;
+  centerLat: number | null;
+  centerLon: number | null;
+  bounds: OrthomosaicBounds | null;
 };
 
 export type OrthomosaicResolution = Readonly<{

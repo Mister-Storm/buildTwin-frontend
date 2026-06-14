@@ -77,14 +77,44 @@ describe("loadOrthomosaicViewModel", () => {
       ],
     });
 
-    vi.mocked(getArtifact).mockResolvedValue({
-      artifactId: previewArtifactId,
-      artifactType: "ORTHOMOSAIC_PREVIEW",
-      storagePath: "preview.jpg",
-      fileSize: 512000,
-      checksum: "abc",
-      metadata: { width: 1920, height: 1080 },
-      createdAt: "2026-06-12T11:00:00Z",
+    vi.mocked(getArtifact).mockImplementation(async (artifactId: string) => {
+      if (artifactId === downloadArtifactId) {
+        return {
+          artifactId: downloadArtifactId,
+          artifactType: "ORTHOMOSAIC",
+          storagePath: "ortho.tif",
+          fileSize: 50000000,
+          checksum: "def",
+          metadata: {
+            format: "GeoTIFF",
+            width: 12000,
+            height: 9000,
+            crs: "EPSG:31982",
+            epsg: 31982,
+            centerLat: -27.61234,
+            centerLon: -48.63214,
+            bounds: {
+              minLat: -27.615,
+              maxLat: -27.609,
+              minLon: -48.635,
+              maxLon: -48.629,
+            },
+            areaSquareMeters: 8421.4,
+            gsdCmPerPixel: 2.1,
+          },
+          createdAt: "2026-06-12T11:00:00Z",
+        };
+      }
+
+      return {
+        artifactId: previewArtifactId,
+        artifactType: "ORTHOMOSAIC_PREVIEW",
+        storagePath: "preview.jpg",
+        fileSize: 512000,
+        checksum: "abc",
+        metadata: { width: 1920, height: 1080 },
+        createdAt: "2026-06-12T11:00:00Z",
+      };
     });
 
     vi.mocked(getFlight).mockResolvedValue({
@@ -99,6 +129,7 @@ describe("loadOrthomosaicViewModel", () => {
 
     const result = await loadOrthomosaicViewModel(projectId, flightId);
 
+    expect(getArtifact).toHaveBeenCalledWith(downloadArtifactId);
     expect(result.status).toBe("success");
     if (result.status === "success") {
       expect(result.viewModel.previewUrl).toBe(
@@ -109,6 +140,14 @@ describe("loadOrthomosaicViewModel", () => {
       );
       expect(result.viewModel.operatorName).toBe("Operador Teste");
       expect(result.viewModel.jobStatus).toBe("Concluído");
+      expect(result.viewModel.captureDateLabel).toBe("12 de jun. de 2026");
+      expect(result.viewModel.areaLabel).toBe("8.421,4 m²");
+      expect(result.viewModel.gsdLabel).toBe("2,1 cm/pixel");
+      expect(result.viewModel.crs).toBe("EPSG:31982");
+      expect(result.viewModel.dimensionsLabel).toBe("12.000 × 9.000 px");
+      expect(result.viewModel.epsg).toBe(31982);
+      expect(result.viewModel.centerLat).toBe(-27.61234);
+      expect(result.viewModel.bounds?.minLat).toBe(-27.615);
     }
   });
 

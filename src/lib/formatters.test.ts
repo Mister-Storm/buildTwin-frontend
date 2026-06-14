@@ -2,10 +2,30 @@ import { describe, expect, it } from "vitest";
 import {
   flightStatusLabel,
   flightStatusVariant,
+  formatDate,
   formatFileSize,
   jobStatusVariant,
+  parseDateOnly,
   projectStatusLabel,
 } from "@/lib/formatters";
+
+describe("parseDateOnly", () => {
+  it("parses YYYY-MM-DD as a local calendar date", () => {
+    const date = parseDateOnly("2026-06-12");
+
+    expect(date.getFullYear()).toBe(2026);
+    expect(date.getMonth()).toBe(5);
+    expect(date.getDate()).toBe(12);
+  });
+
+  it("formats parsed API dates consistently in pt-BR", () => {
+    expect(formatDate(parseDateOnly("2026-06-12"))).toBe("12 de jun. de 2026");
+  });
+
+  it("rejects malformed date strings", () => {
+    expect(() => parseDateOnly("2026-6-12")).toThrow(/Invalid date-only string/);
+  });
+});
 
 describe("formatFileSize", () => {
   it("formats bytes", () => {
