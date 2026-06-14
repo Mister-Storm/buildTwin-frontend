@@ -196,13 +196,17 @@ export default async function DemoPage() {
                 <div className="mt-4">
                   <DemoSelfTestPanel />
                 </div>
-                <div className="mt-6 flex items-start gap-2 rounded-lg border border-brand-warning/30 bg-brand-warning/10 p-3 text-sm text-muted-foreground">
-                  <AlertTriangle className="mt-0.5 size-4 shrink-0 text-brand-warning" />
-                  <p>
-                    Processor em estado DEGRADED indica NodeODM indisponível —
-                    visível nos detalhes do card Processor.
-                  </p>
-                </div>
+                {data.components.processor?.status === "DEGRADED" ? (
+                  <div className="mt-6 flex items-start gap-2 rounded-lg border border-brand-warning/30 bg-brand-warning/10 p-3 text-sm text-muted-foreground">
+                    <AlertTriangle className="mt-0.5 size-4 shrink-0 text-brand-warning" />
+                    <p>
+                      Processor em estado DEGRADED
+                      {data.components.processor.details
+                        ? `: ${data.components.processor.details}`
+                        : " — NodeODM indisponível ou lento. Verifique o container nodeodm."}
+                    </p>
+                  </div>
+                ) : null}
               </div>
             </section>
           </>
