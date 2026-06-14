@@ -31,6 +31,10 @@ function buildContentSecurityPolicy(): string {
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  // Browser uploads hit /api/v1/* rewrites; default 10MB truncates multipart batches.
+  experimental: {
+    proxyClientMaxBodySize: "120mb",
+  },
   async rewrites() {
     return [
       {

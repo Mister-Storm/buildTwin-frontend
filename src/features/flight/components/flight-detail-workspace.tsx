@@ -90,6 +90,7 @@ export function FlightDetailWorkspace({
       failureReason: null,
     };
     setLocalJob(pendingJob);
+    setJobDetail(null);
     setJob(pendingJob);
     void refresh();
   }

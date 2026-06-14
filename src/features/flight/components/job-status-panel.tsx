@@ -75,6 +75,9 @@ export function JobStatusPanel({
                   <summary className="cursor-pointer">Detalhes técnicos</summary>
                   <p className="mt-1 break-all">{job.failureReason}</p>
                 </details>
+                <p className="text-xs text-muted-foreground">
+                  Use &quot;Reprocessar Voo&quot; acima para tentar novamente.
+                </p>
               </div>
             ) : null}
           </>
