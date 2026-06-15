@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { EmptyState, ErrorState } from "@/components/shared/States";
+import { ProgressIntelligenceCard } from "@/features/progress-intelligence/ProgressIntelligenceCard";
 import { ComparisonInsightsCard } from "@/features/temporal-comparison/ComparisonInsightsCard";
 import { FlightComparisonSelector } from "@/features/temporal-comparison/FlightComparisonSelector";
 import { loadComparisonViewModel } from "@/features/temporal-comparison/load-comparison-view-model";
@@ -57,6 +58,10 @@ export default async function ComparePage({
               timeline={result.timeline}
               flightAId={result.viewModel.flightA.flightId}
               flightBId={result.viewModel.flightB.flightId}
+            />
+            <ProgressIntelligenceCard
+              viewModel={result.viewModel}
+              metrics={result.viewModel.progressMetrics}
             />
             <TemporalComparisonCard viewModel={result.viewModel} />
             <ComparisonInsightsCard

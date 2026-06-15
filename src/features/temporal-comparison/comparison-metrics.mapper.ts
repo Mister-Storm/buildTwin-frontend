@@ -3,6 +3,8 @@ import type {
   TimelineItemViewModel,
 } from "@/features/domain/models/temporal-comparison";
 import { computeChangeAnalytics } from "@/features/temporal-comparison/analytics/change-analytics";
+import { calculateProgressMetrics } from "@/features/progress-intelligence/progress-metrics";
+import { formatIntervalDays } from "@/lib/formatters";
 
 const UNAVAILABLE = "Não disponível";
 
@@ -24,12 +26,7 @@ export function computeIntervalDays(
   );
 }
 
-export function formatIntervalDays(days: number): string {
-  if (days <= 0) {
-    return "0 dias";
-  }
-  return days === 1 ? "1 dia" : `${days} dias`;
-}
+export { formatIntervalDays } from "@/lib/formatters";
 
 export function buildComparisonViewModel(
   projectId: string,
@@ -60,5 +57,11 @@ export function buildComparisonViewModel(
         : formatSignedDelta(deltaGsd, "cm/pixel"),
     intervalDaysLabel: formatIntervalDays(intervalDays),
     analytics: computeChangeAnalytics(flightA, flightB),
+    progressMetrics: calculateProgressMetrics(
+      flightA.areaSquareMeters,
+      flightB.areaSquareMeters,
+      flightA.flightDate,
+      flightB.flightDate,
+    ),
   };
 }

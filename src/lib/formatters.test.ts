@@ -3,7 +3,10 @@ import {
   flightStatusLabel,
   flightStatusVariant,
   formatDate,
+  formatAreaDelta,
   formatFileSize,
+  formatGrowthRate,
+  formatPercent,
   jobStatusVariant,
   parseDateOnly,
   projectStatusLabel,
@@ -76,6 +79,25 @@ describe("projectStatusLabel", () => {
 
   it("returns Arquivada for archived projects", () => {
     expect(projectStatusLabel(true)).toBe("Arquivada");
+  });
+});
+
+describe("progress formatters", () => {
+  it("formats signed area delta in pt-BR", () => {
+    expect(formatAreaDelta(1191)).toBe("+1.191 m²");
+    expect(formatAreaDelta(-350)).toBe("−350 m²");
+    expect(formatAreaDelta(null)).toBe("Não disponível");
+  });
+
+  it("formats signed percent in pt-BR", () => {
+    expect(formatPercent(16.4)).toBe("+16,4%");
+    expect(formatPercent(-2.1)).toBe("−2,1%");
+    expect(formatPercent(null)).toBe("Não disponível");
+  });
+
+  it("formats growth rate in pt-BR", () => {
+    expect(formatGrowthRate(37.2)).toBe("37,2 m²/dia");
+    expect(formatGrowthRate(null)).toBe("Não disponível");
   });
 });
 

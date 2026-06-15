@@ -68,6 +68,12 @@ describe("ComparePage", () => {
           gsdDelta: -0.1,
           summary: "EXPANDED_COVERAGE",
         },
+        progressMetrics: {
+          areaDelta: 421.4,
+          areaDeltaPercent: 5.2675,
+          daysBetween: 45,
+          growthPerDay: 9.3644,
+        },
       },
     });
 
@@ -79,6 +85,7 @@ describe("ComparePage", () => {
 
     expect(screen.getByText("Comparação Temporal")).toBeInTheDocument();
     expect(screen.getByText("Comparativo")).toBeInTheDocument();
+    expect(screen.getByText("Evolução da Obra")).toBeInTheDocument();
     expect(screen.getByText("Análise de Evolução")).toBeInTheDocument();
     expect(screen.getByAltText("Levantamento A — 1 de mai. de 2026")).toHaveAttribute(
       "src",

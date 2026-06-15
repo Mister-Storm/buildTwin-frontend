@@ -89,3 +89,45 @@ export function jobStatusLabel(status: string | null): string {
 export function projectStatusLabel(archived: boolean): string {
   return archived ? "Arquivada" : "Ativa";
 }
+
+export function formatAreaDelta(delta: number | null): string {
+  if (delta === null) {
+    return "Não disponível";
+  }
+  const formatted = Math.abs(delta).toLocaleString("pt-BR", {
+    maximumFractionDigits: 1,
+  });
+  const sign = delta > 0 ? "+" : delta < 0 ? "−" : "";
+  return `${sign}${formatted} m²`;
+}
+
+export function formatPercent(percent: number | null): string {
+  if (percent === null) {
+    return "Não disponível";
+  }
+  const formatted = Math.abs(percent).toLocaleString("pt-BR", {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  });
+  const sign = percent > 0 ? "+" : percent < 0 ? "−" : "";
+  return `${sign}${formatted}%`;
+}
+
+export function formatGrowthRate(rate: number | null): string {
+  if (rate === null) {
+    return "Não disponível";
+  }
+  const formatted = Math.abs(rate).toLocaleString("pt-BR", {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  });
+  const sign = rate < 0 ? "−" : "";
+  return `${sign}${formatted} m²/dia`;
+}
+
+export function formatIntervalDays(days: number): string {
+  if (days <= 0) {
+    return "0 dias";
+  }
+  return days === 1 ? "1 dia" : `${days} dias`;
+}

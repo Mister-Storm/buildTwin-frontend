@@ -80,6 +80,13 @@ export async function loadComparisonViewModel(
       areaDeltaPercent: viewModel.analytics.areaDeltaPercent,
     });
 
+    debugLog("progress_metrics_calculated", {
+      projectId,
+      areaDelta: viewModel.progressMetrics.areaDelta,
+      areaDeltaPercent: viewModel.progressMetrics.areaDeltaPercent,
+      daysBetween: viewModel.progressMetrics.daysBetween,
+    });
+
     return {
       status: "success",
       viewModel,
