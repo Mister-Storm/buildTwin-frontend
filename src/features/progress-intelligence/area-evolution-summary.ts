@@ -1,7 +1,7 @@
-import type { ProgressMetrics } from "@/features/progress-intelligence/progress-metrics";
+import type { AreaEvolutionMetrics } from "@/features/progress-intelligence/area-evolution-metrics";
 import { formatGrowthRate, formatPercent } from "@/lib/formatters";
 
-export function buildProgressSummary(metrics: ProgressMetrics): string[] {
+export function buildAreaEvolutionSummary(metrics: AreaEvolutionMetrics): string[] {
   if (metrics.areaDeltaPercent === null) {
     return ["Dados insuficientes para calcular evolução."];
   }

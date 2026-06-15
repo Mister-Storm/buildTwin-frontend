@@ -1,4 +1,4 @@
-export type ProgressMetrics = {
+export type AreaEvolutionMetrics = {
   areaDelta: number | null;
   areaDeltaPercent: number | null;
   daysBetween: number | null;
@@ -7,12 +7,12 @@ export type ProgressMetrics = {
 
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
 
-export function calculateProgressMetrics(
+export function calculateAreaEvolutionMetrics(
   previousArea: number | null | undefined,
   currentArea: number | null | undefined,
   previousDate: Date,
   currentDate: Date,
-): ProgressMetrics {
+): AreaEvolutionMetrics {
   const daysBetween = Math.round(
     (currentDate.getTime() - previousDate.getTime()) / MS_PER_DAY,
   );

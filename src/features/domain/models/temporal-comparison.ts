@@ -1,4 +1,4 @@
-import type { ProgressMetrics } from "@/features/progress-intelligence/progress-metrics";
+import type { AreaEvolutionMetrics } from "@/features/progress-intelligence/area-evolution-metrics";
 import type { ChangeAnalytics } from "@/features/temporal-comparison/analytics/change-analytics";
 
 export type TimelineItemViewModel = {
@@ -22,7 +22,7 @@ export type ComparisonViewModel = {
   deltaGsdLabel: string | null;
   intervalDaysLabel: string;
   analytics: ChangeAnalytics;
-  progressMetrics: ProgressMetrics;
+  areaEvolutionMetrics: AreaEvolutionMetrics;
 };
 
 export type ComparisonLoadResult =

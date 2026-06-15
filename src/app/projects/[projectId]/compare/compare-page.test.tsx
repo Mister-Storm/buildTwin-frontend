@@ -18,9 +18,14 @@ vi.mock("@/features/change-detection/load-change-detection", () => ({
   loadChangeDetection: vi.fn(),
 }));
 
+vi.mock("@/features/progress-intelligence/load-progress-intelligence", () => ({
+  loadProgressIntelligence: vi.fn(),
+}));
+
 import ComparePage from "@/app/projects/[projectId]/compare/page";
 import { loadChangeDetection } from "@/features/change-detection/load-change-detection";
 import { loadComparisonViewModel } from "@/features/temporal-comparison/load-comparison-view-model";
+import { loadProgressIntelligence } from "@/features/progress-intelligence/load-progress-intelligence";
 
 describe("ComparePage", () => {
   it("renders side-by-side previews when comparison succeeds", async () => {
@@ -69,7 +74,7 @@ describe("ComparePage", () => {
           gsdDelta: -0.1,
           summary: "EXPANDED_COVERAGE",
         },
-        progressMetrics: {
+        areaEvolutionMetrics: {
           areaDelta: 421.4,
           areaDeltaPercent: 5.2675,
           daysBetween: 45,
@@ -89,6 +94,18 @@ describe("ComparePage", () => {
         heatmapPreviewUrl: "/api/v1/artifacts/heatmap-1/preview",
       },
     });
+    vi.mocked(loadProgressIntelligence).mockResolvedValue({
+      status: "success",
+      viewModel: {
+        flightAId: "flight-a",
+        flightBId: "flight-b",
+        changePercentageLabel: "24,3%",
+        classification: "MEDIUM",
+        classificationLabel: "MEDIUM",
+        averageDailyChangeLabel: "1,73% ao dia",
+        periodLabel: "14 dias",
+      },
+    });
 
     const ui = await ComparePage({
       params: Promise.resolve({ projectId: "proj-1" }),
@@ -99,6 +116,7 @@ describe("ComparePage", () => {
     expect(screen.getByText("Comparação Temporal")).toBeInTheDocument();
     expect(screen.getByText("Comparativo")).toBeInTheDocument();
     expect(screen.getByText("Evolução da Obra")).toBeInTheDocument();
+    expect(screen.getByText("Indicador de Progresso")).toBeInTheDocument();
     expect(screen.getByText("Mudanças Detectadas")).toBeInTheDocument();
     expect(screen.getByText("Análise de Evolução")).toBeInTheDocument();
     expect(screen.getByAltText("Levantamento A — 1 de mai. de 2026")).toHaveAttribute(

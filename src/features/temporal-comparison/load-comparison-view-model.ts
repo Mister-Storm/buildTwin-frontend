@@ -82,9 +82,9 @@ export async function loadComparisonViewModel(
 
     debugLog("progress_metrics_calculated", {
       projectId,
-      areaDelta: viewModel.progressMetrics.areaDelta,
-      areaDeltaPercent: viewModel.progressMetrics.areaDeltaPercent,
-      daysBetween: viewModel.progressMetrics.daysBetween,
+      areaDelta: viewModel.areaEvolutionMetrics.areaDelta,
+      areaDeltaPercent: viewModel.areaEvolutionMetrics.areaDeltaPercent,
+      daysBetween: viewModel.areaEvolutionMetrics.daysBetween,
     });
 
     return {
