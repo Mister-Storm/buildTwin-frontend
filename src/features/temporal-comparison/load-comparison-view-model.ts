@@ -64,15 +64,32 @@ export async function loadComparisonViewModel(
         ? [flightA, flightB]
         : [flightB, flightA];
 
+    const viewModel = buildComparisonViewModel(projectId, older, newer);
+
     debugLog("comparison_opened", {
       projectId,
       flightA: older.flightId,
       flightB: newer.flightId,
     });
 
+    debugLog("comparison_analytics_generated", {
+      projectId,
+      flightA: older.flightId,
+      flightB: newer.flightId,
+      daysBetween: viewModel.analytics.daysBetween,
+      areaDeltaPercent: viewModel.analytics.areaDeltaPercent,
+    });
+
+    debugLog("progress_metrics_calculated", {
+      projectId,
+      areaDelta: viewModel.progressMetrics.areaDelta,
+      areaDeltaPercent: viewModel.progressMetrics.areaDeltaPercent,
+      daysBetween: viewModel.progressMetrics.daysBetween,
+    });
+
     return {
       status: "success",
-      viewModel: buildComparisonViewModel(projectId, older, newer),
+      viewModel,
       timeline: items,
     };
   } catch (error) {

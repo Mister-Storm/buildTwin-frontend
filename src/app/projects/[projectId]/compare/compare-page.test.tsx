@@ -6,10 +6,6 @@ vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: vi.fn() }),
 }));
 
-vi.mock("next/image", () => ({
-  default: (props: { alt: string }) => <img alt={props.alt} />,
-}));
-
 vi.mock("@/services/projects.service", () => ({
   getProject: vi.fn().mockResolvedValue({ id: "proj-1", name: "Obra Teste" }),
 }));
@@ -55,6 +51,25 @@ describe("ComparePage", () => {
         deltaAreaLabel: "+421,4 m²",
         deltaGsdLabel: "−0,1 cm/pixel",
         intervalDaysLabel: "45 dias",
+        analytics: {
+          flightAId: "flight-a",
+          flightBId: "flight-b",
+          daysBetween: 45,
+          areaA: 8000,
+          areaB: 8421.4,
+          areaDelta: 421.4,
+          areaDeltaPercent: 5.2675,
+          gsdA: 2.2,
+          gsdB: 2.1,
+          gsdDelta: -0.1,
+          summary: "EXPANDED_COVERAGE",
+        },
+        progressMetrics: {
+          areaDelta: 421.4,
+          areaDeltaPercent: 5.2675,
+          daysBetween: 45,
+          growthPerDay: 9.3644,
+        },
       },
     });
 
@@ -66,6 +81,8 @@ describe("ComparePage", () => {
 
     expect(screen.getByText("Comparação Temporal")).toBeInTheDocument();
     expect(screen.getByText("Comparativo")).toBeInTheDocument();
+    expect(screen.getByText("Evolução da Obra")).toBeInTheDocument();
+    expect(screen.getByText("Análise de Evolução")).toBeInTheDocument();
     expect(screen.getByAltText("Levantamento A — 1 de mai. de 2026")).toHaveAttribute(
       "src",
       "/preview-a",
