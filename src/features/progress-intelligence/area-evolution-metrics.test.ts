@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { calculateProgressMetrics } from "@/features/progress-intelligence/progress-metrics";
+import { calculateAreaEvolutionMetrics } from "@/features/progress-intelligence/area-evolution-metrics";
 import { parseDateOnly } from "@/lib/formatters";
 
-describe("calculateProgressMetrics", () => {
+describe("calculateAreaEvolutionMetrics", () => {
   it("computes positive growth metrics", () => {
-    const metrics = calculateProgressMetrics(
+    const metrics = calculateAreaEvolutionMetrics(
       7250,
       8441,
       parseDateOnly("2026-05-01"),
@@ -18,7 +18,7 @@ describe("calculateProgressMetrics", () => {
   });
 
   it("computes negative growth metrics", () => {
-    const metrics = calculateProgressMetrics(
+    const metrics = calculateAreaEvolutionMetrics(
       9000,
       8000,
       parseDateOnly("2026-05-01"),
@@ -32,7 +32,7 @@ describe("calculateProgressMetrics", () => {
   });
 
   it("returns null area metrics when areas are missing", () => {
-    const metrics = calculateProgressMetrics(
+    const metrics = calculateAreaEvolutionMetrics(
       null,
       8000,
       parseDateOnly("2026-05-01"),
@@ -47,7 +47,7 @@ describe("calculateProgressMetrics", () => {
 
   it("returns zero days and null growth rate for same date", () => {
     const date = parseDateOnly("2026-06-01");
-    const metrics = calculateProgressMetrics(8000, 9000, date, date);
+    const metrics = calculateAreaEvolutionMetrics(8000, 9000, date, date);
 
     expect(metrics.daysBetween).toBe(0);
     expect(metrics.areaDelta).toBe(1000);
@@ -55,7 +55,7 @@ describe("calculateProgressMetrics", () => {
   });
 
   it("avoids division by zero when previous area is zero", () => {
-    const metrics = calculateProgressMetrics(
+    const metrics = calculateAreaEvolutionMetrics(
       0,
       500,
       parseDateOnly("2026-05-01"),

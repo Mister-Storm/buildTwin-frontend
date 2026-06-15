@@ -1,6 +1,5 @@
-import type { ComparisonViewModel } from "@/features/domain/models/temporal-comparison";
-import type { ProgressMetrics } from "@/features/progress-intelligence/progress-metrics";
-import { buildProgressSummary } from "@/features/progress-intelligence/progress-summary";
+import { generateProgressInsight } from "@/features/progress-intelligence/progress-insight-generator";
+import type { ProgressIntelligenceViewModel } from "@/features/progress-intelligence/progress-intelligence.mapper";
 import { MetricCard } from "@/components/shared/MetricCard";
 import {
   Card,
@@ -9,87 +8,52 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  formatAreaDelta,
-  formatGrowthRate,
-  formatIntervalDays,
-  formatPercent,
-} from "@/lib/formatters";
-import { Activity, Calendar, MapPinned, TrendingUp } from "lucide-react";
+import { Activity, Calendar, Gauge, TrendingUp } from "lucide-react";
 
 type ProgressIntelligenceCardProps = {
-  viewModel: ComparisonViewModel;
-  metrics: ProgressMetrics;
+  viewModel: ProgressIntelligenceViewModel;
 };
 
-const UNAVAILABLE = "Não disponível";
-
-function formatArea(value: number | null): string {
-  if (value === null) {
-    return UNAVAILABLE;
-  }
-  return `${value.toLocaleString("pt-BR", { maximumFractionDigits: 1 })} m²`;
-}
-
-export function ProgressIntelligenceCard({
-  viewModel,
-  metrics,
-}: ProgressIntelligenceCardProps) {
-  const summaryLines = buildProgressSummary(metrics);
+export function ProgressIntelligenceCard({ viewModel }: ProgressIntelligenceCardProps) {
+  const insight = generateProgressInsight(viewModel.classification);
 
   return (
     <Card className="border-border/60">
       <CardHeader>
-        <CardTitle className="text-lg">Evolução da Obra</CardTitle>
+        <CardTitle className="flex items-center gap-2 text-lg">
+          <Gauge className="size-5 text-brand-accent" />
+          Indicador de Progresso
+        </CardTitle>
         <CardDescription>
-          Indicadores de progresso entre{" "}
-          {viewModel.flightA.flightDateLabel} e {viewModel.flightB.flightDateLabel}
+          Indicadores executivos de mudança visual entre os levantamentos
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <MetricCard
-            icon={MapPinned}
-            label="Área Atual"
-            value={formatArea(viewModel.flightB.areaSquareMeters)}
-          />
-          <MetricCard
-            icon={MapPinned}
-            label="Área Anterior"
-            value={formatArea(viewModel.flightA.areaSquareMeters)}
+            icon={Activity}
+            label="Progresso observado"
+            value={viewModel.changePercentageLabel}
           />
           <MetricCard
             icon={TrendingUp}
-            label="Crescimento"
-            value={formatAreaDelta(metrics.areaDelta)}
+            label="Classificação"
+            value={viewModel.classificationLabel}
           />
           <MetricCard
-            icon={Activity}
-            label="Crescimento %"
-            value={formatPercent(metrics.areaDeltaPercent)}
+            icon={Gauge}
+            label="Velocidade média"
+            value={viewModel.averageDailyChangeLabel}
           />
           <MetricCard
             icon={Calendar}
-            label="Dias entre levantamentos"
-            value={
-              metrics.daysBetween !== null
-                ? formatIntervalDays(metrics.daysBetween)
-                : UNAVAILABLE
-            }
-          />
-          <MetricCard
-            icon={TrendingUp}
-            label="Taxa média de evolução"
-            value={formatGrowthRate(metrics.growthPerDay)}
+            label="Período"
+            value={viewModel.periodLabel}
           />
         </div>
 
-        <div className="space-y-2 rounded-lg border border-border/60 bg-muted/40 px-4 py-3">
-          {summaryLines.map((line) => (
-            <p key={line} className="text-sm leading-relaxed text-foreground">
-              {line}
-            </p>
-          ))}
+        <div className="rounded-lg border border-border/60 bg-muted/40 px-4 py-3">
+          <p className="text-sm leading-relaxed text-foreground">{insight}</p>
         </div>
       </CardContent>
     </Card>

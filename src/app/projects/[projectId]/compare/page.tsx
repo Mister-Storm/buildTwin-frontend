@@ -5,6 +5,8 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { EmptyState, ErrorState } from "@/components/shared/States";
 import { ChangeDetectionCard } from "@/features/change-detection/ChangeDetectionCard";
 import { loadChangeDetection } from "@/features/change-detection/load-change-detection";
+import { AreaEvolutionCard } from "@/features/progress-intelligence/AreaEvolutionCard";
+import { loadProgressIntelligence } from "@/features/progress-intelligence/load-progress-intelligence";
 import { ProgressIntelligenceCard } from "@/features/progress-intelligence/ProgressIntelligenceCard";
 import { ComparisonInsightsCard } from "@/features/temporal-comparison/ComparisonInsightsCard";
 import { FlightComparisonSelector } from "@/features/temporal-comparison/FlightComparisonSelector";
@@ -45,6 +47,14 @@ export default async function ComparePage({
           result.viewModel.flightB.flightId,
         )
       : null;
+  const progressIntelligence =
+    result.status === "success" && changeDetection?.status === "success"
+      ? await loadProgressIntelligence(
+          projectId,
+          result.viewModel.flightA.flightId,
+          result.viewModel.flightB.flightId,
+        )
+      : null;
 
   return (
     <AppShell
@@ -69,10 +79,13 @@ export default async function ComparePage({
               flightAId={result.viewModel.flightA.flightId}
               flightBId={result.viewModel.flightB.flightId}
             />
-            <ProgressIntelligenceCard
+            <AreaEvolutionCard
               viewModel={result.viewModel}
-              metrics={result.viewModel.progressMetrics}
+              metrics={result.viewModel.areaEvolutionMetrics}
             />
+            {progressIntelligence?.status === "success" ? (
+              <ProgressIntelligenceCard viewModel={progressIntelligence.viewModel} />
+            ) : null}
             {changeDetection?.status === "success" ? (
               <ChangeDetectionCard viewModel={changeDetection.viewModel} />
             ) : null}

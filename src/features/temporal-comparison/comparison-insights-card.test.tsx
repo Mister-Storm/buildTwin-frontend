@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { ComparisonInsightsCard } from "@/features/temporal-comparison/ComparisonInsightsCard";
 import type { ComparisonViewModel } from "@/features/domain/models/temporal-comparison";
 import { computeChangeAnalytics } from "@/features/temporal-comparison/analytics/change-analytics";
-import { calculateProgressMetrics } from "@/features/progress-intelligence/progress-metrics";
+import { calculateAreaEvolutionMetrics } from "@/features/progress-intelligence/area-evolution-metrics";
 
 function buildViewModel(): ComparisonViewModel {
   const flightA = {
@@ -40,7 +40,7 @@ function buildViewModel(): ComparisonViewModel {
     deltaGsdLabel: "−0,1 cm/pixel",
     intervalDaysLabel: "45 dias",
     analytics,
-    progressMetrics: calculateProgressMetrics(
+    areaEvolutionMetrics: calculateAreaEvolutionMetrics(
       flightA.areaSquareMeters,
       flightB.areaSquareMeters,
       flightA.flightDate,
@@ -111,7 +111,7 @@ describe("ComparisonInsightsCard", () => {
       deltaGsdLabel: null,
       intervalDaysLabel: "45 dias",
       analytics,
-      progressMetrics: calculateProgressMetrics(
+      areaEvolutionMetrics: calculateAreaEvolutionMetrics(
         flightA.areaSquareMeters,
         flightB.areaSquareMeters,
         flightA.flightDate,

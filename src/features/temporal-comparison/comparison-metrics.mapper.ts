@@ -3,7 +3,7 @@ import type {
   TimelineItemViewModel,
 } from "@/features/domain/models/temporal-comparison";
 import { computeChangeAnalytics } from "@/features/temporal-comparison/analytics/change-analytics";
-import { calculateProgressMetrics } from "@/features/progress-intelligence/progress-metrics";
+import { calculateAreaEvolutionMetrics } from "@/features/progress-intelligence/area-evolution-metrics";
 import { formatIntervalDays } from "@/lib/formatters";
 
 const UNAVAILABLE = "Não disponível";
@@ -57,7 +57,7 @@ export function buildComparisonViewModel(
         : formatSignedDelta(deltaGsd, "cm/pixel"),
     intervalDaysLabel: formatIntervalDays(intervalDays),
     analytics: computeChangeAnalytics(flightA, flightB),
-    progressMetrics: calculateProgressMetrics(
+    areaEvolutionMetrics: calculateAreaEvolutionMetrics(
       flightA.areaSquareMeters,
       flightB.areaSquareMeters,
       flightA.flightDate,
