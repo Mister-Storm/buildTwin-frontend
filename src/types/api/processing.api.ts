@@ -6,6 +6,7 @@ export type ArtifactTypeDto =
   | "ORTHOMOSAIC"
   | "ORTHOMOSAIC_PREVIEW"
   | "ORTHOMOSAIC_THUMBNAIL"
+  | "CHANGE_HEATMAP"
   | "POINT_CLOUD"
   | "MESH"
   | "MODEL_3D"

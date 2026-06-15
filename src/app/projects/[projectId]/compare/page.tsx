@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { EmptyState, ErrorState } from "@/components/shared/States";
+import { ChangeDetectionCard } from "@/features/change-detection/ChangeDetectionCard";
+import { loadChangeDetection } from "@/features/change-detection/load-change-detection";
 import { ProgressIntelligenceCard } from "@/features/progress-intelligence/ProgressIntelligenceCard";
 import { ComparisonInsightsCard } from "@/features/temporal-comparison/ComparisonInsightsCard";
 import { FlightComparisonSelector } from "@/features/temporal-comparison/FlightComparisonSelector";
@@ -35,6 +37,14 @@ export default async function ComparePage({
   }
 
   const result = await loadComparisonViewModel(projectId, flightA, flightB);
+  const changeDetection =
+    result.status === "success"
+      ? await loadChangeDetection(
+          projectId,
+          result.viewModel.flightA.flightId,
+          result.viewModel.flightB.flightId,
+        )
+      : null;
 
   return (
     <AppShell
@@ -63,6 +73,9 @@ export default async function ComparePage({
               viewModel={result.viewModel}
               metrics={result.viewModel.progressMetrics}
             />
+            {changeDetection?.status === "success" ? (
+              <ChangeDetectionCard viewModel={changeDetection.viewModel} />
+            ) : null}
             <TemporalComparisonCard viewModel={result.viewModel} />
             <ComparisonInsightsCard
               viewModel={result.viewModel}

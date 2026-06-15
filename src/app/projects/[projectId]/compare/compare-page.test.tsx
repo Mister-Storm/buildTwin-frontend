@@ -14,7 +14,12 @@ vi.mock("@/features/temporal-comparison/load-comparison-view-model", () => ({
   loadComparisonViewModel: vi.fn(),
 }));
 
+vi.mock("@/features/change-detection/load-change-detection", () => ({
+  loadChangeDetection: vi.fn(),
+}));
+
 import ComparePage from "@/app/projects/[projectId]/compare/page";
+import { loadChangeDetection } from "@/features/change-detection/load-change-detection";
 import { loadComparisonViewModel } from "@/features/temporal-comparison/load-comparison-view-model";
 
 describe("ComparePage", () => {
@@ -72,6 +77,18 @@ describe("ComparePage", () => {
         },
       },
     });
+    vi.mocked(loadChangeDetection).mockResolvedValue({
+      status: "success",
+      viewModel: {
+        flightAId: "flight-a",
+        flightBId: "flight-b",
+        changePercentageLabel: "62,1%",
+        changedPixelsLabel: "102.314",
+        changeLevel: "VERY_HIGH",
+        comparisonQuality: "NORMAL",
+        heatmapPreviewUrl: "/api/v1/artifacts/heatmap-1/preview",
+      },
+    });
 
     const ui = await ComparePage({
       params: Promise.resolve({ projectId: "proj-1" }),
@@ -82,6 +99,7 @@ describe("ComparePage", () => {
     expect(screen.getByText("Comparação Temporal")).toBeInTheDocument();
     expect(screen.getByText("Comparativo")).toBeInTheDocument();
     expect(screen.getByText("Evolução da Obra")).toBeInTheDocument();
+    expect(screen.getByText("Mudanças Detectadas")).toBeInTheDocument();
     expect(screen.getByText("Análise de Evolução")).toBeInTheDocument();
     expect(screen.getByAltText("Levantamento A — 1 de mai. de 2026")).toHaveAttribute(
       "src",
