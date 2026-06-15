@@ -6,10 +6,6 @@ vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: vi.fn() }),
 }));
 
-vi.mock("next/image", () => ({
-  default: (props: { alt: string }) => <img alt={props.alt} />,
-}));
-
 vi.mock("@/services/projects.service", () => ({
   getProject: vi.fn().mockResolvedValue({ id: "proj-1", name: "Obra Teste" }),
 }));
