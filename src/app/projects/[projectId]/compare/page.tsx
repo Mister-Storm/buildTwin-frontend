@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { EmptyState, ErrorState } from "@/components/shared/States";
+import { ComparisonInsightsCard } from "@/features/temporal-comparison/ComparisonInsightsCard";
 import { FlightComparisonSelector } from "@/features/temporal-comparison/FlightComparisonSelector";
 import { loadComparisonViewModel } from "@/features/temporal-comparison/load-comparison-view-model";
 import { TemporalComparisonCard } from "@/features/temporal-comparison/TemporalComparisonCard";
@@ -58,6 +59,10 @@ export default async function ComparePage({
               flightBId={result.viewModel.flightB.flightId}
             />
             <TemporalComparisonCard viewModel={result.viewModel} />
+            <ComparisonInsightsCard
+              viewModel={result.viewModel}
+              analytics={result.viewModel.analytics}
+            />
             <TemporalComparisonViewer viewModel={result.viewModel} />
           </div>
         ) : result.status === "insufficient" ? (

@@ -19,6 +19,9 @@ import { toProjectDetail } from "@/features/domain/mappers/project.mapper";
 import type { FlightTimelineEntry } from "@/features/domain/models/flight";
 import type { ProjectDetail } from "@/features/domain/models/project";
 import type { OrthomosaicResolution } from "@/features/domain/models/orthomosaic";
+import type { TimelineItemViewModel } from "@/features/domain/models/temporal-comparison";
+import { ProcessedSurveyTimeline } from "@/features/temporal-comparison/ProcessedSurveyTimeline";
+import { mapTimelineItems } from "@/features/temporal-comparison/timeline.mapper";
 import { getOrthomosaicResolver } from "@/features/domain/resolvers/orthomosaic-resolver";
 import { getProjectDashboard } from "@/services/dashboard.service";
 import { listFlightsByProject } from "@/services/flights.service";
@@ -38,6 +41,7 @@ type ProjectDetailData = {
   timeline: FlightTimelineEntry[];
   latestResolution: OrthomosaicResolution | null;
   processedSurveyCount: number;
+  processedSurveys: TimelineItemViewModel[];
 };
 
 async function loadProjectDetail(projectId: string): Promise<ProjectDetailData> {
@@ -64,6 +68,7 @@ async function loadProjectDetail(projectId: string): Promise<ProjectDetailData> 
     timeline,
     latestResolution,
     processedSurveyCount: timelineDto.timeline.length,
+    processedSurveys: mapTimelineItems(timelineDto.timeline),
   };
 }
 
@@ -101,7 +106,7 @@ export default async function ProjectDetailPage({
     );
   }
 
-  const { project, dashboard, timeline, latestResolution, processedSurveyCount } = data;
+  const { project, dashboard, timeline, latestResolution, processedSurveyCount, processedSurveys } = data;
   const statusVariant = project.status === "active" ? "success" : "neutral";
 
   return (
@@ -217,6 +222,21 @@ export default async function ProjectDetailPage({
             <ProjectFlightsEmpty projectId={projectId} />
           )}
         </section>
+
+        {processedSurveys.length > 0 ? (
+          <section className="space-y-4">
+            <div>
+              <h2 className="text-xl font-semibold">Levantamentos Processados</h2>
+              <p className="text-sm text-muted-foreground">
+                Evolução da área monitorada entre levantamentos consecutivos.
+              </p>
+            </div>
+            <ProcessedSurveyTimeline
+              projectId={projectId}
+              items={processedSurveys}
+            />
+          </section>
+        ) : null}
 
         <section className="space-y-4">
           <h2 className="text-xl font-semibold">Status por Fase</h2>

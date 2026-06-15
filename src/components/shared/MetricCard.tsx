@@ -1,4 +1,5 @@
 import type { LucideIcon } from "lucide-react";
+import type { ReactNode } from "react";
 import {
   Card,
   CardContent,
@@ -11,7 +12,7 @@ import { cn } from "@/lib/utils";
 type MetricCardProps = {
   label: string;
   value: string;
-  subtitle?: string | undefined;
+  subtitle?: ReactNode;
   icon: LucideIcon;
   className?: string;
 };

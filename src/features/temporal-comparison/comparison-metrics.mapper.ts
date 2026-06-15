@@ -2,6 +2,7 @@ import type {
   ComparisonViewModel,
   TimelineItemViewModel,
 } from "@/features/domain/models/temporal-comparison";
+import { computeChangeAnalytics } from "@/features/temporal-comparison/analytics/change-analytics";
 
 const UNAVAILABLE = "Não disponível";
 
@@ -58,5 +59,6 @@ export function buildComparisonViewModel(
         ? UNAVAILABLE
         : formatSignedDelta(deltaGsd, "cm/pixel"),
     intervalDaysLabel: formatIntervalDays(intervalDays),
+    analytics: computeChangeAnalytics(flightA, flightB),
   };
 }

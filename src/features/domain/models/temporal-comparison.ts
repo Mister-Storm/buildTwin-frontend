@@ -1,3 +1,5 @@
+import type { ChangeAnalytics } from "@/features/temporal-comparison/analytics/change-analytics";
+
 export type TimelineItemViewModel = {
   sequenceNumber: number;
   flightId: string;
@@ -18,6 +20,7 @@ export type ComparisonViewModel = {
   deltaAreaLabel: string | null;
   deltaGsdLabel: string | null;
   intervalDaysLabel: string;
+  analytics: ChangeAnalytics;
 };
 
 export type ComparisonLoadResult =
