@@ -17,6 +17,12 @@ import { Input } from "@/components/ui/input";
 import { FormField } from "@/components/shared/FormField";
 import { resolveDefaultCompany } from "@/features/company/resolve-default-company";
 import {
+  parseOptionalPlannedArea,
+  parseOptionalPlannedFloors,
+  parseOptionalProjectType,
+} from "@/features/project/planning-field-parsers";
+import { PROJECT_TYPE_OPTIONS } from "@/features/project/project-type-options";
+import {
   createProjectSchema,
   validateStartDateNotTooFarFuture,
   type CreateProjectFormValues,
@@ -33,6 +39,9 @@ const defaultValues: CreateProjectFormValues = {
   latitude: 0,
   longitude: 0,
   startDate: new Date().toISOString().slice(0, 10),
+  plannedAreaSquareMeters: "",
+  plannedFloors: "",
+  projectType: "",
 };
 
 type CreateProjectDialogProps = {
@@ -89,6 +98,11 @@ export function CreateProjectDialog({
     setIsSubmitting(true);
     try {
       const companyId = await resolveDefaultCompany();
+      const plannedAreaSquareMeters = parseOptionalPlannedArea(
+        parsed.data.plannedAreaSquareMeters,
+      );
+      const plannedFloors = parseOptionalPlannedFloors(parsed.data.plannedFloors);
+      const projectType = parseOptionalProjectType(parsed.data.projectType);
       const project = await createProject({
         companyId,
         name: parsed.data.name,
@@ -101,6 +115,9 @@ export function CreateProjectDialog({
           latitude: parsed.data.latitude,
           longitude: parsed.data.longitude,
         },
+        ...(plannedAreaSquareMeters !== undefined ? { plannedAreaSquareMeters } : {}),
+        ...(plannedFloors !== undefined ? { plannedFloors } : {}),
+        ...(projectType !== undefined ? { projectType } : {}),
       });
       setOpen(false);
       resetForm();
@@ -218,6 +235,72 @@ export function CreateProjectDialog({
               value={values.startDate}
               onChange={(e) => updateField("startDate", e.target.value)}
             />
+          </FormField>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <FormField
+              label="Área planejada (m²)"
+              htmlFor="plannedAreaSquareMeters"
+              error={fieldErrors.plannedAreaSquareMeters}
+            >
+              <Input
+                id="plannedAreaSquareMeters"
+                type="number"
+                min="0"
+                step="any"
+                placeholder="Opcional"
+                value={values.plannedAreaSquareMeters ?? ""}
+                onChange={(e) =>
+                  updateField(
+                    "plannedAreaSquareMeters",
+                    e.target.value as CreateProjectFormValues["plannedAreaSquareMeters"],
+                  )
+                }
+              />
+            </FormField>
+            <FormField
+              label="Pavimentos previstos"
+              htmlFor="plannedFloors"
+              error={fieldErrors.plannedFloors}
+            >
+              <Input
+                id="plannedFloors"
+                type="number"
+                min="1"
+                step="1"
+                placeholder="Opcional"
+                value={values.plannedFloors ?? ""}
+                onChange={(e) =>
+                  updateField(
+                    "plannedFloors",
+                    e.target.value as CreateProjectFormValues["plannedFloors"],
+                  )
+                }
+              />
+            </FormField>
+          </div>
+          <FormField
+            label="Tipo de obra"
+            htmlFor="projectType"
+            error={fieldErrors.projectType}
+          >
+            <select
+              id="projectType"
+              className="flex h-9 w-full rounded-lg border border-input bg-transparent px-3 text-sm"
+              value={values.projectType ?? ""}
+              onChange={(e) =>
+                updateField(
+                  "projectType",
+                  e.target.value as CreateProjectFormValues["projectType"],
+                )
+              }
+            >
+              <option value="">Não informado</option>
+              {PROJECT_TYPE_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
           </FormField>
           {submitError ? (
             <p className="text-sm text-destructive" role="alert">

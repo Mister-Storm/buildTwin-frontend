@@ -18,6 +18,10 @@ vi.mock("@/features/change-detection/load-change-detection", () => ({
   loadChangeDetection: vi.fn(),
 }));
 
+vi.mock("@/features/construction-progress/load-project-progress", () => ({
+  loadProjectProgress: vi.fn(),
+}));
+
 vi.mock("@/features/progress-intelligence/load-progress-intelligence", () => ({
   loadProgressIntelligence: vi.fn(),
 }));
@@ -25,6 +29,7 @@ vi.mock("@/features/progress-intelligence/load-progress-intelligence", () => ({
 import ComparePage from "@/app/projects/[projectId]/compare/page";
 import { loadChangeDetection } from "@/features/change-detection/load-change-detection";
 import { loadComparisonViewModel } from "@/features/temporal-comparison/load-comparison-view-model";
+import { loadProjectProgress } from "@/features/construction-progress/load-project-progress";
 import { loadProgressIntelligence } from "@/features/progress-intelligence/load-progress-intelligence";
 
 describe("ComparePage", () => {
@@ -106,6 +111,23 @@ describe("ComparePage", () => {
         periodLabel: "14 dias",
       },
     });
+    vi.mocked(loadProjectProgress).mockResolvedValue({
+      status: "success",
+      viewModel: {
+        projectId: "proj-1",
+        periodLabel: "1 de mai. de 2026 — 15 de jun. de 2026",
+        timelineSize: 2,
+        currentObservedAreaSquareMeters: 8421,
+        deltaAreaFromFirstFlight: 5120,
+        currentObservedAreaLabel: "8.421 m²",
+        accumulatedEvolutionLabel: "+5.120 m²",
+        lastEvolutionLabel: "+210 m²",
+        averageGrowthLabel: "34,2 m²/dia",
+        estimatedCompletionLabel: null,
+        dataCoverageLabel: "+100,0%",
+        showEstimatedCompletion: false,
+      },
+    });
 
     const ui = await ComparePage({
       params: Promise.resolve({ projectId: "proj-1" }),
@@ -117,6 +139,7 @@ describe("ComparePage", () => {
     expect(screen.getByText("Comparativo")).toBeInTheDocument();
     expect(screen.getByText("Evolução da Obra")).toBeInTheDocument();
     expect(screen.getByText("Indicador de Progresso")).toBeInTheDocument();
+    expect(screen.getByText("Contexto Histórico")).toBeInTheDocument();
     expect(screen.getByText("Mudanças Detectadas")).toBeInTheDocument();
     expect(screen.getByText("Análise de Evolução")).toBeInTheDocument();
     expect(screen.getByAltText("Levantamento A — 1 de mai. de 2026")).toHaveAttribute(

@@ -3,7 +3,7 @@ import {
   type ProgressIntelligenceViewModel,
 } from "@/features/progress-intelligence/progress-intelligence.mapper";
 import { debugLog } from "@/lib/debug";
-import { getProjectProgress } from "@/services/progress.service";
+import { getVisualProgressIntelligence } from "@/services/progress-intelligence.service";
 import { ApiError } from "@/types/api/common.api";
 
 export type ProgressIntelligenceLoadResult =
@@ -17,7 +17,7 @@ export async function loadProgressIntelligence(
   flightBId: string,
 ): Promise<ProgressIntelligenceLoadResult> {
   try {
-    const dto = await getProjectProgress(projectId, flightAId, flightBId);
+    const dto = await getVisualProgressIntelligence(projectId, flightAId, flightBId);
     const viewModel = mapProgressIntelligence(dto);
 
     debugLog("progress_loaded", {

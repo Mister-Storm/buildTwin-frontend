@@ -17,6 +17,9 @@ const sampleProject: ProjectResponseDto = {
   startDate: "2026-01-15",
   createdAt: "2026-01-15T10:00:00Z",
   archivedAt: null,
+  plannedAreaSquareMeters: null,
+  plannedFloors: null,
+  projectType: null,
 };
 
 describe("toProjectSummary", () => {
