@@ -5,6 +5,8 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { EmptyState, ErrorState } from "@/components/shared/States";
 import { ChangeDetectionCard } from "@/features/change-detection/ChangeDetectionCard";
 import { loadChangeDetection } from "@/features/change-detection/load-change-detection";
+import { HistoricalContextSection } from "@/features/construction-progress/HistoricalContextSection";
+import { loadProjectProgress } from "@/features/construction-progress/load-project-progress";
 import { AreaEvolutionCard } from "@/features/progress-intelligence/AreaEvolutionCard";
 import { loadProgressIntelligence } from "@/features/progress-intelligence/load-progress-intelligence";
 import { ProgressIntelligenceCard } from "@/features/progress-intelligence/ProgressIntelligenceCard";
@@ -55,6 +57,10 @@ export default async function ComparePage({
           result.viewModel.flightB.flightId,
         )
       : null;
+  const projectProgress =
+    result.status === "success" && changeDetection?.status === "success"
+      ? await loadProjectProgress(projectId)
+      : null;
 
   return (
     <AppShell
@@ -88,6 +94,12 @@ export default async function ComparePage({
             ) : null}
             {changeDetection?.status === "success" ? (
               <ChangeDetectionCard viewModel={changeDetection.viewModel} />
+            ) : null}
+            {projectProgress?.status === "success" ? (
+              <HistoricalContextSection
+                comparisonAreaDelta={result.viewModel.areaEvolutionMetrics.areaDelta}
+                progress={projectProgress.viewModel}
+              />
             ) : null}
             <TemporalComparisonCard viewModel={result.viewModel} />
             <ComparisonInsightsCard

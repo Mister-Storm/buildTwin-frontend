@@ -2,7 +2,7 @@ export type ProgressClassificationDto = "LOW" | "MEDIUM" | "HIGH";
 
 export type TrendDto = "UNKNOWN" | "STABLE";
 
-export type ProjectProgressDto = {
+export type VisualProgressIntelligenceDto = {
   flightA: string;
   flightB: string;
   changePercentage: number;

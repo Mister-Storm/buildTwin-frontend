@@ -15,6 +15,30 @@ export const createProjectSchema = z.object({
     .min(-180, "Longitude mínima: -180")
     .max(180, "Longitude máxima: 180"),
   startDate: z.string().min(1, "Data de início é obrigatória"),
+  plannedAreaSquareMeters: z
+    .union([
+      z.literal(""),
+      z.coerce.number().positive("Área planejada deve ser maior que zero"),
+    ])
+    .optional(),
+  plannedFloors: z
+    .union([
+      z.literal(""),
+      z.coerce.number().int().min(1, "Pavimentos deve ser pelo menos 1"),
+    ])
+    .optional(),
+  projectType: z
+    .enum([
+      "RESIDENTIAL_BUILDING",
+      "COMMERCIAL_BUILDING",
+      "WAREHOUSE",
+      "ROAD",
+      "BRIDGE",
+      "INDUSTRIAL",
+      "OTHER",
+      "",
+    ])
+    .optional(),
 });
 
 export type CreateProjectFormValues = z.infer<typeof createProjectSchema>;

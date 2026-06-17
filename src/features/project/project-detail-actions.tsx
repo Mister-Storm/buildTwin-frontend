@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { CreateFlightDialog } from "@/features/flight/create-flight-dialog";
 import { ArchiveProjectDialog } from "@/features/project/archive-project-dialog";
-import { GitCompareArrows, ImageIcon } from "lucide-react";
+import { GitCompareArrows, ImageIcon, TrendingUp } from "lucide-react";
 import type { OrthomosaicResolution } from "@/features/domain/models/orthomosaic";
 
 type ProjectDetailActionsProps = {
@@ -39,6 +39,15 @@ export function ProjectDetailActions({
         >
           <ImageIcon className="size-4" />
           Ver Ortomosaico
+        </Link>
+      ) : null}
+      {processedSurveyCount >= 1 ? (
+        <Link
+          href={`/projects/${projectId}/progress`}
+          className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-border/60 px-3 text-sm font-medium transition-colors hover:bg-muted/50"
+        >
+          <TrendingUp className="size-4" />
+          Progresso da Obra
         </Link>
       ) : null}
       {processedSurveyCount >= 2 ? (

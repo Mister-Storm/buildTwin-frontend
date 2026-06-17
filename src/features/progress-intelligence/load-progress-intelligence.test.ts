@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { loadProgressIntelligence } from "@/features/progress-intelligence/load-progress-intelligence";
 
-vi.mock("@/services/progress.service", () => ({
-  getProjectProgress: vi.fn(),
+vi.mock("@/services/progress-intelligence.service", () => ({
+  getVisualProgressIntelligence: vi.fn(),
 }));
 
-import { getProjectProgress } from "@/services/progress.service";
+import { getVisualProgressIntelligence } from "@/services/progress-intelligence.service";
 
 describe("loadProgressIntelligence", () => {
   beforeEach(() => {
@@ -13,7 +13,7 @@ describe("loadProgressIntelligence", () => {
   });
 
   it("returns success with mapped view model", async () => {
-    vi.mocked(getProjectProgress).mockResolvedValue({
+    vi.mocked(getVisualProgressIntelligence).mockResolvedValue({
       flightA: "flight-a",
       flightB: "flight-b",
       changePercentage: 24.3,
@@ -35,7 +35,9 @@ describe("loadProgressIntelligence", () => {
 
   it("returns unavailable on 404", async () => {
     const { ApiError } = await import("@/types/api/common.api");
-    vi.mocked(getProjectProgress).mockRejectedValue(new ApiError(404, "NOT_FOUND", "Not found"));
+    vi.mocked(getVisualProgressIntelligence).mockRejectedValue(
+      new ApiError(404, "NOT_FOUND", "Not found"),
+    );
 
     const result = await loadProgressIntelligence("proj-1", "flight-a", "flight-b");
 

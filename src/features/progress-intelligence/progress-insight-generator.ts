@@ -1,4 +1,4 @@
-import type { ProgressClassificationDto } from "@/types/api/progress.api";
+import type { ProgressClassificationDto } from "@/types/api/visual-progress-intelligence.api";
 
 const INSIGHTS: Record<ProgressClassificationDto, string> = {
   LOW: "Pouca evolução visual identificada entre os levantamentos.",

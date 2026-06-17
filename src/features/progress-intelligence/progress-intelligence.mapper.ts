@@ -1,7 +1,7 @@
 import type {
   ProgressClassificationDto,
-  ProjectProgressDto,
-} from "@/types/api/progress.api";
+  VisualProgressIntelligenceDto,
+} from "@/types/api/visual-progress-intelligence.api";
 
 export type ProgressIntelligenceViewModel = {
   flightAId: string;
@@ -14,7 +14,7 @@ export type ProgressIntelligenceViewModel = {
 };
 
 export function mapProgressIntelligence(
-  dto: ProjectProgressDto,
+  dto: VisualProgressIntelligenceDto,
 ): ProgressIntelligenceViewModel {
   return {
     flightAId: dto.flightA,

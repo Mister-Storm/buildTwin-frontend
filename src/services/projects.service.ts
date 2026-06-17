@@ -3,6 +3,7 @@ import { debugLog } from "@/lib/debug";
 import type {
   CreateProjectRequestDto,
   ProjectResponseDto,
+  UpdateProjectRequestDto,
 } from "@/types/api/project.api";
 
 export async function listProjects(
@@ -25,6 +26,18 @@ export async function createProject(
   debugLog("createProject", { name: dto.name });
   return apiFetch<ProjectResponseDto>("/projects", {
     method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(dto),
+  });
+}
+
+export async function updateProject(
+  id: string,
+  dto: UpdateProjectRequestDto,
+): Promise<ProjectResponseDto> {
+  debugLog("updateProject", { id });
+  return apiFetch<ProjectResponseDto>(`/projects/${id}`, {
+    method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(dto),
   });
