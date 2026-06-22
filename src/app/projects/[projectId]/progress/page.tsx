@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { EmptyState, ErrorState } from "@/components/shared/States";
+import { BuiltAreaSection } from "@/features/built-area/BuiltAreaSection";
+import { loadBuiltAreaViewModel } from "@/features/built-area/load-built-area-view-model";
 import { ConstructionProgressCard } from "@/features/construction-progress/ConstructionProgressCard";
 import { ConstructionProgressInsightsSection } from "@/features/construction-progress/ConstructionProgressInsightsSection";
 import { ProjectPlanningCard } from "@/features/construction-progress/ProjectPlanningCard";
@@ -14,6 +16,7 @@ import { ProgressHistoryChart } from "@/features/construction-progress/ProgressH
 import { ProgressMetricsGrid } from "@/features/construction-progress/ProgressMetricsGrid";
 import { ProgressOverviewCard } from "@/features/construction-progress/ProgressOverviewCard";
 import { getProject } from "@/services/projects.service";
+import { listFlightsByProject } from "@/services/flights.service";
 import { ApiError } from "@/types/api/common.api";
 import type { ProjectResponseDto } from "@/types/api/project.api";
 
@@ -40,11 +43,14 @@ export default async function ProjectProgressPage({ params }: ProgressPageProps)
 
   const projectName = project?.name ?? "Obra";
 
-  const [progressResult, historyResult, constructionProgressResult] = await Promise.all([
-    loadProjectProgress(projectId),
-    loadProjectProgressHistory(projectId),
-    loadConstructionProgressViewModel(projectId),
-  ]);
+  const [progressResult, historyResult, constructionProgressResult, builtAreaResult, flights] =
+    await Promise.all([
+      loadProjectProgress(projectId),
+      loadProjectProgressHistory(projectId),
+      loadConstructionProgressViewModel(projectId),
+      loadBuiltAreaViewModel(projectId),
+      listFlightsByProject(projectId).catch(() => []),
+    ]);
 
   return (
     <AppShell
@@ -72,6 +78,29 @@ export default async function ProjectProgressPage({ params }: ProgressPageProps)
             project={project}
           />
         ) : null}
+
+        {builtAreaResult.status === "error" ? (
+          <ErrorState
+            title="Erro ao carregar área construída"
+            message={builtAreaResult.message}
+          />
+        ) : builtAreaResult.status === "empty" ? (
+          <div className="space-y-4">
+            <BuiltAreaSection
+              viewModel={builtAreaResult.viewModel}
+              flights={flights}
+            />
+            <EmptyState
+              title="Área construída não registrada"
+              message={builtAreaResult.message}
+            />
+          </div>
+        ) : (
+          <BuiltAreaSection
+            viewModel={builtAreaResult.viewModel}
+            flights={flights}
+          />
+        )}
 
         {constructionProgressResult.status === "success" ? (
           <div className="space-y-6">
