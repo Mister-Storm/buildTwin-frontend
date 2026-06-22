@@ -2,6 +2,7 @@ import { apiFetch } from "@/services/api-client";
 import { debugLog } from "@/lib/debug";
 import type {
   ProjectConstructionProgressDto,
+  ProjectConstructionProgressTimelineDto,
   ProjectProgressHistoryDto,
 } from "@/types/api/construction-progress.api";
 
@@ -17,4 +18,13 @@ export async function getConstructionProjectProgressHistory(
 ): Promise<ProjectProgressHistoryDto> {
   debugLog("getConstructionProjectProgressHistory", { projectId });
   return apiFetch<ProjectProgressHistoryDto>(`/projects/${projectId}/progress/history`);
+}
+
+export async function getConstructionProgressTimeline(
+  projectId: string,
+): Promise<ProjectConstructionProgressTimelineDto> {
+  debugLog("construction_progress_loaded", { projectId });
+  return apiFetch<ProjectConstructionProgressTimelineDto>(
+    `/projects/${projectId}/progress/timeline`,
+  );
 }

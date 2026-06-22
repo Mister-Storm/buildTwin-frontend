@@ -5,7 +5,10 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { EmptyState, ErrorState } from "@/components/shared/States";
 import { ChangeDetectionCard } from "@/features/change-detection/ChangeDetectionCard";
 import { loadChangeDetection } from "@/features/change-detection/load-change-detection";
+import { ConstructionProgressCard } from "@/features/construction-progress/ConstructionProgressCard";
+import { ConstructionProgressInsightsSection } from "@/features/construction-progress/ConstructionProgressInsightsSection";
 import { HistoricalContextSection } from "@/features/construction-progress/HistoricalContextSection";
+import { loadConstructionProgressViewModel } from "@/features/construction-progress/load-construction-progress-view-model";
 import { loadProjectProgress } from "@/features/construction-progress/load-project-progress";
 import { AreaEvolutionCard } from "@/features/progress-intelligence/AreaEvolutionCard";
 import { loadProgressIntelligence } from "@/features/progress-intelligence/load-progress-intelligence";
@@ -57,6 +60,10 @@ export default async function ComparePage({
           result.viewModel.flightB.flightId,
         )
       : null;
+  const constructionProgress =
+    result.status === "success" && changeDetection?.status === "success"
+      ? await loadConstructionProgressViewModel(projectId)
+      : null;
   const projectProgress =
     result.status === "success" && changeDetection?.status === "success"
       ? await loadProjectProgress(projectId)
@@ -92,6 +99,9 @@ export default async function ComparePage({
             {progressIntelligence?.status === "success" ? (
               <ProgressIntelligenceCard viewModel={progressIntelligence.viewModel} />
             ) : null}
+            {constructionProgress?.status === "success" ? (
+              <ConstructionProgressCard viewModel={constructionProgress.viewModel} />
+            ) : null}
             {changeDetection?.status === "success" ? (
               <ChangeDetectionCard viewModel={changeDetection.viewModel} />
             ) : null}
@@ -106,6 +116,11 @@ export default async function ComparePage({
               viewModel={result.viewModel}
               analytics={result.viewModel.analytics}
             />
+            {constructionProgress?.status === "success" ? (
+              <ConstructionProgressInsightsSection
+                viewModel={constructionProgress.viewModel}
+              />
+            ) : null}
             <TemporalComparisonViewer viewModel={result.viewModel} />
           </div>
         ) : result.status === "insufficient" ? (
