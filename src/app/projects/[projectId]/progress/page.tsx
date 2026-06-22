@@ -3,9 +3,13 @@ import { notFound } from "next/navigation";
 import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { EmptyState, ErrorState } from "@/components/shared/States";
+import { ConstructionProgressCard } from "@/features/construction-progress/ConstructionProgressCard";
+import { ConstructionProgressInsightsSection } from "@/features/construction-progress/ConstructionProgressInsightsSection";
 import { ProjectPlanningCard } from "@/features/construction-progress/ProjectPlanningCard";
+import { loadConstructionProgressViewModel } from "@/features/construction-progress/load-construction-progress-view-model";
 import { loadProjectProgress } from "@/features/construction-progress/load-project-progress";
 import { loadProjectProgressHistory } from "@/features/construction-progress/load-project-progress-history";
+import { ProgressEvolutionChart } from "@/features/construction-progress/ProgressEvolutionChart";
 import { ProgressHistoryChart } from "@/features/construction-progress/ProgressHistoryChart";
 import { ProgressMetricsGrid } from "@/features/construction-progress/ProgressMetricsGrid";
 import { ProgressOverviewCard } from "@/features/construction-progress/ProgressOverviewCard";
@@ -36,9 +40,10 @@ export default async function ProjectProgressPage({ params }: ProgressPageProps)
 
   const projectName = project?.name ?? "Obra";
 
-  const [progressResult, historyResult] = await Promise.all([
+  const [progressResult, historyResult, constructionProgressResult] = await Promise.all([
     loadProjectProgress(projectId),
     loadProjectProgressHistory(projectId),
+    loadConstructionProgressViewModel(projectId),
   ]);
 
   return (
@@ -65,6 +70,21 @@ export default async function ProjectProgressPage({ params }: ProgressPageProps)
           <ProjectPlanningCard
             key={`${project.id}-${project.plannedAreaSquareMeters}-${project.plannedFloors}-${project.projectType}`}
             project={project}
+          />
+        ) : null}
+
+        {constructionProgressResult.status === "success" ? (
+          <div className="space-y-6">
+            <ConstructionProgressCard viewModel={constructionProgressResult.viewModel} />
+            <ProgressEvolutionChart points={constructionProgressResult.viewModel.chartPoints} />
+            <ConstructionProgressInsightsSection
+              viewModel={constructionProgressResult.viewModel}
+            />
+          </div>
+        ) : constructionProgressResult.status === "empty" ? (
+          <EmptyState
+            title="Ocupação indisponível"
+            message={constructionProgressResult.message}
           />
         ) : null}
 

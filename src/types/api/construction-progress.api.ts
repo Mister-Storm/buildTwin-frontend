@@ -32,3 +32,17 @@ export type ProjectProgressHistoryDto = {
   projectId: string;
   history: ProjectProgressHistoryItemDto[];
 };
+
+export type ConstructionProgressSnapshotDto = {
+  flightSequence: number;
+  flightId: string;
+  flightDate: string;
+  occupiedAreaSquareMeters: number | null;
+  footprintIndex: number | null;
+  visualChangeIndex: number | null;
+};
+
+export type ProjectConstructionProgressTimelineDto = {
+  projectId: string;
+  timeline: ConstructionProgressSnapshotDto[];
+};
