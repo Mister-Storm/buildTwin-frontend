@@ -7,6 +7,8 @@ export type BuiltAreaSnapshotResponseDto = {
   observedBuiltAreaSquareMeters: number;
   confidenceScore: number | null;
   source: BuiltAreaSourceDto;
+  observedFloors: number | null;
+  notes: string | null;
   createdAt: string;
 };
 
@@ -16,6 +18,8 @@ export type ProjectBuiltAreaSnapshotItemDto = {
   observedBuiltAreaSquareMeters: number;
   confidenceScore: number | null;
   source: BuiltAreaSourceDto;
+  observedFloors: number | null;
+  notes: string | null;
   createdAt: string;
 };
 
@@ -26,4 +30,6 @@ export type ProjectBuiltAreaSnapshotsDto = {
 
 export type RegisterBuiltAreaSnapshotRequestDto = {
   observedBuiltAreaSquareMeters: number;
+  observedFloors?: number | null;
+  notes?: string | null;
 };

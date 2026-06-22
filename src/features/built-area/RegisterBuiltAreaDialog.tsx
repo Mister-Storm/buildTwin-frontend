@@ -39,9 +39,12 @@ export function RegisterBuiltAreaDialog({
 
   const [flightId, setFlightId] = useState(flights[0]?.flightId ?? "");
   const [areaInput, setAreaInput] = useState("");
+  const [floorsInput, setFloorsInput] = useState("");
+  const [notesInput, setNotesInput] = useState("");
   const [fieldErrors, setFieldErrors] = useState<{
     flightId?: string;
     area?: string;
+    floors?: string;
   }>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -51,7 +54,7 @@ export function RegisterBuiltAreaDialog({
     setSubmitError(null);
     setFieldErrors({});
 
-    const errors: { flightId?: string; area?: string } = {};
+    const errors: { flightId?: string; area?: string; floors?: string } = {};
     if (!flightId) {
       errors.flightId = "Selecione um levantamento.";
     }
@@ -59,6 +62,14 @@ export function RegisterBuiltAreaDialog({
     const parsedArea = Number(areaInput.replace(",", "."));
     if (!areaInput.trim() || Number.isNaN(parsedArea) || parsedArea <= 0) {
       errors.area = "Informe uma área maior que zero.";
+    }
+
+    let parsedFloors: number | undefined;
+    if (floorsInput.trim()) {
+      parsedFloors = Number(floorsInput);
+      if (!Number.isInteger(parsedFloors) || parsedFloors < 1) {
+        errors.floors = "Informe um número inteiro maior ou igual a 1.";
+      }
     }
 
     if (Object.keys(errors).length > 0) {
@@ -70,9 +81,13 @@ export function RegisterBuiltAreaDialog({
     try {
       await registerBuiltArea(flightId, {
         observedBuiltAreaSquareMeters: parsedArea,
+        observedFloors: parsedFloors ?? null,
+        notes: notesInput.trim() ? notesInput.trim() : null,
       });
       setOpen(false);
       setAreaInput("");
+      setFloorsInput("");
+      setNotesInput("");
       router.refresh();
     } catch (error) {
       setSubmitError(
@@ -131,6 +146,34 @@ export function RegisterBuiltAreaDialog({
               placeholder="Ex.: 1250"
               value={areaInput}
               onChange={(event) => setAreaInput(event.target.value)}
+              disabled={isSubmitting}
+            />
+          </FormField>
+
+          <FormField
+            label="Pavimentos construídos"
+            error={fieldErrors.floors}
+            htmlFor="built-area-floors"
+          >
+            <Input
+              id="built-area-floors"
+              type="number"
+              min={1}
+              step={1}
+              placeholder="Ex.: 4"
+              value={floorsInput}
+              onChange={(event) => setFloorsInput(event.target.value)}
+              disabled={isSubmitting}
+            />
+          </FormField>
+
+          <FormField label="Observações" htmlFor="built-area-notes">
+            <textarea
+              id="built-area-notes"
+              className="flex min-h-24 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+              placeholder="Como o valor foi obtido (opcional)"
+              value={notesInput}
+              onChange={(event) => setNotesInput(event.target.value)}
               disabled={isSubmitting}
             />
           </FormField>

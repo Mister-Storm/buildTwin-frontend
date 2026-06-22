@@ -19,15 +19,17 @@ describe("RegisterBuiltAreaDialog", () => {
     vi.clearAllMocks();
   });
 
-  it("submits built area registration", async () => {
+  it("submits built area registration with floors and notes", async () => {
     const user = userEvent.setup();
     vi.mocked(registerBuiltArea).mockResolvedValue({
       id: "snap-1",
       projectId: "proj-1",
       flightId: "flight-1",
-      observedBuiltAreaSquareMeters: 1250,
+      observedBuiltAreaSquareMeters: 5200,
       confidenceScore: null,
       source: "MANUAL",
+      observedFloors: 4,
+      notes: "Structural phase completed",
       createdAt: "2026-06-01T10:00:00Z",
     });
 
@@ -48,12 +50,16 @@ describe("RegisterBuiltAreaDialog", () => {
 
     await user.click(screen.getByText("Registrar Área Construída"));
     await user.clear(screen.getByLabelText("Área construída (m²)"));
-    await user.type(screen.getByLabelText("Área construída (m²)"), "1250");
+    await user.type(screen.getByLabelText("Área construída (m²)"), "5200");
+    await user.type(screen.getByLabelText("Pavimentos construídos"), "4");
+    await user.type(screen.getByLabelText("Observações"), "Structural phase completed");
     await user.click(screen.getByRole("button", { name: "Registrar" }));
 
     await waitFor(() => {
       expect(registerBuiltArea).toHaveBeenCalledWith("flight-1", {
-        observedBuiltAreaSquareMeters: 1250,
+        observedBuiltAreaSquareMeters: 5200,
+        observedFloors: 4,
+        notes: "Structural phase completed",
       });
     });
     expect(refreshMock).toHaveBeenCalled();

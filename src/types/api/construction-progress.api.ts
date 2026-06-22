@@ -19,6 +19,11 @@ export type ProjectConstructionProgressDto = {
   estimatedCompletionPercent: number | null;
   plannedAreaSquareMeters: number | null;
   dataCoveragePercent: number;
+  currentBuiltAreaSquareMeters?: number | null;
+  currentObservedFloors?: number | null;
+  plannedFloors?: number | null;
+  averageAreaPerFloor?: number | null;
+  verticalCompletionPercent?: number | null;
 };
 
 export type ProjectProgressHistoryItemDto = {
