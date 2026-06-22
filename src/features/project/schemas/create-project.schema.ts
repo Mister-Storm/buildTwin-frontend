@@ -1,6 +1,7 @@
 import { z } from "zod";
+import { projectPlanningSchema } from "@/features/project/schemas/project-planning.schema";
 
-export const createProjectSchema = z.object({
+export const createProjectSchema = projectPlanningSchema.extend({
   name: z.string().trim().min(2, "Nome deve ter pelo menos 2 caracteres"),
   address: z.string().trim().min(1, "Endereço é obrigatório"),
   city: z.string().trim().min(1, "Cidade é obrigatória"),
@@ -15,30 +16,6 @@ export const createProjectSchema = z.object({
     .min(-180, "Longitude mínima: -180")
     .max(180, "Longitude máxima: 180"),
   startDate: z.string().min(1, "Data de início é obrigatória"),
-  plannedAreaSquareMeters: z
-    .union([
-      z.literal(""),
-      z.coerce.number().positive("Área planejada deve ser maior que zero"),
-    ])
-    .optional(),
-  plannedFloors: z
-    .union([
-      z.literal(""),
-      z.coerce.number().int().min(1, "Pavimentos deve ser pelo menos 1"),
-    ])
-    .optional(),
-  projectType: z
-    .enum([
-      "RESIDENTIAL_BUILDING",
-      "COMMERCIAL_BUILDING",
-      "WAREHOUSE",
-      "ROAD",
-      "BRIDGE",
-      "INDUSTRIAL",
-      "OTHER",
-      "",
-    ])
-    .optional(),
 });
 
 export type CreateProjectFormValues = z.infer<typeof createProjectSchema>;

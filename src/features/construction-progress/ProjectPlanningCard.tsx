@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -12,12 +12,18 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { FormField } from "@/components/shared/FormField";
+import { NativeSelect } from "@/components/shared/NativeSelect";
 import { PROJECT_TYPE_OPTIONS } from "@/features/project/project-type-options";
 import {
+  PlanningFieldParseError,
   parseOptionalPlannedArea,
   parseOptionalPlannedFloors,
   parseOptionalProjectType,
+  planningAreaToInputValue,
+  planningFloorsToInputValue,
+  planningTypeToInputValue,
 } from "@/features/project/planning-field-parsers";
+import { projectPlanningSchema } from "@/features/project/schemas/project-planning.schema";
 import { updateProject } from "@/services/projects.service";
 import type { ProjectResponseDto, ProjectTypeDto } from "@/types/api/project.api";
 import { ApiError } from "@/types/api/common.api";
@@ -27,27 +33,92 @@ type ProjectPlanningCardProps = {
   project: ProjectResponseDto;
 };
 
+function syncPlanningStateFromProject(project: ProjectResponseDto) {
+  return {
+    plannedArea: planningAreaToInputValue(project.plannedAreaSquareMeters),
+    plannedFloors: planningFloorsToInputValue(project.plannedFloors),
+    projectType: planningTypeToInputValue(project.projectType),
+  };
+}
+
 export function ProjectPlanningCard({ project }: ProjectPlanningCardProps) {
   const router = useRouter();
   const [plannedArea, setPlannedArea] = useState(
-    project.plannedAreaSquareMeters?.toString() ?? "",
+    () => planningAreaToInputValue(project.plannedAreaSquareMeters),
   );
   const [plannedFloors, setPlannedFloors] = useState(
-    project.plannedFloors?.toString() ?? "",
+    () => planningFloorsToInputValue(project.plannedFloors),
   );
   const [projectType, setProjectType] = useState<ProjectTypeDto | "">(
-    project.projectType ?? "",
+    () => planningTypeToInputValue(project.projectType),
   );
+  const [fieldErrors, setFieldErrors] = useState<{
+    plannedArea?: string;
+    plannedFloors?: string;
+    projectType?: string;
+  }>({});
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    const next = syncPlanningStateFromProject(project);
+    setPlannedArea(next.plannedArea);
+    setPlannedFloors(next.plannedFloors);
+    setProjectType(next.projectType);
+  }, [project]);
+
+  useEffect(() => {
+    if (!successMessage) return;
+    const timeout = window.setTimeout(() => setSuccessMessage(null), 4000);
+    return () => window.clearTimeout(timeout);
+  }, [successMessage]);
+
+  function applyProjectResponse(updated: ProjectResponseDto) {
+    const next = syncPlanningStateFromProject(updated);
+    setPlannedArea(next.plannedArea);
+    setPlannedFloors(next.plannedFloors);
+    setProjectType(next.projectType);
+  }
 
   async function handleSave(event: React.FormEvent) {
     event.preventDefault();
     setError(null);
+    setSuccessMessage(null);
+    setFieldErrors({});
     setIsSaving(true);
 
+    const parsed = projectPlanningSchema.safeParse({
+      plannedAreaSquareMeters: plannedArea,
+      plannedFloors: plannedFloors,
+      projectType,
+    });
+
+    if (!parsed.success) {
+      const errors: {
+        plannedArea?: string;
+        plannedFloors?: string;
+        projectType?: string;
+      } = {};
+      for (const issue of parsed.error.issues) {
+        const key = issue.path[0];
+        if (key === "plannedAreaSquareMeters" && !errors.plannedArea) {
+          errors.plannedArea = issue.message;
+        }
+        if (key === "plannedFloors" && !errors.plannedFloors) {
+          errors.plannedFloors = issue.message;
+        }
+        if (key === "projectType" && !errors.projectType) {
+          errors.projectType = issue.message;
+        }
+      }
+      setFieldErrors(errors);
+      setIsSaving(false);
+      return;
+    }
+
     try {
-      await updateProject(project.id, {
+      const updated = await updateProject(project.id, {
         name: project.name,
         startDate: project.startDate,
         location: project.location,
@@ -55,13 +126,19 @@ export function ProjectPlanningCard({ project }: ProjectPlanningCardProps) {
         plannedFloors: parseOptionalPlannedFloors(plannedFloors) ?? null,
         projectType: parseOptionalProjectType(projectType) ?? null,
       });
+      applyProjectResponse(updated);
+      setSuccessMessage("Planejamento salvo com sucesso.");
       router.refresh();
     } catch (saveError) {
-      setError(
-        saveError instanceof ApiError
-          ? saveError.message
-          : "Não foi possível salvar o planejamento.",
-      );
+      if (saveError instanceof PlanningFieldParseError) {
+        setError(saveError.message);
+      } else {
+        setError(
+          saveError instanceof ApiError
+            ? saveError.message
+            : "Não foi possível salvar o planejamento.",
+        );
+      }
     } finally {
       setIsSaving(false);
     }
@@ -80,7 +157,11 @@ export function ProjectPlanningCard({ project }: ProjectPlanningCardProps) {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSave} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <FormField label="Área planejada (m²)" htmlFor="plannedArea">
+          <FormField
+            label="Área planejada (m²)"
+            htmlFor="plannedArea"
+            error={fieldErrors.plannedArea}
+          >
             <Input
               id="plannedArea"
               type="number"
@@ -91,7 +172,11 @@ export function ProjectPlanningCard({ project }: ProjectPlanningCardProps) {
               onChange={(event) => setPlannedArea(event.target.value)}
             />
           </FormField>
-          <FormField label="Pavimentos previstos" htmlFor="plannedFloors">
+          <FormField
+            label="Pavimentos previstos"
+            htmlFor="plannedFloors"
+            error={fieldErrors.plannedFloors}
+          >
             <Input
               id="plannedFloors"
               type="number"
@@ -102,10 +187,13 @@ export function ProjectPlanningCard({ project }: ProjectPlanningCardProps) {
               onChange={(event) => setPlannedFloors(event.target.value)}
             />
           </FormField>
-          <FormField label="Tipo de obra" htmlFor="projectType">
-            <select
+          <FormField
+            label="Tipo de obra"
+            htmlFor="projectType"
+            error={fieldErrors.projectType}
+          >
+            <NativeSelect
               id="projectType"
-              className="flex h-9 w-full rounded-lg border border-input bg-transparent px-3 text-sm"
               value={projectType}
               onChange={(event) =>
                 setProjectType(event.target.value as ProjectTypeDto | "")
@@ -117,8 +205,16 @@ export function ProjectPlanningCard({ project }: ProjectPlanningCardProps) {
                   {option.label}
                 </option>
               ))}
-            </select>
+            </NativeSelect>
           </FormField>
+          {successMessage ? (
+            <p
+              className="text-sm text-brand-success sm:col-span-2 lg:col-span-3"
+              role="status"
+            >
+              {successMessage}
+            </p>
+          ) : null}
           {error ? (
             <p className="text-sm text-destructive sm:col-span-2 lg:col-span-3" role="alert">
               {error}

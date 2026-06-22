@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { FormField } from "@/components/shared/FormField";
+import { NativeSelect } from "@/components/shared/NativeSelect";
 import { resolveDefaultCompany } from "@/features/company/resolve-default-company";
 import {
   parseOptionalPlannedArea,
@@ -283,9 +284,8 @@ export function CreateProjectDialog({
             htmlFor="projectType"
             error={fieldErrors.projectType}
           >
-            <select
+            <NativeSelect
               id="projectType"
-              className="flex h-9 w-full rounded-lg border border-input bg-transparent px-3 text-sm"
               value={values.projectType ?? ""}
               onChange={(e) =>
                 updateField(
@@ -300,7 +300,7 @@ export function CreateProjectDialog({
                   {option.label}
                 </option>
               ))}
-            </select>
+            </NativeSelect>
           </FormField>
           {submitError ? (
             <p className="text-sm text-destructive" role="alert">
