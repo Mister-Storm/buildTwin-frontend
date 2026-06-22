@@ -62,7 +62,10 @@ export default async function ProjectProgressPage({ params }: ProgressPageProps)
             message={projectLoadError}
           />
         ) : project ? (
-          <ProjectPlanningCard project={project} />
+          <ProjectPlanningCard
+            key={`${project.id}-${project.plannedAreaSquareMeters}-${project.plannedFloors}-${project.projectType}`}
+            project={project}
+          />
         ) : null}
 
         {progressResult.status === "success" ? (

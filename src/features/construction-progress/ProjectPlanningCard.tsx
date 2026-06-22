@@ -62,13 +62,6 @@ export function ProjectPlanningCard({ project }: ProjectPlanningCardProps) {
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    const next = syncPlanningStateFromProject(project);
-    setPlannedArea(next.plannedArea);
-    setPlannedFloors(next.plannedFloors);
-    setProjectType(next.projectType);
-  }, [project]);
-
-  useEffect(() => {
     if (!successMessage) return;
     const timeout = window.setTimeout(() => setSuccessMessage(null), 4000);
     return () => window.clearTimeout(timeout);
