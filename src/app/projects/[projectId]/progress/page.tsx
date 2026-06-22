@@ -21,12 +21,17 @@ export default async function ProjectProgressPage({ params }: ProgressPageProps)
   const { projectId } = await params;
 
   let project: ProjectResponseDto | null = null;
+  let projectLoadError: string | null = null;
   try {
     project = await getProject(projectId);
   } catch (error) {
     if (error instanceof ApiError && error.status === 404) {
       notFound();
     }
+    projectLoadError =
+      error instanceof ApiError
+        ? error.message
+        : "Não foi possível carregar os dados da obra.";
   }
 
   const projectName = project?.name ?? "Obra";
@@ -51,7 +56,14 @@ export default async function ProjectProgressPage({ params }: ProgressPageProps)
           description="Indicadores de evolução baseados na área observada pelo ortomosaico."
         />
 
-        {project ? <ProjectPlanningCard project={project} /> : null}
+        {projectLoadError ? (
+          <ErrorState
+            title="Erro ao carregar planejamento"
+            message={projectLoadError}
+          />
+        ) : project ? (
+          <ProjectPlanningCard project={project} />
+        ) : null}
 
         {progressResult.status === "success" ? (
           <div className="space-y-6">
