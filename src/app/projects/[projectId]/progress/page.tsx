@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { EmptyState, ErrorState } from "@/components/shared/States";
+import { VerticalConstructionSection } from "@/features/vertical-construction/VerticalConstructionSection";
+import { loadVerticalConstructionViewModel } from "@/features/vertical-construction/load-vertical-construction-view-model";
 import { BuiltAreaSection } from "@/features/built-area/BuiltAreaSection";
 import { loadBuiltAreaViewModel } from "@/features/built-area/load-built-area-view-model";
 import { ConstructionProgressCard } from "@/features/construction-progress/ConstructionProgressCard";
@@ -43,14 +45,21 @@ export default async function ProjectProgressPage({ params }: ProgressPageProps)
 
   const projectName = project?.name ?? "Obra";
 
-  const [progressResult, historyResult, constructionProgressResult, builtAreaResult, flights] =
-    await Promise.all([
-      loadProjectProgress(projectId),
-      loadProjectProgressHistory(projectId),
-      loadConstructionProgressViewModel(projectId),
-      loadBuiltAreaViewModel(projectId),
-      listFlightsByProject(projectId).catch(() => []),
-    ]);
+  const [
+    progressResult,
+    historyResult,
+    constructionProgressResult,
+    builtAreaResult,
+    verticalConstructionResult,
+    flights,
+  ] = await Promise.all([
+    loadProjectProgress(projectId),
+    loadProjectProgressHistory(projectId),
+    loadConstructionProgressViewModel(projectId),
+    loadBuiltAreaViewModel(projectId),
+    loadVerticalConstructionViewModel(projectId),
+    listFlightsByProject(projectId).catch(() => []),
+  ]);
 
   return (
     <AppShell
@@ -100,6 +109,23 @@ export default async function ProjectProgressPage({ params }: ProgressPageProps)
             viewModel={builtAreaResult.viewModel}
             flights={flights}
           />
+        )}
+
+        {verticalConstructionResult.status === "error" ? (
+          <ErrorState
+            title="Erro ao carregar construção vertical"
+            message={verticalConstructionResult.message}
+          />
+        ) : verticalConstructionResult.status === "empty" ? (
+          <div className="space-y-4">
+            <VerticalConstructionSection viewModel={verticalConstructionResult.viewModel} />
+            <EmptyState
+              title="Construção vertical não registrada"
+              message={verticalConstructionResult.message}
+            />
+          </div>
+        ) : (
+          <VerticalConstructionSection viewModel={verticalConstructionResult.viewModel} />
         )}
 
         {constructionProgressResult.status === "success" ? (

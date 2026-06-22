@@ -19,15 +19,23 @@ describe("built-area.service", () => {
     expect(apiFetch).toHaveBeenCalledWith("/projects/proj-1/built-area");
   });
 
-  it("registerBuiltArea posts to API path", async () => {
+  it("registerBuiltArea posts extended payload", async () => {
     vi.mocked(apiFetch).mockResolvedValue({ id: "snap-1" });
 
-    await registerBuiltArea("flight-1", { observedBuiltAreaSquareMeters: 1250 });
+    await registerBuiltArea("flight-1", {
+      observedBuiltAreaSquareMeters: 5200,
+      observedFloors: 4,
+      notes: "Structural phase completed",
+    });
 
     expect(apiFetch).toHaveBeenCalledWith("/flights/flight-1/built-area", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ observedBuiltAreaSquareMeters: 1250 }),
+      body: JSON.stringify({
+        observedBuiltAreaSquareMeters: 5200,
+        observedFloors: 4,
+        notes: "Structural phase completed",
+      }),
     });
   });
 });

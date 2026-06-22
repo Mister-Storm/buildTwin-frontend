@@ -113,6 +113,17 @@ export function formatPercent(percent: number | null): string {
   return `${sign}${formatted}%`;
 }
 
+export function formatAbsolutePercent(percent: number | null): string {
+  if (percent === null) {
+    return "Não disponível";
+  }
+  const formatted = Math.abs(percent).toLocaleString("pt-BR", {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  });
+  return `${formatted}%`;
+}
+
 export function formatGrowthRate(rate: number | null): string {
   if (rate === null) {
     return "Não disponível";
