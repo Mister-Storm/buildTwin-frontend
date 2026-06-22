@@ -5,6 +5,8 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { EmptyState, ErrorState } from "@/components/shared/States";
 import { VerticalConstructionSection } from "@/features/vertical-construction/VerticalConstructionSection";
 import { loadVerticalConstructionViewModel } from "@/features/vertical-construction/load-vertical-construction-view-model";
+import { MaterialInventorySection } from "@/features/material-inventory/MaterialInventorySection";
+import { loadMaterialInventoryViewModel } from "@/features/material-inventory/load-material-inventory-view-model";
 import { BuiltAreaSection } from "@/features/built-area/BuiltAreaSection";
 import { loadBuiltAreaViewModel } from "@/features/built-area/load-built-area-view-model";
 import { ConstructionProgressCard } from "@/features/construction-progress/ConstructionProgressCard";
@@ -51,6 +53,7 @@ export default async function ProjectProgressPage({ params }: ProgressPageProps)
     constructionProgressResult,
     builtAreaResult,
     verticalConstructionResult,
+    materialInventoryResult,
     flights,
   ] = await Promise.all([
     loadProjectProgress(projectId),
@@ -58,6 +61,7 @@ export default async function ProjectProgressPage({ params }: ProgressPageProps)
     loadConstructionProgressViewModel(projectId),
     loadBuiltAreaViewModel(projectId),
     loadVerticalConstructionViewModel(projectId),
+    loadMaterialInventoryViewModel(projectId),
     listFlightsByProject(projectId).catch(() => []),
   ]);
 
@@ -126,6 +130,31 @@ export default async function ProjectProgressPage({ params }: ProgressPageProps)
           </div>
         ) : (
           <VerticalConstructionSection viewModel={verticalConstructionResult.viewModel} />
+        )}
+
+        {materialInventoryResult.status === "error" ? (
+          <ErrorState
+            title="Erro ao carregar inventário de materiais"
+            message={materialInventoryResult.message}
+          />
+        ) : materialInventoryResult.status === "empty" ? (
+          <div className="space-y-4">
+            <MaterialInventorySection
+              projectId={projectId}
+              viewModel={materialInventoryResult.viewModel}
+              flights={flights}
+            />
+            <EmptyState
+              title="Inventário não registrado"
+              message={materialInventoryResult.message}
+            />
+          </div>
+        ) : (
+          <MaterialInventorySection
+            projectId={projectId}
+            viewModel={materialInventoryResult.viewModel}
+            flights={flights}
+          />
         )}
 
         {constructionProgressResult.status === "success" ? (
