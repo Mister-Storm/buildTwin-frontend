@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { registerBuiltArea, getProjectBuiltArea } from "@/services/built-area.service";
+import { registerBuiltArea, getProjectBuiltArea, detectBuiltArea } from "@/services/built-area.service";
 import { apiFetch } from "@/services/api-client";
 
 vi.mock("@/services/api-client", () => ({
@@ -36,6 +36,23 @@ describe("built-area.service", () => {
         observedFloors: 4,
         notes: "Structural phase completed",
       }),
+    });
+  });
+
+  it("detectBuiltArea posts detect endpoint", async () => {
+    vi.mocked(apiFetch).mockResolvedValue({
+      flightId: "flight-1",
+      detectedAreaSquareMeters: 1243.5,
+      confidenceScore: 0.82,
+      source: "AI_DETECTED",
+      previewArtifactId: "artifact-1",
+      detectionArtifactId: "dataset-1",
+    });
+
+    await detectBuiltArea("flight-1");
+
+    expect(apiFetch).toHaveBeenCalledWith("/flights/flight-1/built-area/detect", {
+      method: "POST",
     });
   });
 });

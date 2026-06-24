@@ -3,7 +3,9 @@
 import { useState } from "react";
 import { Boxes, GitCompareArrows, Package } from "lucide-react";
 import type { MaterialInventoryViewModel } from "@/features/material-inventory/material-inventory.mapper";
+import { DetectMaterialInventoryButton } from "@/features/material-inventory/DetectMaterialInventoryButton";
 import { InventoryComparePanel } from "@/features/material-inventory/InventoryComparePanel";
+import { MaterialDetectionPreviewCard } from "@/features/material-inventory/MaterialDetectionPreviewCard";
 import { MaterialInventoryHistoryList } from "@/features/material-inventory/MaterialInventoryHistoryList";
 import { RegisterMaterialInventoryDialog } from "@/features/material-inventory/RegisterMaterialInventoryDialog";
 import { MetricCard } from "@/components/shared/MetricCard";
@@ -29,6 +31,7 @@ export function MaterialInventorySection({
 }: MaterialInventorySectionProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [stockVariationLabel, setStockVariationLabel] = useState(viewModel.stockVariationLabel);
+  const [previewArtifactId, setPreviewArtifactId] = useState<string | null>(null);
 
   return (
     <div className="space-y-6">
@@ -44,11 +47,17 @@ export function MaterialInventorySection({
               levantamentos sem assumir consumo.
             </CardDescription>
           </div>
-          <RegisterMaterialInventoryDialog
-            flights={flights}
-            open={dialogOpen}
-            onOpenChange={setDialogOpen}
-          />
+          <div className="flex flex-col items-end gap-2">
+            <DetectMaterialInventoryButton
+              flights={flights}
+              onDetected={setPreviewArtifactId}
+            />
+            <RegisterMaterialInventoryDialog
+              flights={flights}
+              open={dialogOpen}
+              onOpenChange={setDialogOpen}
+            />
+          </div>
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -76,6 +85,8 @@ export function MaterialInventorySection({
         flights={flights}
         onCompareComplete={setStockVariationLabel}
       />
+
+      <MaterialDetectionPreviewCard previewArtifactId={previewArtifactId} />
 
       <MaterialInventoryHistoryList rows={viewModel.historyRows} />
     </div>

@@ -24,6 +24,8 @@ const viewModel: BuiltAreaViewModel = {
     },
   ],
   hasSnapshots: true,
+  sourceLabel: null,
+  confidenceLabel: null,
 };
 
 describe("BuiltAreaSection", () => {
@@ -50,5 +52,6 @@ describe("BuiltAreaSection", () => {
     expect(screen.getByText("Conclusão Estimada")).toBeInTheDocument();
     expect(screen.getByText("50,0%")).toBeInTheDocument();
     expect(screen.getByText("Registrar Área Construída")).toBeInTheDocument();
+    expect(screen.getByText("Detectar Área com IA")).toBeInTheDocument();
   });
 });

@@ -16,11 +16,14 @@ describe("material-inventory.mapper", () => {
         flightDate: "2026-05-01",
         materialType: "BRICK",
         quantity: 5000,
+        detectedObjects: null,
+        estimatedQuantity: null,
         unit: "UNIT",
         source: "MANUAL",
         movementType: "STOCK",
         storageZone: "North Yard",
         confidenceScore: null,
+        detectionMetadata: null,
         recordedAt: "2026-05-01T10:00:00Z",
         createdAt: "2026-05-01T10:00:00Z",
       },
@@ -29,11 +32,14 @@ describe("material-inventory.mapper", () => {
         flightDate: "2026-06-15",
         materialType: "BRICK",
         quantity: 3000,
+        detectedObjects: null,
+        estimatedQuantity: null,
         unit: "UNIT",
         source: "MANUAL",
         movementType: "STOCK",
         storageZone: null,
         confidenceScore: null,
+        detectionMetadata: null,
         recordedAt: "2026-06-15T14:30:00Z",
         createdAt: "2026-06-15T14:30:00Z",
       },
@@ -52,7 +58,40 @@ describe("material-inventory.mapper", () => {
     expect(viewModel.historyRows).toHaveLength(2);
     expect(viewModel.historyRows[0].storageZoneLabel).toBe("North Yard");
     expect(viewModel.historyRows[1].movementTypeLabel).toBe("Estoque");
+    expect(viewModel.historyRows[0].metricLabel).toBe("Quantidade");
     expect(viewModel.currentQuantityLabel).toContain("3.000");
+  });
+
+  it("labels AI rows as detected objects with confidence", () => {
+    const viewModel = mapMaterialInventoryViewModel({
+      projectId: "proj-1",
+      snapshots: [
+        {
+          flightId: "flight-3",
+          flightDate: "2026-06-20",
+          materialType: "WOOD",
+          quantity: null,
+          detectedObjects: 42,
+          estimatedQuantity: null,
+          unit: "UNIT",
+          source: "AI_DETECTED",
+          movementType: "STOCK",
+          storageZone: null,
+          confidenceScore: 0.87,
+          detectionMetadata: {
+            detectorVersion: "yolov8-material-mvp-1.0",
+            confidenceScore: 0.87,
+          },
+          recordedAt: "2026-06-20T10:00:00Z",
+          createdAt: "2026-06-20T10:00:00Z",
+        },
+      ],
+    });
+
+    expect(viewModel.historyRows[0].metricLabel).toBe("Objetos detectados");
+    expect(viewModel.historyRows[0].metricValueLabel).toContain("42");
+    expect(viewModel.historyRows[0].confidenceLabel).toBe("87%");
+    expect(viewModel.historyRows[0].isAiSource).toBe(true);
   });
 
   it("formats inventoryDelta in compare rows", () => {

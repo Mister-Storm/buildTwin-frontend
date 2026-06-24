@@ -7,6 +7,8 @@ import { VerticalConstructionSection } from "@/features/vertical-construction/Ve
 import { loadVerticalConstructionViewModel } from "@/features/vertical-construction/load-vertical-construction-view-model";
 import { MaterialInventorySection } from "@/features/material-inventory/MaterialInventorySection";
 import { loadMaterialInventoryViewModel } from "@/features/material-inventory/load-material-inventory-view-model";
+import { MaterialConsumptionSection } from "@/features/material-consumption/MaterialConsumptionSection";
+import { WasteIntelligenceSection } from "@/features/waste-intelligence/WasteIntelligenceSection";
 import { BuiltAreaSection } from "@/features/built-area/BuiltAreaSection";
 import { loadBuiltAreaViewModel } from "@/features/built-area/load-built-area-view-model";
 import { ConstructionProgressCard } from "@/features/construction-progress/ConstructionProgressCard";
@@ -156,6 +158,10 @@ export default async function ProjectProgressPage({ params }: ProgressPageProps)
             flights={flights}
           />
         )}
+
+        <MaterialConsumptionSection projectId={projectId} flights={flights} />
+
+        <WasteIntelligenceSection projectId={projectId} flights={flights} />
 
         {constructionProgressResult.status === "success" ? (
           <div className="space-y-6">

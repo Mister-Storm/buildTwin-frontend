@@ -16,7 +16,21 @@ export type InventoryUnit = "UNIT" | "BAG" | "CUBIC_METER" | "KILOGRAM";
 
 export type InventorySource = "MANUAL" | "AI_DETECTED";
 
-export type MaterialMovementType = "STOCK" | "DELIVERY" | "CONSUMPTION" | "WASTE";
+export type MaterialMovementType = "STOCK" | "RECEIVED" | "CONSUMED" | "WASTE";
+
+export type DetectionBoundingBoxDto = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  confidence?: number | null;
+};
+
+export type DetectionMetadataDto = {
+  detectorVersion: string;
+  confidenceScore: number;
+  boundingBoxes?: DetectionBoundingBoxDto[];
+};
 
 export type RegisterMaterialInventoryItemRequestDto = {
   materialType: MaterialType;
@@ -35,12 +49,15 @@ export type MaterialInventorySnapshotResponseDto = {
   projectId: string;
   flightId: string;
   materialType: MaterialType;
-  quantity: number;
+  quantity: number | null;
+  detectedObjects: number | null;
+  estimatedQuantity: number | null;
   unit: InventoryUnit;
   source: InventorySource;
   movementType: MaterialMovementType;
   storageZone: string | null;
   confidenceScore: number | null;
+  detectionMetadata: DetectionMetadataDto | null;
   recordedAt: string;
   createdAt: string;
 };
@@ -53,12 +70,15 @@ export type ProjectMaterialInventoryItemDto = {
   flightId: string;
   flightDate: string;
   materialType: MaterialType;
-  quantity: number;
+  quantity: number | null;
+  detectedObjects: number | null;
+  estimatedQuantity: number | null;
   unit: InventoryUnit;
   source: InventorySource;
   movementType: MaterialMovementType;
   storageZone: string | null;
   confidenceScore: number | null;
+  detectionMetadata: DetectionMetadataDto | null;
   recordedAt: string;
   createdAt: string;
 };
@@ -83,4 +103,19 @@ export type ProjectMaterialInventoryCompareDto = {
   flightAId: string;
   flightBId: string;
   materials: MaterialInventoryCompareItemDto[];
+};
+
+export type DetectedMaterialItemDto = {
+  materialType: MaterialType;
+  detectedObjects: number;
+  estimatedQuantity: number | null;
+  unit: InventoryUnit;
+  confidenceScore: number;
+  detectionMetadata: DetectionMetadataDto;
+};
+
+export type DetectMaterialInventoryResponseDto = {
+  flightId: string;
+  previewArtifactId: string | null;
+  detectedMaterials: DetectedMaterialItemDto[];
 };
