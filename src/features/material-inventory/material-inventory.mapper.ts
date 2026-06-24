@@ -22,8 +22,8 @@ export const MATERIAL_TYPE_LABELS: Record<MaterialType, string> = {
 
 export const MOVEMENT_TYPE_LABELS = {
   STOCK: "Estoque",
-  DELIVERY: "Entrega",
-  CONSUMPTION: "Consumo",
+  RECEIVED: "Recebido",
+  CONSUMED: "Consumido",
   WASTE: "Desperdício",
 } as const;
 
@@ -32,11 +32,14 @@ export type MaterialInventoryHistoryRow = {
   flightDateLabel: string;
   recordedAtLabel: string;
   materialLabel: string;
-  quantityLabel: string;
+  metricLabel: string;
+  metricValueLabel: string;
   unitLabel: string;
+  confidenceLabel: string | null;
   storageZoneLabel: string;
   movementTypeLabel: string;
   source: string;
+  isAiSource: boolean;
 };
 
 export type MaterialInventoryCompareRow = {
@@ -59,17 +62,28 @@ export type MaterialInventoryViewModel = {
 export function mapMaterialInventoryViewModel(
   dto: ProjectMaterialInventoryDto,
 ): MaterialInventoryViewModel {
-  const historyRows = dto.snapshots.map((snapshot) => ({
+  const historyRows = dto.snapshots.map((snapshot) => {
+    const isAiSource = snapshot.source === "AI_DETECTED";
+  return {
     rowKey: `${snapshot.flightId}-${snapshot.materialType}-${snapshot.source}-${snapshot.recordedAt}`,
     flightDateLabel: formatDate(parseDateOnly(snapshot.flightDate)),
     recordedAtLabel: formatDateTime(snapshot.recordedAt),
     materialLabel: MATERIAL_TYPE_LABELS[snapshot.materialType],
-    quantityLabel: formatQuantity(snapshot.quantity),
+    metricLabel: isAiSource ? "Objetos detectados" : "Quantidade",
+    metricValueLabel: isAiSource
+      ? formatQuantity(snapshot.detectedObjects ?? 0)
+      : formatQuantity(snapshot.quantity ?? 0),
     unitLabel: formatUnit(snapshot.unit),
+    confidenceLabel:
+      isAiSource && snapshot.confidenceScore != null
+        ? `${Math.round(snapshot.confidenceScore * 100)}%`
+        : null,
     storageZoneLabel: snapshot.storageZone?.trim() ? snapshot.storageZone : "—",
     movementTypeLabel: MOVEMENT_TYPE_LABELS[snapshot.movementType],
     source: snapshot.source,
-  }));
+    isAiSource,
+  };
+  });
 
   const latestFlightDate =
     dto.snapshots.length > 0
@@ -87,7 +101,13 @@ export function mapMaterialInventoryViewModel(
             parseDateOnly(snapshot.flightDate).getTime() === latestFlightDate,
         );
 
-  const currentTotal = latestSnapshots.reduce((sum, snapshot) => sum + snapshot.quantity, 0);
+  const currentTotal = latestSnapshots.reduce((sum, snapshot) => {
+    const value =
+      snapshot.source === "AI_DETECTED"
+        ? snapshot.detectedObjects ?? 0
+        : snapshot.quantity ?? 0;
+    return sum + value;
+  }, 0);
 
   return {
     projectId: dto.projectId,

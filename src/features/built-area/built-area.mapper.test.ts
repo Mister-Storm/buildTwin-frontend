@@ -16,6 +16,8 @@ describe("built-area.mapper", () => {
         observedBuiltAreaSquareMeters: 1000,
         confidenceScore: null,
         source: "MANUAL",
+        observedFloors: null,
+        notes: null,
         createdAt: "2026-05-01T10:00:00Z",
       },
       {
@@ -24,6 +26,8 @@ describe("built-area.mapper", () => {
         observedBuiltAreaSquareMeters: 2500,
         confidenceScore: null,
         source: "MANUAL",
+        observedFloors: null,
+        notes: null,
         createdAt: "2026-06-15T10:00:00Z",
       },
     ],
@@ -38,6 +42,30 @@ describe("built-area.mapper", () => {
     expect(viewModel.plannedAreaLabel).toContain("5.000");
     expect(viewModel.completionPercent).toBe(50);
     expect(viewModel.chartPoints).toHaveLength(2);
+  });
+
+  it("maps AI source and confidence labels", () => {
+    const viewModel = mapBuiltAreaViewModel(
+      {
+        projectId: "proj-1",
+        snapshots: [
+          {
+            flightId: "flight-1",
+            flightDate: "2026-06-15",
+            observedBuiltAreaSquareMeters: 2500,
+            confidenceScore: 0.82,
+            source: "AI_DETECTED",
+            observedFloors: null,
+            notes: null,
+            createdAt: "2026-06-15T10:00:00Z",
+          },
+        ],
+      },
+      { plannedAreaSquareMeters: 5000 },
+    );
+
+    expect(viewModel.sourceLabel).toBe("Fonte: IA");
+    expect(viewModel.confidenceLabel).toBe("Confiança: 82%");
   });
 
   it("clamps completion percent at 100", () => {

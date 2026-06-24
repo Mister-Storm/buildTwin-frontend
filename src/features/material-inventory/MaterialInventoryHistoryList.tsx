@@ -43,13 +43,15 @@ export function MaterialInventoryHistoryList({
       </CardHeader>
       <CardContent>
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[800px] text-left text-sm">
+          <table className="w-full min-w-[900px] text-left text-sm">
             <thead>
               <tr className="border-b border-border/60 text-muted-foreground">
                 <th className="px-3 py-2 font-medium">Data do levantamento</th>
                 <th className="px-3 py-2 font-medium">Registrado em</th>
                 <th className="px-3 py-2 font-medium">Material</th>
-                <th className="px-3 py-2 font-medium">Quantidade</th>
+                <th className="px-3 py-2 font-medium">Métrica</th>
+                <th className="px-3 py-2 font-medium">Valor</th>
+                <th className="px-3 py-2 font-medium">Confiança</th>
                 <th className="px-3 py-2 font-medium">Zona</th>
                 <th className="px-3 py-2 font-medium">Movimento</th>
                 <th className="px-3 py-2 font-medium">Origem</th>
@@ -61,14 +63,22 @@ export function MaterialInventoryHistoryList({
                   <td className="px-3 py-3">{row.flightDateLabel}</td>
                   <td className="px-3 py-3">{row.recordedAtLabel}</td>
                   <td className="px-3 py-3">{row.materialLabel}</td>
+                  <td className="px-3 py-3 text-muted-foreground">{row.metricLabel}</td>
                   <td className="px-3 py-3">
-                    {row.quantityLabel} {row.unitLabel}
+                    {row.metricValueLabel} {row.unitLabel}
                   </td>
+                  <td className="px-3 py-3">{row.confidenceLabel ?? "—"}</td>
                   <td className="px-3 py-3 text-muted-foreground">{row.storageZoneLabel}</td>
                   <td className="px-3 py-3">{row.movementTypeLabel}</td>
                   <td className="px-3 py-3">
-                    <span className="rounded-md bg-muted px-2 py-1 text-xs font-medium">
-                      {row.source}
+                    <span
+                      className={
+                        row.isAiSource
+                          ? "rounded-md bg-sky-500/15 px-2 py-1 text-xs font-medium text-sky-700 dark:text-sky-300"
+                          : "rounded-md bg-muted px-2 py-1 text-xs font-medium"
+                      }
+                    >
+                      {row.isAiSource ? "IA" : row.source}
                     </span>
                   </td>
                 </tr>

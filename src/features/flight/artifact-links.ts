@@ -36,7 +36,8 @@ export function getArtifactPreviewLink(
   if (
     type === "ORTHOMOSAIC_PREVIEW" ||
     type === "ORTHOMOSAIC_THUMBNAIL" ||
-    type === "CHANGE_HEATMAP"
+    type === "CHANGE_HEATMAP" ||
+    type === "MATERIAL_DETECTION_PREVIEW"
   ) {
     return artifactPreviewUrl(id);
   }

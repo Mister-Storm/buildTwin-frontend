@@ -25,6 +25,8 @@ export type BuiltAreaViewModel = {
   showCompletion: boolean;
   chartPoints: BuiltAreaChartPoint[];
   hasSnapshots: boolean;
+  sourceLabel: string | null;
+  confidenceLabel: string | null;
 };
 
 export function mapBuiltAreaViewModel(
@@ -58,6 +60,8 @@ export function mapBuiltAreaViewModel(
     showCompletion: completionPercent !== null,
     chartPoints,
     hasSnapshots: builtAreaDto.snapshots.length > 0,
+    sourceLabel: formatSourceLabel(latest?.source),
+    confidenceLabel: formatConfidenceLabel(latest?.confidenceScore),
   };
 }
 
@@ -114,4 +118,27 @@ function formatBuiltArea(value: number | null | undefined): string {
     return "Não informada";
   }
   return `${value.toLocaleString("pt-BR", { maximumFractionDigits: 1 })} m²`;
+}
+
+function formatSourceLabel(source: string | undefined): string | null {
+  if (!source) {
+    return null;
+  }
+  if (source === "AI_DETECTED") {
+    return "Fonte: IA";
+  }
+  if (source === "ESTIMATED") {
+    return "Fonte: Estimada";
+  }
+  if (source === "MANUAL") {
+    return "Fonte: Manual";
+  }
+  return null;
+}
+
+function formatConfidenceLabel(confidenceScore: number | null | undefined): string | null {
+  if (confidenceScore === null || confidenceScore === undefined) {
+    return null;
+  }
+  return `Confiança: ${Math.round(confidenceScore * 100)}%`;
 }

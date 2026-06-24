@@ -1,6 +1,7 @@
 import { apiFetch } from "@/services/api-client";
 import { debugLog } from "@/lib/debug";
 import type {
+  DetectMaterialInventoryResponseDto,
   ProjectMaterialInventoryCompareDto,
   ProjectMaterialInventoryDto,
   RegisterMaterialInventoryRequestDto,
@@ -35,4 +36,13 @@ export async function compareProjectMaterialInventory(
   return apiFetch<ProjectMaterialInventoryCompareDto>(
     `/projects/${projectId}/inventory/compare?flightA=${flightA}&flightB=${flightB}`,
   );
+}
+
+export async function detectMaterialInventory(
+  flightId: string,
+): Promise<DetectMaterialInventoryResponseDto> {
+  debugLog("detectMaterialInventory", { flightId });
+  return apiFetch(`/flights/${flightId}/inventory/detect`, {
+    method: "POST",
+  });
 }
