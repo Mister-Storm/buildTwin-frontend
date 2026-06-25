@@ -1,4 +1,6 @@
 import type { StatusVariant } from "@/features/domain/models/capture-session";
+import { mapMetricExplanation } from "@/features/explainability/explainability.mapper";
+import type { MetricExplanationViewModel } from "@/features/explainability/explainability.mapper";
 import type {
   ExecutiveConstructionIntelligenceDto,
   HealthClassification,
@@ -30,6 +32,7 @@ export type ExecutiveIntelligenceViewModel = {
   wasteTrend: TrendDirection;
   wasteTrendLabel: string;
   generatedAtLabel: string;
+  healthExplanation: MetricExplanationViewModel;
 };
 
 const HEALTH_CLASSIFICATION_LABELS: Record<HealthClassification, string> = {
@@ -115,6 +118,7 @@ export function mapExecutiveIntelligenceViewModel(
     wasteTrend: dto.wasteTrend,
     wasteTrendLabel: WASTE_TREND_LABELS[dto.wasteTrend],
     generatedAtLabel: formatGeneratedAt(dto.generatedAt),
+    healthExplanation: mapMetricExplanation(dto.healthExplanation),
   };
 }
 

@@ -2,6 +2,8 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { PortfolioIntelligenceDashboard } from "@/features/portfolio-intelligence/PortfolioIntelligenceDashboard";
 import type { PortfolioIntelligenceViewModel } from "@/features/portfolio-intelligence/portfolio-intelligence.mapper";
+import { mapPortfolioExplanation } from "@/features/explainability/explainability.mapper";
+import { samplePortfolioExplanationDto } from "@/features/explainability/explainability.test-fixtures";
 
 const viewModel: PortfolioIntelligenceViewModel = {
   overviewCards: [
@@ -43,6 +45,7 @@ const viewModel: PortfolioIntelligenceViewModel = {
     buckets: [{ label: "50-75%", count: 1, barWidthPercent: 100 }],
   },
   generatedAtLabel: "15/06/2026",
+  portfolioExplanation: mapPortfolioExplanation(samplePortfolioExplanationDto),
 };
 
 describe("PortfolioIntelligenceDashboard", () => {

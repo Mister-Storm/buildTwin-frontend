@@ -5,6 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { ExecutiveExplanationCard } from "@/features/executive-intelligence/ExecutiveExplanationCard";
 import { ExecutiveHealthCard } from "@/features/executive-intelligence/ExecutiveHealthCard";
 import type { ExecutiveIntelligenceViewModel } from "@/features/executive-intelligence/executive-intelligence.mapper";
 import { ProductivityCard } from "@/features/executive-intelligence/ProductivityCard";
@@ -40,6 +41,7 @@ export function ExecutiveIntelligenceSection({
             wasteTrendLabel={viewModel.wasteTrendLabel}
           />
         </div>
+        <ExecutiveExplanationCard explanation={viewModel.healthExplanation} />
       </CardContent>
     </Card>
   );

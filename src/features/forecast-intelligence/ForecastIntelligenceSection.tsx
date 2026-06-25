@@ -5,6 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { ForecastExplanationCard } from "@/features/forecast-intelligence/ForecastExplanationCard";
 import { ForecastConfidenceCard } from "@/features/forecast-intelligence/ForecastConfidenceCard";
 import type { ForecastIntelligenceViewModel } from "@/features/forecast-intelligence/forecast-intelligence.mapper";
 import { PredictedCompletionCard } from "@/features/forecast-intelligence/PredictedCompletionCard";
@@ -44,6 +45,7 @@ export function ForecastIntelligenceSection({
             velocityTrendLabel={viewModel.velocityTrendLabel}
           />
         </div>
+        <ForecastExplanationCard explanation={viewModel.forecastExplanation} />
       </CardContent>
     </Card>
   );

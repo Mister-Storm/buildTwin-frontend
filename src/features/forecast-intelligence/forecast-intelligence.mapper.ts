@@ -1,4 +1,6 @@
 import type { StatusVariant } from "@/features/domain/models/capture-session";
+import { mapMetricExplanation } from "@/features/explainability/explainability.mapper";
+import type { MetricExplanationViewModel } from "@/features/explainability/explainability.mapper";
 import type {
   ConstructionForecastDto,
   ForecastConfidence,
@@ -21,6 +23,7 @@ export type ForecastIntelligenceViewModel = {
   velocityTrendVariant: StatusVariant;
   projectedPercentAtPlannedLabel: string;
   generatedAtLabel: string;
+  forecastExplanation: MetricExplanationViewModel;
 };
 
 const CONFIDENCE_LABELS: Record<ForecastConfidence, string> = {
@@ -103,6 +106,7 @@ export function mapForecastIntelligenceViewModel(
       dto.projectedCompletionPercentAtPlannedDate,
     ),
     generatedAtLabel: new Date(dto.generatedAt).toLocaleString("pt-BR"),
+    forecastExplanation: mapMetricExplanation(dto.forecastExplanation),
   };
 }
 

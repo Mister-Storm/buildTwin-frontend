@@ -1,3 +1,4 @@
+import { PortfolioExplanationSection } from "@/features/portfolio-intelligence/PortfolioExplanationSection";
 import { PortfolioHealthDistributionChart } from "@/features/portfolio-intelligence/PortfolioHealthDistributionChart";
 import { PortfolioProgressDistributionChart } from "@/features/portfolio-intelligence/PortfolioHealthDistributionChart";
 import { PortfolioRiskDistributionChart } from "@/features/portfolio-intelligence/PortfolioHealthDistributionChart";
@@ -20,6 +21,7 @@ export function PortfolioIntelligenceDashboard({
   return (
     <div className="space-y-8">
       <PortfolioOverviewCards cards={viewModel.overviewCards} />
+      <PortfolioExplanationSection explanation={viewModel.portfolioExplanation} />
       <PortfolioInsightsSection insights={viewModel.insights} />
       <PortfolioCopilotSection />
       <div className="grid gap-6 lg:grid-cols-2">

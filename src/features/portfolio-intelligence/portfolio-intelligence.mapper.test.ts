@@ -5,6 +5,10 @@ import {
   mapPortfolioIntelligenceViewModel,
 } from "@/features/portfolio-intelligence/portfolio-intelligence.mapper";
 import type { PortfolioIntelligenceDto } from "@/features/portfolio-intelligence/portfolio-intelligence.api";
+import {
+  sampleMetricExplanationDto,
+  samplePortfolioExplanationDto,
+} from "@/features/explainability/explainability.test-fixtures";
 
 const fullDto: PortfolioIntelligenceDto = {
   overview: {
@@ -78,6 +82,7 @@ const fullDto: PortfolioIntelligenceDto = {
       estimatedCompletionPercent: 35.0,
       executiveAttentionScore: 87,
       executiveAttentionLevel: "CRITICAL",
+      attentionExplanation: sampleMetricExplanationDto,
     },
   ],
   insights: [
@@ -88,6 +93,7 @@ const fullDto: PortfolioIntelligenceDto = {
     },
   ],
   generatedAt: "2026-06-15T12:00:00Z",
+  portfolioExplanation: samplePortfolioExplanationDto,
 };
 
 describe("portfolio-intelligence.mapper", () => {

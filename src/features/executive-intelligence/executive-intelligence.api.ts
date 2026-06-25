@@ -1,3 +1,5 @@
+import type { MetricExplanationDto } from "@/types/api/explainability.api";
+
 export type HealthClassification =
   | "EXCELLENT"
   | "GOOD"
@@ -30,4 +32,5 @@ export type ExecutiveConstructionIntelligenceDto = {
   floorVelocity: number | null;
   wasteTrend: TrendDirection;
   generatedAt: string;
+  healthExplanation: MetricExplanationDto;
 };
