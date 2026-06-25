@@ -1,4 +1,12 @@
 import type { StatusVariant } from "@/features/domain/models/capture-session";
+import {
+  mapMetricExplanation,
+  mapPortfolioExplanation,
+} from "@/features/explainability/explainability.mapper";
+import type {
+  MetricExplanationViewModel,
+  PortfolioExplanationViewModel,
+} from "@/features/explainability/explainability.mapper";
 import type {
   ExecutiveAttentionLevel,
   InsightSeverity,
@@ -45,6 +53,7 @@ export type AttentionProjectViewModel = {
   constructionHealthScoreLabel: string;
   scheduleRiskLabel: string | null;
   href: string;
+  attentionExplanation: MetricExplanationViewModel | null;
 };
 
 export type DistributionChartViewModel = {
@@ -76,6 +85,7 @@ export type PortfolioIntelligenceViewModel = {
   scheduleRiskDistribution: DistributionChartViewModel;
   progressDistribution: DistributionChartViewModel;
   generatedAtLabel: string;
+  portfolioExplanation: PortfolioExplanationViewModel;
 };
 
 const ATTENTION_LEVEL_LABELS: Record<ExecutiveAttentionLevel, string> = {
@@ -195,6 +205,7 @@ export function mapPortfolioIntelligenceViewModel(
       distributions.progress,
     ),
     generatedAtLabel: new Date(dto.generatedAt).toLocaleString("pt-BR"),
+    portfolioExplanation: mapPortfolioExplanation(dto.portfolioExplanation),
   };
 }
 
@@ -232,6 +243,9 @@ function mapAttentionProject(dto: ProjectPortfolioMetricsDto): AttentionProjectV
       dto.constructionHealthScore != null ? String(dto.constructionHealthScore) : "—",
     scheduleRiskLabel: dto.scheduleRisk ?? null,
     href: `/projects/${dto.projectId}`,
+    attentionExplanation: dto.attentionExplanation
+      ? mapMetricExplanation(dto.attentionExplanation)
+      : null,
   };
 }
 

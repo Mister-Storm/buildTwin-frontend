@@ -6,6 +6,7 @@ import {
   mapProductivityClassificationVariant,
 } from "@/features/executive-intelligence/executive-intelligence.mapper";
 import type { ExecutiveConstructionIntelligenceDto } from "@/features/executive-intelligence/executive-intelligence.api";
+import { sampleMetricExplanationDto } from "@/features/explainability/explainability.test-fixtures";
 
 const fullDto: ExecutiveConstructionIntelligenceDto = {
   projectId: "project-1",
@@ -23,6 +24,7 @@ const fullDto: ExecutiveConstructionIntelligenceDto = {
   floorVelocity: 0.12,
   wasteTrend: "IMPROVING",
   generatedAt: "2026-06-15T12:00:00Z",
+  healthExplanation: sampleMetricExplanationDto,
 };
 
 describe("executive-intelligence.mapper", () => {

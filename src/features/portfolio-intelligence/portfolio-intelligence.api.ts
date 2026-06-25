@@ -3,6 +3,10 @@ import type { TrendDirection } from "@/features/executive-intelligence/executive
 import type { ProductivityClassification } from "@/features/executive-intelligence/executive-intelligence.api";
 import type { ForecastConfidence } from "@/features/forecast-intelligence/forecast-intelligence.api";
 import type { ScheduleRisk } from "@/features/forecast-intelligence/forecast-intelligence.api";
+import type {
+  MetricExplanationDto,
+  PortfolioExplanationDto,
+} from "@/types/api/explainability.api";
 
 export type ExecutiveAttentionLevel = "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
 
@@ -81,6 +85,7 @@ export type ProjectPortfolioMetricsDto = {
   estimatedCompletionPercent: number | null;
   executiveAttentionScore: number;
   executiveAttentionLevel: ExecutiveAttentionLevel;
+  attentionExplanation: MetricExplanationDto | null;
 };
 
 export type PortfolioInsightCardDto = {
@@ -99,4 +104,5 @@ export type PortfolioIntelligenceDto = {
   projectsRequiringAttention: ProjectPortfolioMetricsDto[];
   insights: PortfolioInsightCardDto[];
   generatedAt: string;
+  portfolioExplanation: PortfolioExplanationDto;
 };

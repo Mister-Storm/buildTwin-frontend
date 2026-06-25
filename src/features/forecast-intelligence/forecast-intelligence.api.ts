@@ -1,3 +1,5 @@
+import type { MetricExplanationDto } from "@/types/api/explainability.api";
+
 export type ForecastConfidence = "HIGH" | "MEDIUM" | "LOW";
 
 export type ScheduleRisk =
@@ -24,4 +26,5 @@ export type ConstructionForecastDto = {
   averageFloorVelocity: number | null;
   velocityTrend: VelocityTrend;
   generatedAt: string;
+  forecastExplanation: MetricExplanationDto;
 };

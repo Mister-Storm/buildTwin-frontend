@@ -2,6 +2,8 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { ExecutiveIntelligenceSection } from "@/features/executive-intelligence/ExecutiveIntelligenceSection";
 import type { ExecutiveIntelligenceViewModel } from "@/features/executive-intelligence/executive-intelligence.mapper";
+import { mapMetricExplanation } from "@/features/explainability/explainability.mapper";
+import { sampleMetricExplanationDto } from "@/features/explainability/explainability.test-fixtures";
 
 const viewModel: ExecutiveIntelligenceViewModel = {
   constructionHealthScoreLabel: "82",
@@ -24,6 +26,7 @@ const viewModel: ExecutiveIntelligenceViewModel = {
   wasteTrend: "IMPROVING",
   wasteTrendLabel: "Melhorando",
   generatedAtLabel: "15/06/2026, 09:00:00",
+  healthExplanation: mapMetricExplanation(sampleMetricExplanationDto),
 };
 
 describe("ExecutiveIntelligenceSection", () => {

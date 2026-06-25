@@ -2,6 +2,8 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { ForecastIntelligenceSection } from "@/features/forecast-intelligence/ForecastIntelligenceSection";
 import type { ForecastIntelligenceViewModel } from "@/features/forecast-intelligence/forecast-intelligence.mapper";
+import { mapMetricExplanation } from "@/features/explainability/explainability.mapper";
+import { sampleForecastExplanationDto } from "@/features/explainability/explainability.test-fixtures";
 
 const viewModel: ForecastIntelligenceViewModel = {
   predictedCompletionDateLabel: "15 de jun. de 2027",
@@ -17,6 +19,7 @@ const viewModel: ForecastIntelligenceViewModel = {
   velocityTrendVariant: "info",
   projectedPercentAtPlannedLabel: "88,5%",
   generatedAtLabel: "15/06/2026, 09:00:00",
+  forecastExplanation: mapMetricExplanation(sampleForecastExplanationDto),
 };
 
 describe("ForecastIntelligenceSection", () => {

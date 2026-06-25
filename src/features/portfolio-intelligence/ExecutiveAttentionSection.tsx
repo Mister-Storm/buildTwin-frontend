@@ -1,3 +1,4 @@
+import { AttentionExplanationPopover } from "@/features/portfolio-intelligence/AttentionExplanationPopover";
 import Link from "next/link";
 import {
   Card,
@@ -50,6 +51,9 @@ export function ExecutiveAttentionSection({ projects }: ExecutiveAttentionSectio
                     label={project.executiveAttentionLevelLabel}
                     variant={project.executiveAttentionLevelVariant}
                   />
+                  {project.attentionExplanation ? (
+                    <AttentionExplanationPopover explanation={project.attentionExplanation} />
+                  ) : null}
                 </div>
               </li>
             ))}

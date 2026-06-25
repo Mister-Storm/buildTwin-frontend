@@ -6,6 +6,7 @@ import {
   mapVelocityTrendVariant,
 } from "@/features/forecast-intelligence/forecast-intelligence.mapper";
 import type { ConstructionForecastDto } from "@/features/forecast-intelligence/forecast-intelligence.api";
+import { sampleForecastExplanationDto } from "@/features/explainability/explainability.test-fixtures";
 
 const fullDto: ConstructionForecastDto = {
   projectId: "project-1",
@@ -19,6 +20,7 @@ const fullDto: ConstructionForecastDto = {
   averageFloorVelocity: 0.06,
   velocityTrend: "STABLE",
   generatedAt: "2026-06-15T12:00:00Z",
+  forecastExplanation: sampleForecastExplanationDto,
 };
 
 describe("forecast-intelligence.mapper", () => {
