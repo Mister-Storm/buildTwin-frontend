@@ -1,3 +1,4 @@
+import { BenchmarkSummaryCard } from "@/features/benchmark-intelligence/BenchmarkSummaryCard";
 import { PortfolioExplanationSection } from "@/features/portfolio-intelligence/PortfolioExplanationSection";
 import { PortfolioHealthDistributionChart } from "@/features/portfolio-intelligence/PortfolioHealthDistributionChart";
 import { PortfolioProgressDistributionChart } from "@/features/portfolio-intelligence/PortfolioHealthDistributionChart";
@@ -21,6 +22,7 @@ export function PortfolioIntelligenceDashboard({
   return (
     <div className="space-y-8">
       <PortfolioOverviewCards cards={viewModel.overviewCards} />
+      <BenchmarkSummaryCard viewModel={viewModel.benchmarkSummary} />
       <PortfolioExplanationSection explanation={viewModel.portfolioExplanation} />
       <PortfolioInsightsSection insights={viewModel.insights} />
       <PortfolioCopilotSection />

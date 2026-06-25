@@ -1,4 +1,5 @@
 import type { MetricExplanationDto } from "@/types/api/explainability.api";
+import type { ProjectBenchmarkIntelligenceDto } from "@/features/benchmark-intelligence/benchmark-intelligence.api";
 
 export type HealthClassification =
   | "EXCELLENT"
@@ -31,6 +32,7 @@ export type ExecutiveConstructionIntelligenceDto = {
   builtAreaVelocity: number | null;
   floorVelocity: number | null;
   wasteTrend: TrendDirection;
+  benchmarks: ProjectBenchmarkIntelligenceDto | null;
   generatedAt: string;
   healthExplanation: MetricExplanationDto;
 };

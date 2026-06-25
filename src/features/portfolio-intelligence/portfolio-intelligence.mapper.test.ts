@@ -9,6 +9,7 @@ import {
   sampleMetricExplanationDto,
   samplePortfolioExplanationDto,
 } from "@/features/explainability/explainability.test-fixtures";
+import { samplePortfolioBenchmarkSummaryDto } from "@/features/benchmark-intelligence/benchmark-intelligence.test-fixtures";
 
 const fullDto: PortfolioIntelligenceDto = {
   overview: {
@@ -26,6 +27,7 @@ const fullDto: PortfolioIntelligenceDto = {
     averageWasteScore: 81.0,
     averageProgressPercent: 48.2,
   },
+  benchmarkSummary: samplePortfolioBenchmarkSummaryDto,
   rankings: {
     health: [
       {
@@ -114,5 +116,7 @@ describe("portfolio-intelligence.mapper", () => {
     expect(viewModel.attentionProjects[0]?.executiveAttentionScoreLabel).toBe("87");
     expect(viewModel.attentionProjects[0]?.executiveAttentionLevelLabel).toBe("Crítica");
     expect(viewModel.wasteRanking[0]?.href).toBe("/projects/p1");
+    expect(viewModel.benchmarkSummary.health.p50Label).toBe("72");
+    expect(viewModel.benchmarkSummary.hasSufficientSample).toBe(true);
   });
 });

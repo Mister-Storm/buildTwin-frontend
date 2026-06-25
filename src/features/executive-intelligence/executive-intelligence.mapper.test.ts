@@ -7,6 +7,7 @@ import {
 } from "@/features/executive-intelligence/executive-intelligence.mapper";
 import type { ExecutiveConstructionIntelligenceDto } from "@/features/executive-intelligence/executive-intelligence.api";
 import { sampleMetricExplanationDto } from "@/features/explainability/explainability.test-fixtures";
+import { sampleProjectBenchmarksDto } from "@/features/benchmark-intelligence/benchmark-intelligence.test-fixtures";
 
 const fullDto: ExecutiveConstructionIntelligenceDto = {
   projectId: "project-1",
@@ -23,6 +24,7 @@ const fullDto: ExecutiveConstructionIntelligenceDto = {
   builtAreaVelocity: 8.9,
   floorVelocity: 0.12,
   wasteTrend: "IMPROVING",
+  benchmarks: sampleProjectBenchmarksDto,
   generatedAt: "2026-06-15T12:00:00Z",
   healthExplanation: sampleMetricExplanationDto,
 };
@@ -54,5 +56,6 @@ describe("executive-intelligence.mapper", () => {
     expect(viewModel.builtAreaVelocityLabel).toContain("m²/dia");
     expect(viewModel.wasteTrendLabel).toBe("Melhorando");
     expect(viewModel.healthScoreBreakdown.resourceEfficiencyScoreLabel).toBe("90");
+    expect(viewModel.benchmarks.healthBenchmark?.bandLabel).toBe("Top 10%");
   });
 });

@@ -1,6 +1,7 @@
 import type { HealthClassification } from "@/features/executive-intelligence/executive-intelligence.api";
 import type { TrendDirection } from "@/features/executive-intelligence/executive-intelligence.api";
 import type { ProductivityClassification } from "@/features/executive-intelligence/executive-intelligence.api";
+import type { PortfolioBenchmarkSummaryDto } from "@/features/benchmark-intelligence/benchmark-intelligence.api";
 import type { ForecastConfidence } from "@/features/forecast-intelligence/forecast-intelligence.api";
 import type { ScheduleRisk } from "@/features/forecast-intelligence/forecast-intelligence.api";
 import type {
@@ -97,6 +98,7 @@ export type PortfolioInsightCardDto = {
 export type PortfolioIntelligenceDto = {
   overview: PortfolioOverviewDto;
   benchmarks: PortfolioBenchmarksDto;
+  benchmarkSummary: PortfolioBenchmarkSummaryDto;
   rankings: PortfolioRankingsDto;
   riskDistribution: PortfolioRiskDistributionDto;
   trendSnapshot: PortfolioTrendSnapshotDto;
