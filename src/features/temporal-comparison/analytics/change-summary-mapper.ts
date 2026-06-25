@@ -1,4 +1,4 @@
-import type { StatusVariant } from "@/features/domain/models/flight";
+import type { StatusVariant } from "@/features/domain/models/capture-session";
 import type { ChangeSummary } from "@/features/temporal-comparison/analytics/change-analytics";
 
 const SUMMARY_MESSAGES: Record<ChangeSummary, string> = {

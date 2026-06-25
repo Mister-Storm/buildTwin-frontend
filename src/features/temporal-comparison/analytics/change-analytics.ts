@@ -7,8 +7,8 @@ export type ChangeSummary =
   | "INSUFFICIENT_DATA";
 
 export type ChangeAnalytics = {
-  flightAId: string;
-  flightBId: string;
+  captureSessionAId: string;
+  captureSessionBId: string;
   daysBetween: number;
   areaA: number | null;
   areaB: number | null;
@@ -32,7 +32,7 @@ export function computeDaysBetween(
   later: TimelineItemViewModel,
 ): number {
   return Math.round(
-    (later.flightDate.getTime() - earlier.flightDate.getTime()) / MS_PER_DAY,
+    (later.captureDate.getTime() - earlier.captureDate.getTime()) / MS_PER_DAY,
   );
 }
 
@@ -77,16 +77,16 @@ export function resolveDeltaDirection(delta: number | null): DeltaDirection {
 }
 
 /**
- * Computes analytics between two surveys. Expects flightA = earlier, flightB = later.
+ * Computes analytics between two surveys. Expects captureSessionA = earlier, captureSessionB = later.
  */
 export function computeChangeAnalytics(
-  flightA: TimelineItemViewModel,
-  flightB: TimelineItemViewModel,
+  captureSessionA: TimelineItemViewModel,
+  captureSessionB: TimelineItemViewModel,
 ): ChangeAnalytics {
-  const areaA = flightA.areaSquareMeters;
-  const areaB = flightB.areaSquareMeters;
-  const gsdA = flightA.gsdCmPerPixel;
-  const gsdB = flightB.gsdCmPerPixel;
+  const areaA = captureSessionA.areaSquareMeters;
+  const areaB = captureSessionB.areaSquareMeters;
+  const gsdA = captureSessionA.gsdCmPerPixel;
+  const gsdB = captureSessionB.gsdCmPerPixel;
 
   const areaDelta =
     areaA !== null && areaB !== null ? areaB - areaA : null;
@@ -98,9 +98,9 @@ export function computeChangeAnalytics(
     gsdA !== null && gsdB !== null ? gsdB - gsdA : null;
 
   return {
-    flightAId: flightA.flightId,
-    flightBId: flightB.flightId,
-    daysBetween: computeDaysBetween(flightA, flightB),
+    captureSessionAId: captureSessionA.captureSessionId,
+    captureSessionBId: captureSessionB.captureSessionId,
+    daysBetween: computeDaysBetween(captureSessionA, captureSessionB),
     areaA,
     areaB,
     areaDelta,

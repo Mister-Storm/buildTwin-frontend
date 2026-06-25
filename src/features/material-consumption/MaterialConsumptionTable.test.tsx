@@ -9,8 +9,8 @@ describe("MaterialConsumptionTable", () => {
         rows={[
           {
             materialLabel: "Tijolo",
-            quantityAtFlightALabel: "10.000 un",
-            quantityAtFlightBLabel: "7.000 un",
+            quantityAtCaptureSessionALabel: "10.000 un",
+            quantityAtCaptureSessionBLabel: "7.000 un",
             quantityConsumedLabel: "+3.000 un",
             consumptionPerSquareMeterLabel: "16,67 un/m²",
           },

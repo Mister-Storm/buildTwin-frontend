@@ -6,8 +6,8 @@ import { mapProgressIntelligence } from "@/features/progress-intelligence/progre
 describe("ProgressIntelligenceCard", () => {
   it("renders executive progress intelligence metrics and insight", () => {
     const viewModel = mapProgressIntelligence({
-      flightA: "flight-a",
-      flightB: "flight-b",
+      captureSessionA: "flight-a",
+      captureSessionB: "flight-b",
       changePercentage: 24.3,
       deltaDays: 14,
       averageDailyChange: 1.73,

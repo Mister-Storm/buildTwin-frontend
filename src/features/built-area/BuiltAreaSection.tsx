@@ -16,16 +16,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { ProjectFlightListItemDto } from "@/types/api/flight.api";
+import type { ProjectCaptureSessionListItemDto } from "@/types/api/capture-session.api";
 
 type BuiltAreaSectionProps = {
   viewModel: BuiltAreaViewModel;
-  flights: ProjectFlightListItemDto[];
+  captureSessions: ProjectCaptureSessionListItemDto[];
 };
 
 export function BuiltAreaSection({
   viewModel,
-  flights,
+  captureSessions,
 }: BuiltAreaSectionProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [previewArtifactId, setPreviewArtifactId] = useState<string | null>(null);
@@ -48,7 +48,7 @@ export function BuiltAreaSection({
           </div>
           <div className="flex flex-col items-end gap-2">
             <DetectBuiltAreaButton
-              flights={flights}
+              captureSessions={captureSessions}
               onDetected={(result) => {
                 setPreviewArtifactId(result.previewArtifactId);
                 setDetectedAreaSquareMeters(result.detectedAreaSquareMeters);
@@ -56,7 +56,7 @@ export function BuiltAreaSection({
               }}
             />
             <RegisterBuiltAreaDialog
-              flights={flights}
+              captureSessions={captureSessions}
               open={dialogOpen}
               onOpenChange={setDialogOpen}
             />

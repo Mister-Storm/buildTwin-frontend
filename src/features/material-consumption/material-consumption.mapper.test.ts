@@ -4,22 +4,22 @@ import type { ProjectMaterialConsumptionDto } from "@/features/material-consumpt
 
 const fullDto: ProjectMaterialConsumptionDto = {
   projectId: "proj-1",
-  flightAId: "flight-a",
-  flightBId: "flight-b",
+  captureSessionAId: "flight-a",
+  captureSessionBId: "flight-b",
   analysisGeneratedAt: "2026-06-23T20:00:00Z",
   dataCompleteness: {
     inventoryAvailable: true,
     builtAreaAvailable: true,
   },
-  builtAreaAtFlightA: 1200,
-  builtAreaAtFlightB: 1380,
+  builtAreaAtCaptureSessionA: 1200,
+  builtAreaAtCaptureSessionB: 1380,
   builtAreaDelta: 180,
   totalConsumedMaterials: 3000,
   materials: [
     {
       materialType: "BRICK",
-      quantityAtFlightA: 10000,
-      quantityAtFlightB: 7000,
+      quantityAtCaptureSessionA: 10000,
+      quantityAtCaptureSessionB: 7000,
       quantityConsumed: 3000,
       consumptionPerSquareMeter: 16.67,
       unit: "UNIT",

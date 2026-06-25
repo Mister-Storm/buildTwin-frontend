@@ -17,7 +17,7 @@ vi.mock("@/services/built-area.service", () => ({
 describe("DetectBuiltAreaButton", () => {
   it("calls detect endpoint and notifies parent", async () => {
     detectBuiltArea.mockResolvedValue({
-      flightId: "flight-1",
+      captureSessionId: "flight-1",
       detectedAreaSquareMeters: 1243.5,
       confidenceScore: 0.82,
       source: "AI_DETECTED",
@@ -28,10 +28,10 @@ describe("DetectBuiltAreaButton", () => {
 
     render(
       <DetectBuiltAreaButton
-        flights={[
+        captureSessions={[
           {
-            flightId: "flight-1",
-            flightDate: "2026-06-01",
+            captureSessionId: "flight-1",
+            captureDate: "2026-06-01",
             operatorName: "Pilot",
             imageCount: 5,
             latestProcessingStatus: "COMPLETED",

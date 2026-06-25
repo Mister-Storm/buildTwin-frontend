@@ -8,14 +8,14 @@ export function TemporalComparisonViewer({ viewModel }: TemporalComparisonViewer
   return (
     <div className="grid gap-4 lg:grid-cols-2">
       <SurveyPreviewPanel
-        title={`Levantamento A — ${viewModel.flightA.flightDateLabel}`}
-        previewUrl={viewModel.flightA.previewUrl}
-        operatorName={viewModel.flightA.operatorName}
+        title={`Levantamento A — ${viewModel.captureSessionA.captureDateLabel}`}
+        previewUrl={viewModel.captureSessionA.previewUrl}
+        operatorName={viewModel.captureSessionA.operatorName}
       />
       <SurveyPreviewPanel
-        title={`Levantamento B — ${viewModel.flightB.flightDateLabel}`}
-        previewUrl={viewModel.flightB.previewUrl}
-        operatorName={viewModel.flightB.operatorName}
+        title={`Levantamento B — ${viewModel.captureSessionB.captureDateLabel}`}
+        previewUrl={viewModel.captureSessionB.previewUrl}
+        operatorName={viewModel.captureSessionB.operatorName}
       />
     </div>
   );

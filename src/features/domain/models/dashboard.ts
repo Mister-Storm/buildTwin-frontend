@@ -7,8 +7,8 @@ export type ExecutiveMetric = {
 
 export type ExecutiveDashboard = {
   activeProjects: ExecutiveMetric;
-  lastFlight: ExecutiveMetric;
-  processedFlights: ExecutiveMetric;
+  lastCaptureSession: ExecutiveMetric;
+  processedCaptureSessions: ExecutiveMetric;
   completedProcessings: ExecutiveMetric;
   isUnavailable: boolean;
 };
@@ -19,13 +19,13 @@ export const UNAVAILABLE_EXECUTIVE_DASHBOARD: ExecutiveDashboard = {
     value: "—",
     subtitle: "Backend indisponível",
   },
-  lastFlight: {
-    label: "Último Voo Realizado",
+  lastCaptureSession: {
+    label: "Última Captura Realizado",
     value: "—",
     subtitle: "Backend indisponível",
   },
-  processedFlights: {
-    label: "Voos Processados",
+  processedCaptureSessions: {
+    label: "Capturas Processadas",
     value: "—",
     subtitle: "Backend indisponível",
   },

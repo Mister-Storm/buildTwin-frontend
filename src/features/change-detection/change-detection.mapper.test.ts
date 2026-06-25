@@ -4,8 +4,8 @@ import type { ProjectCompareDto } from "@/types/api/compare.api";
 
 function dto(overrides: Partial<ProjectCompareDto> = {}): ProjectCompareDto {
   return {
-    flightA: "flight-a",
-    flightB: "flight-b",
+    captureSessionA: "flight-a",
+    captureSessionB: "flight-b",
     changePercentage: 16.4,
     changedPixels: 102314,
     totalPixels: 182000,
@@ -13,8 +13,8 @@ function dto(overrides: Partial<ProjectCompareDto> = {}): ProjectCompareDto {
     comparisonQuality: "NORMAL",
     heatmapArtifactId: "heatmap-1",
     metrics: {
-      flightA: { areaSquareMeters: 8000, gsdCmPerPixel: 2.2 },
-      flightB: { areaSquareMeters: 9200, gsdCmPerPixel: 2.1 },
+      captureSessionA: { areaSquareMeters: 8000, gsdCmPerPixel: 2.2 },
+      captureSessionB: { areaSquareMeters: 9200, gsdCmPerPixel: 2.1 },
     },
     ...overrides,
   };

@@ -1,6 +1,6 @@
 export type StatusVariant = "success" | "warning" | "error" | "neutral" | "info";
 
-export type FlightTimelineEntry = {
+export type CaptureSessionTimelineEntry = {
   id: string;
   date: Date;
   operatorName: string;
@@ -18,11 +18,11 @@ export type ProjectDashboardView = {
   projectId: string;
   projectName: string;
   archived: boolean;
-  totalFlights: number;
-  flightsByStatus: Record<string, number>;
-  processedFlights: number;
-  pendingFlights: number;
-  failedFlights: number;
-  latestFlightDate: Date | null;
-  recentFlights: FlightTimelineEntry[];
+  totalCaptureSessions: number;
+  captureSessionsByStatus: Record<string, number>;
+  processedCaptureSessions: number;
+  pendingCaptureSessions: number;
+  failedCaptureSessions: number;
+  latestCaptureSessionDate: Date | null;
+  recentCaptureSessions: CaptureSessionTimelineEntry[];
 };

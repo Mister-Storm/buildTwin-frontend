@@ -69,7 +69,7 @@ export function ConstructionProgressCard({ viewModel }: ConstructionProgressCard
         </div>
         <p className="mt-4 flex items-center gap-2 text-xs text-muted-foreground">
           <Activity className="size-3.5" />
-          Levantamento #{latest.flightSequence} · {latest.flightDateLabel}
+          Levantamento #{latest.captureSessionSequence} · {latest.captureDateLabel}
         </p>
       </CardContent>
     </Card>

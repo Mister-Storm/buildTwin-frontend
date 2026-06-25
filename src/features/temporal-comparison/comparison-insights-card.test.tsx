@@ -6,11 +6,11 @@ import { computeChangeAnalytics } from "@/features/temporal-comparison/analytics
 import { calculateAreaEvolutionMetrics } from "@/features/progress-intelligence/area-evolution-metrics";
 
 function buildViewModel(): ComparisonViewModel {
-  const flightA = {
+  const captureSessionA = {
     sequenceNumber: 1,
-    flightId: "flight-a",
-    flightDate: new Date(2026, 4, 1),
-    flightDateLabel: "1 de mai. de 2026",
+    captureSessionId: "flight-a",
+    captureDate: new Date(2026, 4, 1),
+    captureDateLabel: "1 de mai. de 2026",
     operatorName: "Pilot A",
     previewUrl: "/preview-a",
     areaLabel: "8.000,0 m²",
@@ -18,11 +18,11 @@ function buildViewModel(): ComparisonViewModel {
     areaSquareMeters: 8000,
     gsdCmPerPixel: 2.2,
   };
-  const flightB = {
+  const captureSessionB = {
     sequenceNumber: 2,
-    flightId: "flight-b",
-    flightDate: new Date(2026, 5, 15),
-    flightDateLabel: "15 de jun. de 2026",
+    captureSessionId: "flight-b",
+    captureDate: new Date(2026, 5, 15),
+    captureDateLabel: "15 de jun. de 2026",
     operatorName: "Pilot B",
     previewUrl: "/preview-b",
     areaLabel: "8.960,0 m²",
@@ -30,21 +30,21 @@ function buildViewModel(): ComparisonViewModel {
     areaSquareMeters: 8960,
     gsdCmPerPixel: 2.1,
   };
-  const analytics = computeChangeAnalytics(flightA, flightB);
+  const analytics = computeChangeAnalytics(captureSessionA, captureSessionB);
 
   return {
     projectId: "proj-1",
-    flightA,
-    flightB,
+    captureSessionA,
+    captureSessionB,
     deltaAreaLabel: "+960 m²",
     deltaGsdLabel: "−0,1 cm/pixel",
     intervalDaysLabel: "45 dias",
     analytics,
     areaEvolutionMetrics: calculateAreaEvolutionMetrics(
-      flightA.areaSquareMeters,
-      flightB.areaSquareMeters,
-      flightA.flightDate,
-      flightB.flightDate,
+      captureSessionA.areaSquareMeters,
+      captureSessionB.areaSquareMeters,
+      captureSessionA.captureDate,
+      captureSessionB.captureDate,
     ),
   };
 }
@@ -78,11 +78,11 @@ describe("ComparisonInsightsCard", () => {
   });
 
   it("renders insufficient data message when metrics are missing", () => {
-    const flightA = {
+    const captureSessionA = {
       sequenceNumber: 1,
-      flightId: "flight-a",
-      flightDate: new Date(2026, 4, 1),
-      flightDateLabel: "1 de mai. de 2026",
+      captureSessionId: "flight-a",
+      captureDate: new Date(2026, 4, 1),
+      captureDateLabel: "1 de mai. de 2026",
       operatorName: "Pilot A",
       previewUrl: "/preview-a",
       areaLabel: null,
@@ -90,11 +90,11 @@ describe("ComparisonInsightsCard", () => {
       areaSquareMeters: null,
       gsdCmPerPixel: null,
     };
-    const flightB = {
+    const captureSessionB = {
       sequenceNumber: 2,
-      flightId: "flight-b",
-      flightDate: new Date(2026, 5, 15),
-      flightDateLabel: "15 de jun. de 2026",
+      captureSessionId: "flight-b",
+      captureDate: new Date(2026, 5, 15),
+      captureDateLabel: "15 de jun. de 2026",
       operatorName: "Pilot B",
       previewUrl: "/preview-b",
       areaLabel: null,
@@ -102,20 +102,20 @@ describe("ComparisonInsightsCard", () => {
       areaSquareMeters: null,
       gsdCmPerPixel: null,
     };
-    const analytics = computeChangeAnalytics(flightA, flightB);
+    const analytics = computeChangeAnalytics(captureSessionA, captureSessionB);
     const viewModel: ComparisonViewModel = {
       projectId: "proj-1",
-      flightA,
-      flightB,
+      captureSessionA,
+      captureSessionB,
       deltaAreaLabel: null,
       deltaGsdLabel: null,
       intervalDaysLabel: "45 dias",
       analytics,
       areaEvolutionMetrics: calculateAreaEvolutionMetrics(
-        flightA.areaSquareMeters,
-        flightB.areaSquareMeters,
-        flightA.flightDate,
-        flightB.flightDate,
+        captureSessionA.areaSquareMeters,
+        captureSessionB.areaSquareMeters,
+        captureSessionA.captureDate,
+        captureSessionB.captureDate,
       ),
     };
 

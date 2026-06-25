@@ -15,11 +15,11 @@ export async function getProjectBuiltArea(
 }
 
 export async function registerBuiltArea(
-  flightId: string,
+  captureSessionId: string,
   dto: RegisterBuiltAreaSnapshotRequestDto,
 ): Promise<BuiltAreaSnapshotResponseDto> {
-  debugLog("registerBuiltArea", { flightId, area: dto.observedBuiltAreaSquareMeters });
-  return apiFetch<BuiltAreaSnapshotResponseDto>(`/flights/${flightId}/built-area`, {
+  debugLog("registerBuiltArea", { captureSessionId, area: dto.observedBuiltAreaSquareMeters });
+  return apiFetch<BuiltAreaSnapshotResponseDto>(`/capture-sessions/${captureSessionId}/built-area`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(dto),
@@ -27,10 +27,10 @@ export async function registerBuiltArea(
 }
 
 export async function detectBuiltArea(
-  flightId: string,
+  captureSessionId: string,
 ): Promise<DetectBuiltAreaResponseDto> {
-  debugLog("detectBuiltArea", { flightId });
-  return apiFetch<DetectBuiltAreaResponseDto>(`/flights/${flightId}/built-area/detect`, {
+  debugLog("detectBuiltArea", { captureSessionId });
+  return apiFetch<DetectBuiltAreaResponseDto>(`/capture-sessions/${captureSessionId}/built-area/detect`, {
     method: "POST",
   });
 }

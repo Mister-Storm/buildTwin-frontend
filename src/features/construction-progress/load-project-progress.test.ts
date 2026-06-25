@@ -15,12 +15,12 @@ describe("loadProjectProgress", () => {
   it("returns success when timeline has data", async () => {
     vi.mocked(getConstructionProjectProgress).mockResolvedValue({
       projectId: "proj-1",
-      firstFlightDate: "2026-05-01",
-      lastFlightDate: "2026-06-15",
+      firstCaptureDate: "2026-05-01",
+      lastCaptureDate: "2026-06-15",
       timelineSize: 2,
       currentObservedAreaSquareMeters: 8421,
-      deltaAreaFromPreviousFlight: 210,
-      deltaAreaFromFirstFlight: 5120,
+      deltaAreaFromPreviousCapture: 210,
+      deltaAreaFromFirstCapture: 5120,
       averageGrowthPerDay: 34.2,
       estimatedCompletionPercent: 33.6,
       plannedAreaSquareMeters: 25000,
@@ -35,12 +35,12 @@ describe("loadProjectProgress", () => {
   it("returns empty when timeline size is zero", async () => {
     vi.mocked(getConstructionProjectProgress).mockResolvedValue({
       projectId: "proj-1",
-      firstFlightDate: null,
-      lastFlightDate: null,
+      firstCaptureDate: null,
+      lastCaptureDate: null,
       timelineSize: 0,
       currentObservedAreaSquareMeters: null,
-      deltaAreaFromPreviousFlight: null,
-      deltaAreaFromFirstFlight: null,
+      deltaAreaFromPreviousCapture: null,
+      deltaAreaFromFirstCapture: null,
       averageGrowthPerDay: null,
       estimatedCompletionPercent: null,
       plannedAreaSquareMeters: null,

@@ -24,7 +24,7 @@ describe("RegisterBuiltAreaDialog", () => {
     vi.mocked(registerBuiltArea).mockResolvedValue({
       id: "snap-1",
       projectId: "proj-1",
-      flightId: "flight-1",
+      captureSessionId: "flight-1",
       observedBuiltAreaSquareMeters: 5200,
       confidenceScore: null,
       source: "MANUAL",
@@ -35,10 +35,10 @@ describe("RegisterBuiltAreaDialog", () => {
 
     render(
       <RegisterBuiltAreaDialog
-        flights={[
+        captureSessions={[
           {
-            flightId: "flight-1",
-            flightDate: "2026-06-01",
+            captureSessionId: "flight-1",
+            captureDate: "2026-06-01",
             operatorName: "Pilot",
             imageCount: 5,
             latestProcessingStatus: "COMPLETED",

@@ -60,7 +60,7 @@ export function MaterialInventoryHistoryList({
             <tbody>
               {rows.map((row) => (
                 <tr key={row.rowKey} className="border-b border-border/40">
-                  <td className="px-3 py-3">{row.flightDateLabel}</td>
+                  <td className="px-3 py-3">{row.captureDateLabel}</td>
                   <td className="px-3 py-3">{row.recordedAtLabel}</td>
                   <td className="px-3 py-3">{row.materialLabel}</td>
                   <td className="px-3 py-3 text-muted-foreground">{row.metricLabel}</td>

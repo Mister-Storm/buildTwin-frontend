@@ -22,8 +22,8 @@ describe("loadBuiltAreaViewModel", () => {
       projectId: "proj-1",
       snapshots: [
         {
-          flightId: "flight-1",
-          flightDate: "2026-06-01",
+          captureSessionId: "flight-1",
+          captureDate: "2026-06-01",
           observedBuiltAreaSquareMeters: 1200,
           confidenceScore: null,
           source: "MANUAL",

@@ -5,9 +5,9 @@ import type {
 import { formatDate, formatPercent, parseDateOnly } from "@/lib/formatters";
 
 export type ConstructionProgressSnapshotViewModel = {
-  flightSequence: number;
-  flightId: string;
-  flightDateLabel: string;
+  captureSessionSequence: number;
+  captureSessionId: string;
+  captureDateLabel: string;
   occupiedAreaSquareMeters: number | null;
   occupiedAreaLabel: string;
   footprintIndex: number | null;
@@ -22,7 +22,7 @@ export type ConstructionProgressTimelineViewModel = {
   latest: ConstructionProgressSnapshotViewModel | null;
   footprintGrowthSincePreviousLabel: string;
   chartPoints: Array<{
-    flightDateLabel: string;
+    captureDateLabel: string;
     footprintIndex: number;
   }>;
 };
@@ -50,7 +50,7 @@ export function mapConstructionProgressTimeline(
           point.footprintIndex !== null,
       )
       .map((point) => ({
-        flightDateLabel: point.flightDateLabel,
+        captureDateLabel: point.captureDateLabel,
         footprintIndex: point.footprintIndex,
       })),
   };
@@ -60,9 +60,9 @@ function mapSnapshot(
   snapshot: ConstructionProgressSnapshotDto,
 ): ConstructionProgressSnapshotViewModel {
   return {
-    flightSequence: snapshot.flightSequence,
-    flightId: snapshot.flightId,
-    flightDateLabel: formatDate(parseDateOnly(snapshot.flightDate)),
+    captureSessionSequence: snapshot.captureSessionSequence,
+    captureSessionId: snapshot.captureSessionId,
+    captureDateLabel: formatDate(parseDateOnly(snapshot.captureDate)),
     occupiedAreaSquareMeters: snapshot.occupiedAreaSquareMeters,
     occupiedAreaLabel: formatOccupiedArea(snapshot.occupiedAreaSquareMeters),
     footprintIndex: snapshot.footprintIndex,

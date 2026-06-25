@@ -7,8 +7,8 @@ describe("ProgressEvolutionChart", () => {
     render(
       <ProgressEvolutionChart
         points={[
-          { flightDateLabel: "01 mai. 2026", footprintIndex: 0.42 },
-          { flightDateLabel: "01 jun. 2026", footprintIndex: 0.72 },
+          { captureDateLabel: "01 mai. 2026", footprintIndex: 0.42 },
+          { captureDateLabel: "01 jun. 2026", footprintIndex: 0.72 },
         ]}
       />,
     );

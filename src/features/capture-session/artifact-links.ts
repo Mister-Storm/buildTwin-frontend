@@ -5,14 +5,14 @@ import {
   artifactPreviewUrl,
 } from "@/services/api-client";
 
-export type FlightArtifactsByType = Partial<
+export type CaptureSessionArtifactsByType = Partial<
   Record<ArtifactTypeDto, ProcessingArtifactResponseDto>
 >;
 
 export function indexArtifactsByType(
   artifacts: ProcessingArtifactResponseDto[],
-): FlightArtifactsByType {
-  const map: FlightArtifactsByType = {};
+): CaptureSessionArtifactsByType {
+  const map: CaptureSessionArtifactsByType = {};
   for (const artifact of artifacts) {
     map[artifact.artifactType] = artifact;
   }
@@ -20,7 +20,7 @@ export function indexArtifactsByType(
 }
 
 export function getArtifactDownloadLink(
-  artifacts: FlightArtifactsByType,
+  artifacts: CaptureSessionArtifactsByType,
   type: ArtifactTypeDto,
 ): string | null {
   const id = artifacts[type]?.artifactId;
@@ -28,7 +28,7 @@ export function getArtifactDownloadLink(
 }
 
 export function getArtifactPreviewLink(
-  artifacts: FlightArtifactsByType,
+  artifacts: CaptureSessionArtifactsByType,
   type: ArtifactTypeDto,
 ): string | null {
   const id = artifacts[type]?.artifactId;

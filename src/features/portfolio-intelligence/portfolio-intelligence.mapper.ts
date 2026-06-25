@@ -1,4 +1,4 @@
-import type { StatusVariant } from "@/features/domain/models/flight";
+import type { StatusVariant } from "@/features/domain/models/capture-session";
 import type {
   ExecutiveAttentionLevel,
   InsightSeverity,

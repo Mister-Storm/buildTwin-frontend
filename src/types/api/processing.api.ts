@@ -32,7 +32,7 @@ export type ProcessingArtifactResponseDto = {
 
 export type ProcessingJobDetailResponseDto = {
   jobId: string;
-  flightId: string;
+  captureSessionId: string;
   jobType: JobTypeDto;
   status: JobStatusDto;
   createdAt: string;
@@ -52,9 +52,9 @@ export type ProcessingArtifactDetailResponseDto = {
   createdAt: string;
 };
 
-export type LatestFlightJobResponseDto = {
+export type LatestCaptureSessionJobResponseDto = {
   jobId: string;
-  flightId: string;
+  captureSessionId: string;
   jobType: JobTypeDto;
   status: JobStatusDto;
   createdAt: string;
@@ -65,7 +65,7 @@ export type LatestFlightJobResponseDto = {
 
 export type StartProcessingJobResponseDto = {
   jobId: string;
-  flightId: string;
+  captureSessionId: string;
   jobType: JobTypeDto;
   status: JobStatusDto;
   createdAt: string;

@@ -1,5 +1,5 @@
 import { Check, Circle } from "lucide-react";
-import type { ProcessingStep } from "@/features/flight/job-status-utils";
+import type { ProcessingStep } from "@/features/capture-session/job-status-utils";
 import { formatDateTime } from "@/lib/formatters";
 import { cn } from "@/lib/utils";
 

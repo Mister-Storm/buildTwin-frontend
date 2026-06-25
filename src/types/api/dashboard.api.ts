@@ -1,8 +1,8 @@
-import type { JobStatusDto } from "@/types/api/flight.api";
+import type { JobStatusDto } from "@/types/api/capture-session.api";
 
-export type DashboardFlightSummaryDto = {
-  flightId: string;
-  flightDate: string;
+export type DashboardCaptureSessionSummaryDto = {
+  captureSessionId: string;
+  captureDate: string;
   imageCount: number;
   latestProcessingStatus: JobStatusDto | null;
   latestJobId: string | null;
@@ -13,11 +13,11 @@ export type ProjectDashboardDto = {
   projectId: string;
   projectName: string;
   archived: boolean;
-  totalFlights: number;
-  flightsByStatus: Record<string, number>;
-  processedFlights: number;
-  pendingFlights: number;
-  failedFlights: number;
-  latestFlightDate: string | null;
-  recentFlights: DashboardFlightSummaryDto[];
+  totalCaptureSessions: number;
+  captureSessionsByStatus: Record<string, number>;
+  processedCaptureSessions: number;
+  pendingCaptureSessions: number;
+  failedCaptureSessions: number;
+  latestCaptureSessionDate: string | null;
+  recentCaptureSessions: DashboardCaptureSessionSummaryDto[];
 };

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   createProjectSchema,
-  createFlightSchema,
+  createCaptureSessionSchema,
   validateImageFile,
 } from "@/features/project/schemas/create-project.schema";
 
@@ -35,10 +35,10 @@ describe("createProjectSchema", () => {
   });
 });
 
-describe("createFlightSchema", () => {
+describe("createCaptureSessionSchema", () => {
   it("requires operator name", () => {
-    const result = createFlightSchema.safeParse({
-      flightDate: "2026-06-12",
+    const result = createCaptureSessionSchema.safeParse({
+      captureDate: "2026-06-12",
       operatorName: "",
     });
     expect(result.success).toBe(false);

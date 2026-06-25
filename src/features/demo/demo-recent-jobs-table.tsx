@@ -45,7 +45,7 @@ export function DemoRecentJobsTable({ jobs }: DemoRecentJobsTableProps) {
             const mappedStatus = mapJobStatus(job.status);
             return (
               <tr
-                key={`${job.flightId}-${job.jobId ?? "none"}`}
+                key={`${job.captureSessionId}-${job.jobId ?? "none"}`}
                 className="border-b border-border/40 last:border-0"
               >
                 <td className="px-4 py-3">
@@ -58,10 +58,10 @@ export function DemoRecentJobsTable({ jobs }: DemoRecentJobsTableProps) {
                 </td>
                 <td className="px-4 py-3">
                   <Link
-                    href={`/projects/${job.projectId}/flights/${job.flightId}`}
+                    href={`/projects/${job.projectId}/capture-sessions/${job.captureSessionId}`}
                     className="hover:text-brand-accent"
                   >
-                    {formatDate(new Date(job.flightDate))}
+                    {formatDate(new Date(job.captureDate))}
                   </Link>
                 </td>
                 <td className="px-4 py-3">{job.operatorName}</td>

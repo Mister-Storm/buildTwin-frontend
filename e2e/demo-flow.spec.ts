@@ -39,7 +39,7 @@ test.describe("Real API integration flow", () => {
 
     await page.getByRole("link", { name: "Ver Ortomosaico" }).click();
     await expect(page).toHaveURL(
-      `/projects/${PROJECT_ID}/orthomosaic?flightId=${FLIGHT_ID}`,
+      `/projects/${PROJECT_ID}/orthomosaic?captureSessionId=${FLIGHT_ID}`,
     );
 
     await expect(

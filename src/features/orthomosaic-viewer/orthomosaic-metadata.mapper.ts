@@ -76,7 +76,7 @@ function formatDimensionsLabel(
 
 export function mapOrthomosaicSurveyFields(
   metadata: Record<string, unknown>,
-  flightDate: Date | null,
+  captureDate: Date | null,
 ): Pick<
   OrthomosaicViewModel,
   | "captureDateLabel"
@@ -97,7 +97,7 @@ export function mapOrthomosaicSurveyFields(
   const gsdCmPerPixel = readMetadataNumber(metadata, "gsdCmPerPixel");
 
   return {
-    captureDateLabel: flightDate ? formatDate(flightDate) : UNAVAILABLE,
+    captureDateLabel: captureDate ? formatDate(captureDate) : UNAVAILABLE,
     areaLabel: formatAreaLabel(areaSquareMeters),
     gsdLabel: formatGsdLabel(gsdCmPerPixel),
     crs: readMetadataString(metadata, "crs") ?? UNAVAILABLE,

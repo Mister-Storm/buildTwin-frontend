@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { FlightTimeline } from "@/components/shared/FlightTimeline";
+import { CaptureSessionTimeline } from "@/components/shared/CaptureSessionTimeline";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { ErrorState } from "@/components/shared/States";
 import {
@@ -11,12 +11,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ProjectFlightsEmpty } from "@/features/flight/project-flights-empty";
+import { ProjectCaptureSessionsEmpty } from "@/features/capture-session/project-capture-sessions-empty";
 import { ProjectDetailActions } from "@/features/project/project-detail-actions";
 import { toProjectDashboardView } from "@/features/domain/mappers/dashboard.mapper";
-import { projectFlightsToTimeline } from "@/features/domain/mappers/flight.mapper";
+import { projectCaptureSessionsToTimeline } from "@/features/domain/mappers/capture-session.mapper";
 import { toProjectDetail } from "@/features/domain/mappers/project.mapper";
-import type { FlightTimelineEntry } from "@/features/domain/models/flight";
+import type { CaptureSessionTimelineEntry } from "@/features/domain/models/capture-session";
 import type { ProjectDetail } from "@/features/domain/models/project";
 import type { OrthomosaicResolution } from "@/features/domain/models/orthomosaic";
 import type { TimelineItemViewModel } from "@/features/domain/models/temporal-comparison";
@@ -24,7 +24,7 @@ import { ProcessedSurveyTimeline } from "@/features/temporal-comparison/Processe
 import { mapTimelineItems } from "@/features/temporal-comparison/timeline.mapper";
 import { getOrthomosaicResolver } from "@/features/domain/resolvers/orthomosaic-resolver";
 import { getProjectDashboard } from "@/services/dashboard.service";
-import { listFlightsByProject } from "@/services/flights.service";
+import { listCaptureSessionsByProject } from "@/services/capture-sessions.service";
 import { getProject } from "@/services/projects.service";
 import { getProjectTimeline } from "@/services/timeline.service";
 import { ApiError } from "@/types/api/common.api";
@@ -38,28 +38,28 @@ type ProjectDetailPageProps = {
 type ProjectDetailData = {
   project: ProjectDetail;
   dashboard: ReturnType<typeof toProjectDashboardView>;
-  timeline: FlightTimelineEntry[];
+  timeline: CaptureSessionTimelineEntry[];
   latestResolution: OrthomosaicResolution | null;
   processedSurveyCount: number;
   processedSurveys: TimelineItemViewModel[];
 };
 
 async function loadProjectDetail(projectId: string): Promise<ProjectDetailData> {
-  const [projectDto, dashboardDto, flightsDto, timelineDto] = await Promise.all([
+  const [projectDto, dashboardDto, captureSessionsDto, timelineDto] = await Promise.all([
     getProject(projectId),
     getProjectDashboard(projectId),
-    listFlightsByProject(projectId),
+    listCaptureSessionsByProject(projectId),
     getProjectTimeline(projectId).catch(() => ({ projectId, timeline: [] })),
   ]);
 
   const resolver = getOrthomosaicResolver();
-  const orthomosaicFlightIds = resolver.getOrthomosaicFlightIds
-    ? await resolver.getOrthomosaicFlightIds(projectId)
+  const orthomosaicCaptureSessionIds = resolver.getOrthomosaicCaptureSessionIds
+    ? await resolver.getOrthomosaicCaptureSessionIds(projectId)
     : new Set<string>();
 
   const project = toProjectDetail(projectDto);
-  const dashboard = toProjectDashboardView(dashboardDto, orthomosaicFlightIds);
-  const timeline = projectFlightsToTimeline(flightsDto, orthomosaicFlightIds);
+  const dashboard = toProjectDashboardView(dashboardDto, orthomosaicCaptureSessionIds);
+  const timeline = projectCaptureSessionsToTimeline(captureSessionsDto, orthomosaicCaptureSessionIds);
   const latestResolution = await resolver.resolveLatestForProject(projectId);
 
   return {
@@ -149,9 +149,9 @@ export default async function ProjectDetailPage({
           </Card>
           <Card className="border-border/60">
             <CardHeader className="pb-2">
-              <CardDescription>Total de Voos</CardDescription>
+              <CardDescription>Total de Capturas</CardDescription>
               <CardTitle className="text-3xl font-bold">
-                {dashboard.totalFlights}
+                {dashboard.totalCaptureSessions}
               </CardTitle>
             </CardHeader>
           </Card>
@@ -162,7 +162,7 @@ export default async function ProjectDetailPage({
                 Processados
               </CardDescription>
               <CardTitle className="text-3xl font-bold text-brand-accent">
-                {dashboard.processedFlights}
+                {dashboard.processedCaptureSessions}
               </CardTitle>
             </CardHeader>
           </Card>
@@ -173,13 +173,13 @@ export default async function ProjectDetailPage({
                 Pendentes / Falhas
               </CardDescription>
               <CardTitle className="flex items-baseline gap-2 text-2xl font-bold">
-                <span>{dashboard.pendingFlights}</span>
+                <span>{dashboard.pendingCaptureSessions}</span>
                 <span className="text-base font-normal text-muted-foreground">
                   /
                 </span>
                 <span className="flex items-center gap-1 text-destructive">
                   <XCircle className="size-4" />
-                  {dashboard.failedFlights}
+                  {dashboard.failedCaptureSessions}
                 </span>
               </CardTitle>
             </CardHeader>
@@ -198,12 +198,12 @@ export default async function ProjectDetailPage({
           </Card>
           <Card className="border-border/60">
             <CardHeader className="pb-2">
-              <CardDescription>Último Voo</CardDescription>
+              <CardDescription>Última Captura</CardDescription>
               <CardTitle className="flex items-center gap-2 text-base font-medium">
                 <Calendar className="size-4 text-brand-support" />
-                {dashboard.latestFlightDate
-                  ? formatDate(dashboard.latestFlightDate)
-                  : "Nenhum voo registrado"}
+                {dashboard.latestCaptureSessionDate
+                  ? formatDate(dashboard.latestCaptureSessionDate)
+                  : "Nenhuma captura registrado"}
               </CardTitle>
             </CardHeader>
           </Card>
@@ -213,13 +213,13 @@ export default async function ProjectDetailPage({
           <div>
             <h2 className="text-xl font-semibold">Evolução Temporal</h2>
             <p className="text-sm text-muted-foreground">
-              Linha do tempo de voos — acompanhe a evolução da obra.
+              Linha do tempo de capturas — acompanhe a evolução da obra.
             </p>
           </div>
           {timeline.length > 0 ? (
-            <FlightTimeline projectId={projectId} flights={timeline} />
+            <CaptureSessionTimeline projectId={projectId} captureSessions={timeline} />
           ) : (
-            <ProjectFlightsEmpty projectId={projectId} />
+            <ProjectCaptureSessionsEmpty projectId={projectId} />
           )}
         </section>
 
@@ -241,7 +241,7 @@ export default async function ProjectDetailPage({
         <section className="space-y-4">
           <h2 className="text-xl font-semibold">Status por Fase</h2>
           <div className="flex flex-wrap gap-2">
-            {Object.entries(dashboard.flightsByStatus).map(([status, count]) => (
+            {Object.entries(dashboard.captureSessionsByStatus).map(([status, count]) => (
               <StatusBadge
                 key={status}
                 label={`${status}: ${count}`}

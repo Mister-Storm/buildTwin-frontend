@@ -112,7 +112,7 @@ export default async function DemoPage() {
                 />
                 <MetricCard
                   label="Voos"
-                  value={String(data.operations.flights)}
+                  value={String(data.operations.captureSessions)}
                   subtitle="Cadastrados"
                   icon={Plane}
                 />

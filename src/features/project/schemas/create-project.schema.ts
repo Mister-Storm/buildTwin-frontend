@@ -29,15 +29,15 @@ export function validateStartDateNotTooFarFuture(startDate: string): string | nu
   return null;
 }
 
-export const createFlightSchema = z.object({
-  flightDate: z.string().min(1, "Data do voo é obrigatória"),
+export const createCaptureSessionSchema = z.object({
+  captureDate: z.string().min(1, "Data da captura é obrigatória"),
   operatorName: z
     .string()
     .trim()
     .min(1, "Nome do operador é obrigatório"),
 });
 
-export type CreateFlightFormValues = z.infer<typeof createFlightSchema>;
+export type CreateCaptureSessionFormValues = z.infer<typeof createCaptureSessionSchema>;
 
 export const ACCEPTED_IMAGE_TYPES = [
   "image/jpeg",

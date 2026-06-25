@@ -28,8 +28,8 @@ export type WasteAnalysisMaterialItemDto = {
 
 export type ProjectWasteAnalysisDto = {
   projectId: string;
-  flightAId: string;
-  flightBId: string;
+  captureSessionAId: string;
+  captureSessionBId: string;
   builtAreaDelta: number | null;
   overallWasteScore: number;
   analysisConfidence: number;

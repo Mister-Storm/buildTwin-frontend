@@ -18,17 +18,17 @@ import { FormField } from "@/components/shared/FormField";
 import { NativeSelect } from "@/components/shared/NativeSelect";
 import { registerBuiltArea } from "@/services/built-area.service";
 import { ApiError } from "@/types/api/common.api";
-import type { ProjectFlightListItemDto } from "@/types/api/flight.api";
+import type { ProjectCaptureSessionListItemDto } from "@/types/api/capture-session.api";
 import { formatDate, parseDateOnly } from "@/lib/formatters";
 
 type RegisterBuiltAreaDialogProps = {
-  flights: ProjectFlightListItemDto[];
+  captureSessions: ProjectCaptureSessionListItemDto[];
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
 };
 
 export function RegisterBuiltAreaDialog({
-  flights,
+  captureSessions,
   open: controlledOpen,
   onOpenChange,
 }: RegisterBuiltAreaDialogProps) {
@@ -37,12 +37,12 @@ export function RegisterBuiltAreaDialog({
   const open = controlledOpen ?? internalOpen;
   const setOpen = onOpenChange ?? setInternalOpen;
 
-  const [flightId, setFlightId] = useState(flights[0]?.flightId ?? "");
+  const [captureSessionId, setCaptureSessionId] = useState(captureSessions[0]?.captureSessionId ?? "");
   const [areaInput, setAreaInput] = useState("");
   const [floorsInput, setFloorsInput] = useState("");
   const [notesInput, setNotesInput] = useState("");
   const [fieldErrors, setFieldErrors] = useState<{
-    flightId?: string;
+    captureSessionId?: string;
     area?: string;
     floors?: string;
   }>({});
@@ -54,9 +54,9 @@ export function RegisterBuiltAreaDialog({
     setSubmitError(null);
     setFieldErrors({});
 
-    const errors: { flightId?: string; area?: string; floors?: string } = {};
-    if (!flightId) {
-      errors.flightId = "Selecione um levantamento.";
+    const errors: { captureSessionId?: string; area?: string; floors?: string } = {};
+    if (!captureSessionId) {
+      errors.captureSessionId = "Selecione um levantamento.";
     }
 
     const parsedArea = Number(areaInput.replace(",", "."));
@@ -79,7 +79,7 @@ export function RegisterBuiltAreaDialog({
 
     setIsSubmitting(true);
     try {
-      await registerBuiltArea(flightId, {
+      await registerBuiltArea(captureSessionId, {
         observedBuiltAreaSquareMeters: parsedArea,
         observedFloors: parsedFloors ?? null,
         notes: notesInput.trim() ? notesInput.trim() : null,
@@ -115,19 +115,19 @@ export function RegisterBuiltAreaDialog({
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <FormField label="Levantamento" htmlFor="built-area-flight" error={fieldErrors.flightId}>
+          <FormField label="Levantamento" htmlFor="built-area-flight" error={fieldErrors.captureSessionId}>
             <NativeSelect
               id="built-area-flight"
-              value={flightId}
-              onChange={(event) => setFlightId(event.target.value)}
-              disabled={flights.length === 0 || isSubmitting}
+              value={captureSessionId}
+              onChange={(event) => setCaptureSessionId(event.target.value)}
+              disabled={captureSessions.length === 0 || isSubmitting}
             >
-              {flights.length === 0 ? (
+              {captureSessions.length === 0 ? (
                 <option value="">Nenhum levantamento disponível</option>
               ) : (
-                flights.map((flight) => (
-                  <option key={flight.flightId} value={flight.flightId}>
-                    {formatDate(parseDateOnly(flight.flightDate))} — {flight.operatorName}
+                captureSessions.map((captureSession) => (
+                  <option key={captureSession.captureSessionId} value={captureSession.captureSessionId}>
+                    {formatDate(parseDateOnly(captureSession.captureDate))} — {captureSession.operatorName}
                   </option>
                 ))
               )}
@@ -183,7 +183,7 @@ export function RegisterBuiltAreaDialog({
           ) : null}
 
           <DialogFooter className="px-0 pb-0">
-            <Button type="submit" disabled={isSubmitting || flights.length === 0}>
+            <Button type="submit" disabled={isSubmitting || captureSessions.length === 0}>
               {isSubmitting ? "Salvando..." : "Registrar"}
             </Button>
           </DialogFooter>

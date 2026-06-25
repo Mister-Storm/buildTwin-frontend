@@ -47,7 +47,7 @@ export type RegisterMaterialInventoryRequestDto = {
 export type MaterialInventorySnapshotResponseDto = {
   id: string;
   projectId: string;
-  flightId: string;
+  captureSessionId: string;
   materialType: MaterialType;
   quantity: number | null;
   detectedObjects: number | null;
@@ -67,8 +67,8 @@ export type RegisterMaterialInventoryResponseDto = {
 };
 
 export type ProjectMaterialInventoryItemDto = {
-  flightId: string;
-  flightDate: string;
+  captureSessionId: string;
+  captureDate: string;
   materialType: MaterialType;
   quantity: number | null;
   detectedObjects: number | null;
@@ -90,18 +90,18 @@ export type ProjectMaterialInventoryDto = {
 
 export type MaterialInventoryCompareItemDto = {
   materialType: MaterialType;
-  quantityAtFlightA: number;
-  quantityAtFlightB: number;
+  quantityAtCaptureSessionA: number;
+  quantityAtCaptureSessionB: number;
   inventoryDelta: number;
-  storageZoneAtFlightA: string | null;
-  storageZoneAtFlightB: string | null;
+  storageZoneAtCaptureSessionA: string | null;
+  storageZoneAtCaptureSessionB: string | null;
   unit: InventoryUnit;
 };
 
 export type ProjectMaterialInventoryCompareDto = {
   projectId: string;
-  flightAId: string;
-  flightBId: string;
+  captureSessionAId: string;
+  captureSessionBId: string;
   materials: MaterialInventoryCompareItemDto[];
 };
 
@@ -115,7 +115,7 @@ export type DetectedMaterialItemDto = {
 };
 
 export type DetectMaterialInventoryResponseDto = {
-  flightId: string;
+  captureSessionId: string;
   previewArtifactId: string | null;
   detectedMaterials: DetectedMaterialItemDto[];
 };

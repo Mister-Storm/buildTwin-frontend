@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { StatusVariant } from "@/features/domain/models/flight";
+import type { StatusVariant } from "@/features/domain/models/capture-session";
 import { formatDateTime } from "@/lib/formatters";
 import { cn } from "@/lib/utils";
 import type { LucideIcon } from "lucide-react";

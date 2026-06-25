@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   buildProcessingSteps,
   jobStatusFriendlyMessage,
-} from "@/features/flight/job-status-utils";
+} from "@/features/capture-session/job-status-utils";
 
 describe("jobStatusFriendlyMessage", () => {
   it("maps PENDING to friendly text", () => {

@@ -55,8 +55,8 @@ export function VerticalConstructionHistoryList({
             </thead>
             <tbody>
               {rows.map((row) => (
-                <tr key={`${row.flightId}-${row.source}`} className="border-b border-border/40">
-                  <td className="px-3 py-3">{row.flightDateLabel}</td>
+                <tr key={`${row.captureSessionId}-${row.source}`} className="border-b border-border/40">
+                  <td className="px-3 py-3">{row.captureDateLabel}</td>
                   <td className="px-3 py-3">{row.builtAreaLabel}</td>
                   <td className="px-3 py-3">{row.floorsLabel}</td>
                   <td className="px-3 py-3 text-muted-foreground">{row.notesLabel}</td>

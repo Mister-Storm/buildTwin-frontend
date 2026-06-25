@@ -13,17 +13,17 @@ export type ProgressIntelligenceLoadResult =
 
 export async function loadProgressIntelligence(
   projectId: string,
-  flightAId: string,
-  flightBId: string,
+  captureSessionAId: string,
+  captureSessionBId: string,
 ): Promise<ProgressIntelligenceLoadResult> {
   try {
-    const dto = await getVisualProgressIntelligence(projectId, flightAId, flightBId);
+    const dto = await getVisualProgressIntelligence(projectId, captureSessionAId, captureSessionBId);
     const viewModel = mapProgressIntelligence(dto);
 
     debugLog("progress_loaded", {
       projectId,
-      flightA: flightAId,
-      flightB: flightBId,
+      captureSessionA: captureSessionAId,
+      captureSessionB: captureSessionBId,
       changePercentage: dto.changePercentage,
       classification: dto.classification,
       trend: dto.trend,
@@ -34,8 +34,8 @@ export async function loadProgressIntelligence(
   } catch (error) {
     debugLog("loadProgressIntelligence: failed", {
       projectId,
-      flightA: flightAId,
-      flightB: flightBId,
+      captureSessionA: captureSessionAId,
+      captureSessionB: captureSessionBId,
       error: error instanceof Error ? error.message : String(error),
     });
     if (error instanceof ApiError && error.status === 404) {

@@ -4,8 +4,8 @@ import type { ProjectWasteAnalysisDto } from "@/features/waste-intelligence/wast
 
 const dto: ProjectWasteAnalysisDto = {
   projectId: "proj-1",
-  flightAId: "a",
-  flightBId: "b",
+  captureSessionAId: "a",
+  captureSessionBId: "b",
   builtAreaDelta: 420,
   overallWasteScore: 82,
   analysisConfidence: 0.85,

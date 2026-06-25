@@ -29,7 +29,7 @@ const routes = new Map([
       ]),
   ],
   [
-    `GET /api/v1/flights/${FLIGHT_ID}/images`,
+    `GET /api/v1/capture-sessions/${FLIGHT_ID}/images`,
     (_req, res) => json(res, 200, []),
   ],
   [
@@ -75,12 +75,12 @@ const routes = new Map([
       }),
   ],
   [
-    `GET /api/v1/projects/${PROJECT_ID}/flights`,
+    `GET /api/v1/projects/${PROJECT_ID}/capture-sessions`,
     (_req, res) =>
       json(res, 200, [
         {
-          flightId: FLIGHT_ID,
-          flightDate: "2026-06-12",
+          captureSessionId: FLIGHT_ID,
+          captureDate: "2026-06-12",
           operatorName: "Operador E2E",
           imageCount: 42,
           latestProcessingStatus: "COMPLETED",
@@ -95,16 +95,16 @@ const routes = new Map([
         projectId: PROJECT_ID,
         projectName: "Obra Integração",
         archived: false,
-        totalFlights: 1,
-        flightsByStatus: { COMPLETED: 1 },
-        processedFlights: 1,
-        pendingFlights: 0,
-        failedFlights: 0,
-        latestFlightDate: "2026-06-12",
-        recentFlights: [
+        totalCaptureSessions: 1,
+        captureSessionsByStatus: { COMPLETED: 1 },
+        processedCaptureSessions: 1,
+        pendingCaptureSessions: 0,
+        failedCaptureSessions: 0,
+        latestCaptureSessionDate: "2026-06-12",
+        recentCaptureSessions: [
           {
-            flightId: FLIGHT_ID,
-            flightDate: "2026-06-12",
+            captureSessionId: FLIGHT_ID,
+            captureDate: "2026-06-12",
             imageCount: 42,
             latestProcessingStatus: "COMPLETED",
             latestJobId: JOB_ID,
@@ -114,11 +114,11 @@ const routes = new Map([
       }),
   ],
   [
-    `GET /api/v1/flights/${FLIGHT_ID}/latest-job`,
+    `GET /api/v1/capture-sessions/${FLIGHT_ID}/latest-job`,
     (_req, res) =>
       json(res, 200, {
         jobId: JOB_ID,
-        flightId: FLIGHT_ID,
+        captureSessionId: FLIGHT_ID,
         jobType: "ORTHOMOSAIC_PROCESSING",
         status: "COMPLETED",
         createdAt: "2026-06-12T10:00:00Z",
@@ -128,12 +128,12 @@ const routes = new Map([
       }),
   ],
   [
-    `GET /api/v1/flights/${FLIGHT_ID}`,
+    `GET /api/v1/capture-sessions/${FLIGHT_ID}`,
     (_req, res) =>
       json(res, 200, {
-        flightId: FLIGHT_ID,
+        captureSessionId: FLIGHT_ID,
         projectId: PROJECT_ID,
-        flightDate: "2026-06-12",
+        captureDate: "2026-06-12",
         operatorName: "Operador E2E",
         imageCount: 42,
         createdAt: "2026-06-12T09:00:00Z",
@@ -151,7 +151,7 @@ const routes = new Map([
     (_req, res) =>
       json(res, 200, {
         jobId: JOB_ID,
-        flightId: FLIGHT_ID,
+        captureSessionId: FLIGHT_ID,
         jobType: "ORTHOMOSAIC_PROCESSING",
         status: "COMPLETED",
         createdAt: "2026-06-12T10:00:00Z",
@@ -229,7 +229,7 @@ const routes = new Map([
         },
         operations: {
           projects: 1,
-          flights: 1,
+          captureSessions: 1,
           jobs: 1,
           processedJobs: 1,
           pendingJobs: 0,
@@ -238,8 +238,8 @@ const routes = new Map([
             {
               projectId: PROJECT_ID,
               projectName: "Obra Integração",
-              flightId: FLIGHT_ID,
-              flightDate: "2026-06-12",
+              captureSessionId: FLIGHT_ID,
+              captureDate: "2026-06-12",
               operatorName: "Operador E2E",
               status: "COMPLETED",
               jobId: JOB_ID,
@@ -253,7 +253,7 @@ const routes = new Map([
     (_req, res) =>
       json(res, 200, {
         projects: 1,
-        flights: 1,
+        captureSessions: 1,
         jobs: 1,
         processedJobs: 1,
         pendingJobs: 0,

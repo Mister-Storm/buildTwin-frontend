@@ -25,8 +25,8 @@ export function MaterialConsumptionTable({ rows }: MaterialConsumptionTableProps
           {rows.map((row) => (
             <tr key={row.materialLabel} className="border-b border-border/40">
               <td className="px-3 py-3">{row.materialLabel}</td>
-              <td className="px-3 py-3">{row.quantityAtFlightALabel}</td>
-              <td className="px-3 py-3">{row.quantityAtFlightBLabel}</td>
+              <td className="px-3 py-3">{row.quantityAtCaptureSessionALabel}</td>
+              <td className="px-3 py-3">{row.quantityAtCaptureSessionBLabel}</td>
               <td className="px-3 py-3 font-medium">{row.quantityConsumedLabel}</td>
               <td className="px-3 py-3">{row.consumptionPerSquareMeterLabel}</td>
             </tr>

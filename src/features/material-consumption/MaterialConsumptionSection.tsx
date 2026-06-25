@@ -21,37 +21,37 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ApiError } from "@/types/api/common.api";
-import type { ProjectFlightListItemDto } from "@/types/api/flight.api";
+import type { ProjectCaptureSessionListItemDto } from "@/types/api/capture-session.api";
 
 type MaterialConsumptionSectionProps = {
   projectId: string;
-  flights: ProjectFlightListItemDto[];
+  captureSessions: ProjectCaptureSessionListItemDto[];
 };
 
 export function MaterialConsumptionSection({
   projectId,
-  flights,
+  captureSessions,
 }: MaterialConsumptionSectionProps) {
-  const [flightA, setFlightA] = useState(flights[0]?.flightId ?? "");
-  const [flightB, setFlightB] = useState(flights[1]?.flightId ?? flights[0]?.flightId ?? "");
+  const [captureSessionA, setCaptureSessionA] = useState(captureSessions[0]?.captureSessionId ?? "");
+  const [captureSessionB, setCaptureSessionB] = useState(captureSessions[1]?.captureSessionId ?? captureSessions[0]?.captureSessionId ?? "");
   const [viewModel, setViewModel] = useState<ConsumptionAnalysisViewModel | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   async function handleAnalyze() {
     setError(null);
-    if (!flightA || !flightB) {
+    if (!captureSessionA || !captureSessionB) {
       setError("Selecione dois levantamentos.");
       return;
     }
-    if (flightA === flightB) {
+    if (captureSessionA === captureSessionB) {
       setError("Selecione levantamentos diferentes.");
       return;
     }
 
     setIsLoading(true);
     try {
-      const result = await getProjectMaterialConsumption(projectId, flightA, flightB);
+      const result = await getProjectMaterialConsumption(projectId, captureSessionA, captureSessionB);
       setViewModel(mapConsumptionAnalysisViewModel(result));
     } catch (analyzeError) {
       setViewModel(null);
@@ -82,13 +82,13 @@ export function MaterialConsumptionSection({
           <FormField label="Levantamento A" htmlFor="consumption-flight-a">
             <NativeSelect
               id="consumption-flight-a"
-              value={flightA}
-              onChange={(event) => setFlightA(event.target.value)}
-              disabled={flights.length === 0 || isLoading}
+              value={captureSessionA}
+              onChange={(event) => setCaptureSessionA(event.target.value)}
+              disabled={captureSessions.length === 0 || isLoading}
             >
-              {flights.map((flight) => (
-                <option key={flight.flightId} value={flight.flightId}>
-                  {formatDate(parseDateOnly(flight.flightDate))} — {flight.operatorName}
+              {captureSessions.map((captureSession) => (
+                <option key={captureSession.captureSessionId} value={captureSession.captureSessionId}>
+                  {formatDate(parseDateOnly(captureSession.captureDate))} — {captureSession.operatorName}
                 </option>
               ))}
             </NativeSelect>
@@ -96,13 +96,13 @@ export function MaterialConsumptionSection({
           <FormField label="Levantamento B" htmlFor="consumption-flight-b">
             <NativeSelect
               id="consumption-flight-b"
-              value={flightB}
-              onChange={(event) => setFlightB(event.target.value)}
-              disabled={flights.length === 0 || isLoading}
+              value={captureSessionB}
+              onChange={(event) => setCaptureSessionB(event.target.value)}
+              disabled={captureSessions.length === 0 || isLoading}
             >
-              {flights.map((flight) => (
-                <option key={flight.flightId} value={flight.flightId}>
-                  {formatDate(parseDateOnly(flight.flightDate))} — {flight.operatorName}
+              {captureSessions.map((captureSession) => (
+                <option key={captureSession.captureSessionId} value={captureSession.captureSessionId}>
+                  {formatDate(parseDateOnly(captureSession.captureDate))} — {captureSession.operatorName}
                 </option>
               ))}
             </NativeSelect>
@@ -113,7 +113,7 @@ export function MaterialConsumptionSection({
           type="button"
           variant="outline"
           onClick={handleAnalyze}
-          disabled={isLoading || flights.length < 2}
+          disabled={isLoading || captureSessions.length < 2}
         >
           {isLoading ? "Analisando..." : "Analisar consumo"}
         </Button>

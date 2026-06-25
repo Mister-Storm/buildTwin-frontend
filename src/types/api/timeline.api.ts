@@ -5,8 +5,8 @@ export type TimelineMetricsDto = {
 
 export type ProjectTimelineItemDto = {
   sequenceNumber: number;
-  flightId: string;
-  flightDate: string;
+  captureSessionId: string;
+  captureDate: string;
   operatorName: string;
   jobId: string;
   jobStatus: string;

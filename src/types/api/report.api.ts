@@ -1,6 +1,6 @@
 export type ProgressReportResponseDto = {
   id: string;
-  flightId: string;
+  captureSessionId: string;
   reportPath: string;
   generatedAt: string;
 };

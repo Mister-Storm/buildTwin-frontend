@@ -6,8 +6,8 @@ import type {
 
 export type MaterialConsumptionRow = {
   materialLabel: string;
-  quantityAtFlightALabel: string;
-  quantityAtFlightBLabel: string;
+  quantityAtCaptureSessionALabel: string;
+  quantityAtCaptureSessionBLabel: string;
   quantityConsumedLabel: string;
   consumptionPerSquareMeterLabel: string;
 };
@@ -24,8 +24,8 @@ export function mapConsumptionRows(
 ): MaterialConsumptionRow[] {
   return materials.map((item) => ({
     materialLabel: MATERIAL_TYPE_LABELS[item.materialType],
-    quantityAtFlightALabel: `${formatQuantity(item.quantityAtFlightA)} ${formatUnit(item.unit)}`,
-    quantityAtFlightBLabel: `${formatQuantity(item.quantityAtFlightB)} ${formatUnit(item.unit)}`,
+    quantityAtCaptureSessionALabel: `${formatQuantity(item.quantityAtCaptureSessionA)} ${formatUnit(item.unit)}`,
+    quantityAtCaptureSessionBLabel: `${formatQuantity(item.quantityAtCaptureSessionB)} ${formatUnit(item.unit)}`,
     quantityConsumedLabel: formatSignedQuantity(item.quantityConsumed, item.unit),
     consumptionPerSquareMeterLabel: formatConsumptionPerSquareMeter(
       item.consumptionPerSquareMeter,

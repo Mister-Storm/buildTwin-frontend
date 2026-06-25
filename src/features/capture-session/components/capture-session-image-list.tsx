@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
-import type { FlightImageResponseDto } from "@/types/api/flight.api";
+import type { CaptureImageResponseDto } from "@/types/api/capture-session.api";
 import { formatDateTime, formatFileSize } from "@/lib/formatters";
 import {
   Card,
@@ -12,11 +12,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-type FlightImageListProps = {
-  images: FlightImageResponseDto[];
+type CaptureSessionImageListProps = {
+  images: CaptureImageResponseDto[];
 };
 
-export function FlightImageList({ images }: FlightImageListProps) {
+export function CaptureSessionImageList({ images }: CaptureSessionImageListProps) {
   if (images.length === 0) {
     return (
       <Card className="border-border/60">
@@ -56,7 +56,7 @@ export function FlightImageList({ images }: FlightImageListProps) {
   );
 }
 
-function ImageRow({ image }: { image: FlightImageResponseDto }) {
+function ImageRow({ image }: { image: CaptureImageResponseDto }) {
   const [showChecksum, setShowChecksum] = useState(false);
 
   return (

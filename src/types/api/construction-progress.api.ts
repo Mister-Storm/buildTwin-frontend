@@ -9,12 +9,12 @@ export type ProjectTypeDto =
 
 export type ProjectConstructionProgressDto = {
   projectId: string;
-  firstFlightDate: string | null;
-  lastFlightDate: string | null;
+  firstCaptureDate: string | null;
+  lastCaptureDate: string | null;
   timelineSize: number;
   currentObservedAreaSquareMeters: number | null;
-  deltaAreaFromPreviousFlight: number | null;
-  deltaAreaFromFirstFlight: number | null;
+  deltaAreaFromPreviousCapture: number | null;
+  deltaAreaFromFirstCapture: number | null;
   averageGrowthPerDay: number | null;
   estimatedCompletionPercent: number | null;
   plannedAreaSquareMeters: number | null;
@@ -27,10 +27,10 @@ export type ProjectConstructionProgressDto = {
 };
 
 export type ProjectProgressHistoryItemDto = {
-  flightId: string;
-  flightDate: string;
+  captureSessionId: string;
+  captureDate: string;
   observedAreaSquareMeters: number;
-  deltaAreaFromPreviousFlight: number | null;
+  deltaAreaFromPreviousCapture: number | null;
 };
 
 export type ProjectProgressHistoryDto = {
@@ -39,9 +39,9 @@ export type ProjectProgressHistoryDto = {
 };
 
 export type ConstructionProgressSnapshotDto = {
-  flightSequence: number;
-  flightId: string;
-  flightDate: string;
+  captureSessionSequence: number;
+  captureSessionId: string;
+  captureDate: string;
   occupiedAreaSquareMeters: number | null;
   footprintIndex: number | null;
   visualChangeIndex: number | null;

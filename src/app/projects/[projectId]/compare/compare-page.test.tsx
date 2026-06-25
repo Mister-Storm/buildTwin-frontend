@@ -39,11 +39,11 @@ describe("ComparePage", () => {
       timeline: [],
       viewModel: {
         projectId: "proj-1",
-        flightA: {
+        captureSessionA: {
           sequenceNumber: 1,
-          flightId: "flight-a",
-          flightDate: new Date(2026, 4, 1),
-          flightDateLabel: "1 de mai. de 2026",
+          captureSessionId: "flight-a",
+          captureDate: new Date(2026, 4, 1),
+          captureDateLabel: "1 de mai. de 2026",
           operatorName: "Pilot A",
           previewUrl: "/preview-a",
           areaLabel: "8.000,0 m²",
@@ -51,11 +51,11 @@ describe("ComparePage", () => {
           areaSquareMeters: 8000,
           gsdCmPerPixel: 2.2,
         },
-        flightB: {
+        captureSessionB: {
           sequenceNumber: 2,
-          flightId: "flight-b",
-          flightDate: new Date(2026, 5, 15),
-          flightDateLabel: "15 de jun. de 2026",
+          captureSessionId: "flight-b",
+          captureDate: new Date(2026, 5, 15),
+          captureDateLabel: "15 de jun. de 2026",
           operatorName: "Pilot B",
           previewUrl: "/preview-b",
           areaLabel: "8.421,4 m²",
@@ -67,8 +67,8 @@ describe("ComparePage", () => {
         deltaGsdLabel: "−0,1 cm/pixel",
         intervalDaysLabel: "45 dias",
         analytics: {
-          flightAId: "flight-a",
-          flightBId: "flight-b",
+          captureSessionAId: "flight-a",
+          captureSessionBId: "flight-b",
           daysBetween: 45,
           areaA: 8000,
           areaB: 8421.4,
@@ -90,8 +90,8 @@ describe("ComparePage", () => {
     vi.mocked(loadChangeDetection).mockResolvedValue({
       status: "success",
       viewModel: {
-        flightAId: "flight-a",
-        flightBId: "flight-b",
+        captureSessionAId: "flight-a",
+        captureSessionBId: "flight-b",
         changePercentageLabel: "62,1%",
         changedPixelsLabel: "102.314",
         changeLevel: "VERY_HIGH",
@@ -102,8 +102,8 @@ describe("ComparePage", () => {
     vi.mocked(loadProgressIntelligence).mockResolvedValue({
       status: "success",
       viewModel: {
-        flightAId: "flight-a",
-        flightBId: "flight-b",
+        captureSessionAId: "flight-a",
+        captureSessionBId: "flight-b",
         changePercentageLabel: "24,3%",
         classification: "MEDIUM",
         classificationLabel: "MEDIUM",
@@ -118,7 +118,7 @@ describe("ComparePage", () => {
         periodLabel: "1 de mai. de 2026 — 15 de jun. de 2026",
         timelineSize: 2,
         currentObservedAreaSquareMeters: 8421,
-        deltaAreaFromFirstFlight: 5120,
+        deltaAreaFromFirstCapture: 5120,
         currentObservedAreaLabel: "8.421 m²",
         accumulatedEvolutionLabel: "+5.120 m²",
         lastEvolutionLabel: "+210 m²",
@@ -160,9 +160,9 @@ describe("ComparePage", () => {
       timeline: [
         {
           sequenceNumber: 1,
-          flightId: "flight-only",
-          flightDate: new Date(2026, 5, 1),
-          flightDateLabel: "1 de jun. de 2026",
+          captureSessionId: "flight-only",
+          captureDate: new Date(2026, 5, 1),
+          captureDateLabel: "1 de jun. de 2026",
           operatorName: "Pilot",
           previewUrl: "/preview",
           areaLabel: null,

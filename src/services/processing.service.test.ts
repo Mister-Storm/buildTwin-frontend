@@ -11,17 +11,17 @@ describe("processing.service", () => {
     vi.clearAllMocks();
   });
 
-  it("startProcessing posts to flights process endpoint", async () => {
+  it("startProcessing posts to captureSessions process endpoint", async () => {
     vi.mocked(apiFetch).mockResolvedValue({
       jobId: "job-1",
-      flightId: "f1",
+      captureSessionId: "f1",
       status: "PENDING",
     });
 
     await startProcessing("flight-1");
 
     expect(apiFetch).toHaveBeenCalledWith(
-      "/flights/flight-1/process",
+      "/capture-sessions/flight-1/process",
       expect.objectContaining({ method: "POST" }),
     );
   });

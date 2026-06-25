@@ -11,19 +11,19 @@ import { parseDateOnly } from "@/lib/formatters";
 
 export function buildDemoOrthomosaicViewModel(
   projectId: string = DEMO_PROJECT_ID,
-  flightId: string = DEMO_FLIGHT_ID,
+  captureSessionId: string = DEMO_FLIGHT_ID,
 ): OrthomosaicViewModel {
-  const flightDate = parseDateOnly("2026-06-12");
+  const captureDate = parseDateOnly("2026-06-12");
 
   return {
     projectId,
-    flightId,
+    captureSessionId,
     jobId: DEMO_JOB_ID,
     previewArtifactId: DEMO_PREVIEW_ARTIFACT_ID,
     downloadArtifactId: null,
     previewUrl: DEMO_ORTHOMOSAIC_PREVIEW_URL,
     downloadUrl: null,
-    flightDate,
+    captureDate,
     operatorName: "Jane Doe",
     jobStatus: "Concluído",
     jobStatusVariant: "success",
@@ -46,9 +46,9 @@ export function buildDemoOrthomosaicViewModel(
 
 export function canUseDemoOrthomosaic(
   projectId: string,
-  flightId?: string,
+  captureSessionId?: string,
 ): boolean {
   if (!isDemoProject(projectId)) return false;
-  if (!flightId || flightId === DEMO_FLIGHT_ID) return true;
+  if (!captureSessionId || captureSessionId === DEMO_FLIGHT_ID) return true;
   return false;
 }

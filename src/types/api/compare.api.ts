@@ -7,19 +7,19 @@ export type ChangeLevelDto =
 
 export type ComparisonQualityDto = "NORMAL" | "LOW";
 
-export type CompareFlightMetricsDto = {
+export type CompareCaptureSessionMetricsDto = {
   areaSquareMeters: number | null;
   gsdCmPerPixel: number | null;
 };
 
 export type CompareMetricsDto = {
-  flightA: CompareFlightMetricsDto;
-  flightB: CompareFlightMetricsDto;
+  captureSessionA: CompareCaptureSessionMetricsDto;
+  captureSessionB: CompareCaptureSessionMetricsDto;
 };
 
 export type ProjectCompareDto = {
-  flightA: string;
-  flightB: string;
+  captureSessionA: string;
+  captureSessionB: string;
   changePercentage: number;
   changedPixels: number;
   totalPixels: number;

@@ -1,4 +1,4 @@
-import type { StatusVariant } from "@/features/domain/models/flight";
+import type { StatusVariant } from "@/features/domain/models/capture-session";
 
 export type OrthomosaicBounds = {
   minLat: number;
@@ -9,13 +9,13 @@ export type OrthomosaicBounds = {
 
 export type OrthomosaicViewModel = {
   projectId: string;
-  flightId: string;
+  captureSessionId: string;
   jobId: string;
   previewArtifactId: string;
   downloadArtifactId: string | null;
   previewUrl: string;
   downloadUrl: string | null;
-  flightDate: Date | null;
+  captureDate: Date | null;
   operatorName: string | null;
   jobStatus: string;
   jobStatusVariant: StatusVariant;
@@ -37,7 +37,7 @@ export type OrthomosaicViewModel = {
 
 export type OrthomosaicResolution = Readonly<{
   projectId: string;
-  flightId: string;
+  captureSessionId: string;
   jobId: string;
   previewArtifactId?: string | undefined;
 }>;

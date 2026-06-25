@@ -3,19 +3,19 @@
 import type { TimelineItemViewModel } from "@/features/domain/models/temporal-comparison";
 import { useRouter } from "next/navigation";
 
-type FlightComparisonSelectorProps = {
+type CaptureSessionComparisonSelectorProps = {
   projectId: string;
   timeline: TimelineItemViewModel[];
-  flightAId: string;
-  flightBId: string;
+  captureSessionAId: string;
+  captureSessionBId: string;
 };
 
-export function FlightComparisonSelector({
+export function CaptureSessionComparisonSelector({
   projectId,
   timeline,
-  flightAId,
-  flightBId,
-}: FlightComparisonSelectorProps) {
+  captureSessionAId,
+  captureSessionBId,
+}: CaptureSessionComparisonSelectorProps) {
   const router = useRouter();
 
   function updateSelection(nextA: string, nextB: string) {
@@ -23,8 +23,8 @@ export function FlightComparisonSelector({
       return;
     }
     const params = new URLSearchParams({
-      flightA: nextA,
-      flightB: nextB,
+      captureSessionA: nextA,
+      captureSessionB: nextB,
     });
     router.push(`/projects/${projectId}/compare?${params.toString()}`);
   }
@@ -35,12 +35,12 @@ export function FlightComparisonSelector({
         <span className="font-medium text-muted-foreground">Levantamento A (anterior)</span>
         <select
           className="w-full rounded-lg border border-border/60 bg-background px-3 py-2"
-          value={flightAId}
-          onChange={(event) => updateSelection(event.target.value, flightBId)}
+          value={captureSessionAId}
+          onChange={(event) => updateSelection(event.target.value, captureSessionBId)}
         >
           {timeline.map((item) => (
-            <option key={item.flightId} value={item.flightId}>
-              #{item.sequenceNumber} — {item.flightDateLabel} ({item.operatorName})
+            <option key={item.captureSessionId} value={item.captureSessionId}>
+              #{item.sequenceNumber} — {item.captureDateLabel} ({item.operatorName})
             </option>
           ))}
         </select>
@@ -49,12 +49,12 @@ export function FlightComparisonSelector({
         <span className="font-medium text-muted-foreground">Levantamento B (mais recente)</span>
         <select
           className="w-full rounded-lg border border-border/60 bg-background px-3 py-2"
-          value={flightBId}
-          onChange={(event) => updateSelection(flightAId, event.target.value)}
+          value={captureSessionBId}
+          onChange={(event) => updateSelection(captureSessionAId, event.target.value)}
         >
           {timeline.map((item) => (
-            <option key={item.flightId} value={item.flightId}>
-              #{item.sequenceNumber} — {item.flightDateLabel} ({item.operatorName})
+            <option key={item.captureSessionId} value={item.captureSessionId}>
+              #{item.sequenceNumber} — {item.captureDateLabel} ({item.operatorName})
             </option>
           ))}
         </select>

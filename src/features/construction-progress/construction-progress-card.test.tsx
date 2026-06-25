@@ -6,12 +6,12 @@ import type { ConstructionProgressTimelineViewModel } from "@/features/construct
 const viewModel: ConstructionProgressTimelineViewModel = {
   projectId: "proj-1",
   footprintGrowthSincePreviousLabel: "+11,0%",
-  chartPoints: [{ flightDateLabel: "01 mai. 2026", footprintIndex: 0.72 }],
+  chartPoints: [{ captureDateLabel: "01 mai. 2026", footprintIndex: 0.72 }],
   timeline: [
     {
-      flightSequence: 1,
-      flightId: "flight-1",
-      flightDateLabel: "01 mai. 2026",
+      captureSessionSequence: 1,
+      captureSessionId: "flight-1",
+      captureDateLabel: "01 mai. 2026",
       occupiedAreaSquareMeters: 1000,
       occupiedAreaLabel: "1.000 m²",
       footprintIndex: 0.6,
@@ -20,9 +20,9 @@ const viewModel: ConstructionProgressTimelineViewModel = {
       visualChangeLabel: "Não disponível",
     },
     {
-      flightSequence: 2,
-      flightId: "flight-2",
-      flightDateLabel: "01 jun. 2026",
+      captureSessionSequence: 2,
+      captureSessionId: "flight-2",
+      captureDateLabel: "01 jun. 2026",
       occupiedAreaSquareMeters: 1250,
       occupiedAreaLabel: "1.250 m²",
       footprintIndex: 0.72,
@@ -32,9 +32,9 @@ const viewModel: ConstructionProgressTimelineViewModel = {
     },
   ],
   latest: {
-    flightSequence: 2,
-    flightId: "flight-2",
-    flightDateLabel: "01 jun. 2026",
+    captureSessionSequence: 2,
+    captureSessionId: "flight-2",
+    captureDateLabel: "01 jun. 2026",
     occupiedAreaSquareMeters: 1250,
     occupiedAreaLabel: "1.250 m²",
     footprintIndex: 0.72,

@@ -18,7 +18,7 @@ import { FormField } from "@/components/shared/FormField";
 import { NativeSelect } from "@/components/shared/NativeSelect";
 import { registerMaterialInventory } from "@/services/material-inventory.service";
 import { ApiError } from "@/types/api/common.api";
-import type { ProjectFlightListItemDto } from "@/types/api/flight.api";
+import type { ProjectCaptureSessionListItemDto } from "@/types/api/capture-session.api";
 import type { InventoryUnit, MaterialType } from "@/types/api/material-inventory.api";
 import { MATERIAL_TYPE_LABELS } from "@/features/material-inventory/material-inventory.mapper";
 import { formatDate, parseDateOnly } from "@/lib/formatters";
@@ -34,7 +34,7 @@ type InventoryRow = {
 const MATERIAL_TYPES = Object.keys(MATERIAL_TYPE_LABELS) as MaterialType[];
 
 type RegisterMaterialInventoryDialogProps = {
-  flights: ProjectFlightListItemDto[];
+  captureSessions: ProjectCaptureSessionListItemDto[];
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
 };
@@ -50,7 +50,7 @@ function createEmptyRow(): InventoryRow {
 }
 
 export function RegisterMaterialInventoryDialog({
-  flights,
+  captureSessions,
   open: controlledOpen,
   onOpenChange,
 }: RegisterMaterialInventoryDialogProps) {
@@ -59,7 +59,7 @@ export function RegisterMaterialInventoryDialog({
   const open = controlledOpen ?? internalOpen;
   const setOpen = onOpenChange ?? setInternalOpen;
 
-  const [flightId, setFlightId] = useState(flights[0]?.flightId ?? "");
+  const [captureSessionId, setCaptureSessionId] = useState(captureSessions[0]?.captureSessionId ?? "");
   const [rows, setRows] = useState<InventoryRow[]>([createEmptyRow()]);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -83,8 +83,8 @@ export function RegisterMaterialInventoryDialog({
     setFieldErrors({});
 
     const errors: Record<string, string> = {};
-    if (!flightId) {
-      errors.flightId = "Selecione um levantamento.";
+    if (!captureSessionId) {
+      errors.captureSessionId = "Selecione um levantamento.";
     }
 
     const items = rows.map((row) => {
@@ -107,7 +107,7 @@ export function RegisterMaterialInventoryDialog({
 
     setIsSubmitting(true);
     try {
-      await registerMaterialInventory(flightId, { items });
+      await registerMaterialInventory(captureSessionId, { items });
       setOpen(false);
       setRows([createEmptyRow()]);
       router.refresh();
@@ -137,19 +137,19 @@ export function RegisterMaterialInventoryDialog({
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <FormField label="Levantamento" htmlFor="inventory-flight" error={fieldErrors.flightId}>
+          <FormField label="Levantamento" htmlFor="inventory-flight" error={fieldErrors.captureSessionId}>
             <NativeSelect
               id="inventory-flight"
-              value={flightId}
-              onChange={(event) => setFlightId(event.target.value)}
-              disabled={flights.length === 0 || isSubmitting}
+              value={captureSessionId}
+              onChange={(event) => setCaptureSessionId(event.target.value)}
+              disabled={captureSessions.length === 0 || isSubmitting}
             >
-              {flights.length === 0 ? (
+              {captureSessions.length === 0 ? (
                 <option value="">Nenhum levantamento disponível</option>
               ) : (
-                flights.map((flight) => (
-                  <option key={flight.flightId} value={flight.flightId}>
-                    {formatDate(parseDateOnly(flight.flightDate))} — {flight.operatorName}
+                captureSessions.map((captureSession) => (
+                  <option key={captureSession.captureSessionId} value={captureSession.captureSessionId}>
+                    {formatDate(parseDateOnly(captureSession.captureDate))} — {captureSession.operatorName}
                   </option>
                 ))
               )}
@@ -251,7 +251,7 @@ export function RegisterMaterialInventoryDialog({
           {submitError ? <p className="text-sm text-destructive">{submitError}</p> : null}
 
           <DialogFooter className="px-0 pb-0">
-            <Button type="submit" disabled={isSubmitting || flights.length === 0}>
+            <Button type="submit" disabled={isSubmitting || captureSessions.length === 0}>
               {isSubmitting ? "Salvando..." : "Registrar"}
             </Button>
           </DialogFooter>

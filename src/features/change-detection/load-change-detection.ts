@@ -11,17 +11,17 @@ export type ChangeDetectionLoadResult =
 
 export async function loadChangeDetection(
   projectId: string,
-  flightAId: string,
-  flightBId: string,
+  captureSessionAId: string,
+  captureSessionBId: string,
 ): Promise<ChangeDetectionLoadResult> {
   try {
-    const dto = await getProjectCompare(projectId, flightAId, flightBId);
+    const dto = await getProjectCompare(projectId, captureSessionAId, captureSessionBId);
     const viewModel = mapChangeDetectionViewModel(dto);
 
     debugLog("change_detection_loaded", {
       projectId,
-      flightA: flightAId,
-      flightB: flightBId,
+      captureSessionA: captureSessionAId,
+      captureSessionB: captureSessionBId,
       changePercentage: dto.changePercentage,
       changeLevel: dto.changeLevel,
       comparisonQuality: dto.comparisonQuality,
@@ -32,8 +32,8 @@ export async function loadChangeDetection(
   } catch (error) {
     debugLog("loadChangeDetection: failed", {
       projectId,
-      flightA: flightAId,
-      flightB: flightBId,
+      captureSessionA: captureSessionAId,
+      captureSessionB: captureSessionBId,
       error: error instanceof Error ? error.message : String(error),
     });
     if (error instanceof ApiError && error.status === 404) {

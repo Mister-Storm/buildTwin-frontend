@@ -18,8 +18,8 @@ const viewModel: BuiltAreaViewModel = {
   showCompletion: true,
   chartPoints: [
     {
-      flightId: "flight-1",
-      flightDateLabel: "1 de mai. de 2026",
+      captureSessionId: "flight-1",
+      captureDateLabel: "1 de mai. de 2026",
       observedBuiltAreaSquareMeters: 1000,
     },
   ],
@@ -33,10 +33,10 @@ describe("BuiltAreaSection", () => {
     render(
       <BuiltAreaSection
         viewModel={viewModel}
-        flights={[
+        captureSessions={[
           {
-            flightId: "flight-1",
-            flightDate: "2026-05-01",
+            captureSessionId: "flight-1",
+            captureDate: "2026-05-01",
             operatorName: "Pilot",
             imageCount: 10,
             latestProcessingStatus: "COMPLETED",

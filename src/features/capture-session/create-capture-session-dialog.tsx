@@ -16,31 +16,31 @@ import {
 import { Input } from "@/components/ui/input";
 import { FormField } from "@/components/shared/FormField";
 import {
-  createFlightSchema,
-  type CreateFlightFormValues,
+  createCaptureSessionSchema,
+  type CreateCaptureSessionFormValues,
 } from "@/features/project/schemas/create-project.schema";
-import { createFlight } from "@/services/flights.service";
+import { createCaptureSession } from "@/services/capture-sessions.service";
 import { ApiError } from "@/types/api/common.api";
 
-type CreateFlightDialogProps = {
+type CreateCaptureSessionDialogProps = {
   projectId: string;
   triggerLabel?: string;
-  redirectToFlight?: boolean;
+  redirectToCaptureSession?: boolean;
 };
 
-export function CreateFlightDialog({
+export function CreateCaptureSessionDialog({
   projectId,
-  triggerLabel = "Novo Voo",
-  redirectToFlight = true,
-}: CreateFlightDialogProps) {
+  triggerLabel = "Nova Captura",
+  redirectToCaptureSession = true,
+}: CreateCaptureSessionDialogProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [values, setValues] = useState<CreateFlightFormValues>({
-    flightDate: new Date().toISOString().slice(0, 10),
+  const [values, setValues] = useState<CreateCaptureSessionFormValues>({
+    captureDate: new Date().toISOString().slice(0, 10),
     operatorName: "",
   });
   const [fieldErrors, setFieldErrors] = useState<
-    Partial<Record<keyof CreateFlightFormValues, string>>
+    Partial<Record<keyof CreateCaptureSessionFormValues, string>>
   >({});
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -49,11 +49,11 @@ export function CreateFlightDialog({
     event.preventDefault();
     setSubmitError(null);
 
-    const parsed = createFlightSchema.safeParse(values);
+    const parsed = createCaptureSessionSchema.safeParse(values);
     if (!parsed.success) {
-      const errors: Partial<Record<keyof CreateFlightFormValues, string>> = {};
+      const errors: Partial<Record<keyof CreateCaptureSessionFormValues, string>> = {};
       for (const issue of parsed.error.issues) {
-        const key = issue.path[0] as keyof CreateFlightFormValues;
+        const key = issue.path[0] as keyof CreateCaptureSessionFormValues;
         if (!errors[key]) errors[key] = issue.message;
       }
       setFieldErrors(errors);
@@ -62,15 +62,15 @@ export function CreateFlightDialog({
 
     setIsSubmitting(true);
     try {
-      const flight = await createFlight(projectId, parsed.data);
+      const captureSession = await createCaptureSession(projectId, parsed.data);
       setOpen(false);
       setValues({
-        flightDate: new Date().toISOString().slice(0, 10),
+        captureDate: new Date().toISOString().slice(0, 10),
         operatorName: "",
       });
       setFieldErrors({});
-      if (redirectToFlight) {
-        router.push(`/projects/${projectId}/flights/${flight.id}`);
+      if (redirectToCaptureSession) {
+        router.push(`/projects/${projectId}/capture-sessions/${captureSession.id}`);
       } else {
         router.refresh();
       }
@@ -78,7 +78,7 @@ export function CreateFlightDialog({
       setSubmitError(
         error instanceof ApiError
           ? error.message
-          : "Não foi possível criar o voo.",
+          : "Não foi possível criar a captura.",
       );
     } finally {
       setIsSubmitting(false);
@@ -93,23 +93,23 @@ export function CreateFlightDialog({
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Novo Voo</DialogTitle>
+          <DialogTitle>Nova Captura</DialogTitle>
           <DialogDescription>
             Registre um voo de drone para esta obra.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="grid gap-4">
           <FormField
-            label="Data do voo"
-            htmlFor="flightDate"
-            error={fieldErrors.flightDate}
+            label="Data da captura"
+            htmlFor="captureDate"
+            error={fieldErrors.captureDate}
           >
             <Input
-              id="flightDate"
+              id="captureDate"
               type="date"
-              value={values.flightDate}
+              value={values.captureDate}
               onChange={(e) =>
-                setValues((v) => ({ ...v, flightDate: e.target.value }))
+                setValues((v) => ({ ...v, captureDate: e.target.value }))
               }
             />
           </FormField>
@@ -142,7 +142,7 @@ export function CreateFlightDialog({
               Cancelar
             </Button>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Criando..." : "Criar voo"}
+              {isSubmitting ? "Criando..." : "Criar captura"}
             </Button>
           </DialogFooter>
         </form>

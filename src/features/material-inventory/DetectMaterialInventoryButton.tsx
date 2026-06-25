@@ -6,35 +6,35 @@ import { Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { NativeSelect } from "@/components/shared/NativeSelect";
 import { detectMaterialInventory } from "@/services/material-inventory.service";
-import type { ProjectFlightListItemDto } from "@/types/api/flight.api";
+import type { ProjectCaptureSessionListItemDto } from "@/types/api/capture-session.api";
 import { formatDate, parseDateOnly } from "@/lib/formatters";
 
 type DetectMaterialInventoryButtonProps = {
-  flights: ProjectFlightListItemDto[];
+  captureSessions: ProjectCaptureSessionListItemDto[];
   onDetected?: (previewArtifactId: string | null) => void;
 };
 
 export function DetectMaterialInventoryButton({
-  flights,
+  captureSessions,
   onDetected,
 }: DetectMaterialInventoryButtonProps) {
   const router = useRouter();
-  const [selectedFlightId, setSelectedFlightId] = useState(flights[0]?.flightId ?? "");
+  const [selectedCaptureSessionId, setSelectedCaptureSessionId] = useState(captureSessions[0]?.captureSessionId ?? "");
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
-  if (flights.length === 0) {
+  if (captureSessions.length === 0) {
     return null;
   }
 
   const handleDetect = () => {
-    if (!selectedFlightId) {
+    if (!selectedCaptureSessionId) {
       return;
     }
     setError(null);
     startTransition(async () => {
       try {
-        const result = await detectMaterialInventory(selectedFlightId);
+        const result = await detectMaterialInventory(selectedCaptureSessionId);
         onDetected?.(result.previewArtifactId);
         router.refresh();
       } catch (err) {
@@ -48,17 +48,17 @@ export function DetectMaterialInventoryButton({
       <div className="flex flex-wrap items-center justify-end gap-2">
         <NativeSelect
           className="w-[220px]"
-          value={selectedFlightId}
-          onChange={(event) => setSelectedFlightId(event.target.value)}
+          value={selectedCaptureSessionId}
+          onChange={(event) => setSelectedCaptureSessionId(event.target.value)}
           disabled={isPending}
         >
-          {flights.map((flight) => (
-            <option key={flight.flightId} value={flight.flightId}>
-              {formatDate(parseDateOnly(flight.flightDate))}
+          {captureSessions.map((captureSession) => (
+            <option key={captureSession.captureSessionId} value={captureSession.captureSessionId}>
+              {formatDate(parseDateOnly(captureSession.captureDate))}
             </option>
           ))}
         </NativeSelect>
-        <Button type="button" onClick={handleDetect} disabled={isPending || !selectedFlightId}>
+        <Button type="button" onClick={handleDetect} disabled={isPending || !selectedCaptureSessionId}>
           <Sparkles className="mr-2 size-4" />
           {isPending ? "Detectando..." : "Detectar Materiais com IA"}
         </Button>

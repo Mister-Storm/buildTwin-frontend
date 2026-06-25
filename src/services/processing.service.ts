@@ -3,11 +3,11 @@ import { debugLog } from "@/lib/debug";
 import type { StartProcessingJobResponseDto } from "@/types/api/processing.api";
 
 export async function startProcessing(
-  flightId: string,
+  captureSessionId: string,
 ): Promise<StartProcessingJobResponseDto> {
-  debugLog("startProcessing", { flightId });
+  debugLog("startProcessing", { captureSessionId });
   return apiFetch<StartProcessingJobResponseDto>(
-    `/flights/${flightId}/process`,
+    `/capture-sessions/${captureSessionId}/process`,
     { method: "POST" },
   );
 }

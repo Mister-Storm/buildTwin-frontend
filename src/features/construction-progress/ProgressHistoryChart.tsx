@@ -85,18 +85,18 @@ export function ProgressHistoryChart({ history }: ProgressHistoryChartProps) {
             points={polyline}
           />
           {points.map(({ x, y, point }) => (
-            <g key={point.flightId}>
+            <g key={point.captureSessionId}>
               <circle cx={x} cy={y} r="4" className="fill-brand-accent" />
               <title>
-                {point.flightDateLabel}: {point.observedAreaSquareMeters.toLocaleString("pt-BR")} m²
+                {point.captureDateLabel}: {point.observedAreaSquareMeters.toLocaleString("pt-BR")} m²
               </title>
             </g>
           ))}
         </svg>
         <div className="mt-4 flex flex-wrap gap-3 text-xs text-muted-foreground">
           {history.map((point) => (
-            <span key={point.flightId}>
-              {point.flightDateLabel}: {point.observedAreaSquareMeters.toLocaleString("pt-BR")} m²
+            <span key={point.captureSessionId}>
+              {point.captureDateLabel}: {point.observedAreaSquareMeters.toLocaleString("pt-BR")} m²
             </span>
           ))}
         </div>

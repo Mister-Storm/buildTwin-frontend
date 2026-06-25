@@ -9,7 +9,7 @@ export type ConstructionProgressViewModel = {
   periodLabel: string;
   timelineSize: number;
   currentObservedAreaSquareMeters: number | null;
-  deltaAreaFromFirstFlight: number | null;
+  deltaAreaFromFirstCapture: number | null;
   currentObservedAreaLabel: string;
   accumulatedEvolutionLabel: string;
   lastEvolutionLabel: string;
@@ -20,18 +20,18 @@ export type ConstructionProgressViewModel = {
 };
 
 export type ConstructionProgressHistoryPoint = {
-  flightId: string;
-  flightDateLabel: string;
+  captureSessionId: string;
+  captureDateLabel: string;
   observedAreaSquareMeters: number;
-  deltaAreaFromPreviousFlight: number | null;
+  deltaAreaFromPreviousCapture: number | null;
 };
 
 export function mapConstructionProgress(
   dto: ProjectConstructionProgressDto,
 ): ConstructionProgressViewModel {
   const periodLabel =
-    dto.firstFlightDate && dto.lastFlightDate
-      ? `${formatDate(parseDateOnly(dto.firstFlightDate))} — ${formatDate(parseDateOnly(dto.lastFlightDate))}`
+    dto.firstCaptureDate && dto.lastCaptureDate
+      ? `${formatDate(parseDateOnly(dto.firstCaptureDate))} — ${formatDate(parseDateOnly(dto.lastCaptureDate))}`
       : "Sem período";
 
   return {
@@ -39,10 +39,10 @@ export function mapConstructionProgress(
     periodLabel,
     timelineSize: dto.timelineSize,
     currentObservedAreaSquareMeters: dto.currentObservedAreaSquareMeters,
-    deltaAreaFromFirstFlight: dto.deltaAreaFromFirstFlight,
+    deltaAreaFromFirstCapture: dto.deltaAreaFromFirstCapture,
     currentObservedAreaLabel: formatObservedArea(dto.currentObservedAreaSquareMeters),
-    accumulatedEvolutionLabel: formatAreaDelta(dto.deltaAreaFromFirstFlight),
-    lastEvolutionLabel: formatAreaDelta(dto.deltaAreaFromPreviousFlight),
+    accumulatedEvolutionLabel: formatAreaDelta(dto.deltaAreaFromFirstCapture),
+    lastEvolutionLabel: formatAreaDelta(dto.deltaAreaFromPreviousCapture),
     averageGrowthLabel: formatGrowthRate(dto.averageGrowthPerDay),
     estimatedCompletionLabel:
       dto.estimatedCompletionPercent !== null
@@ -57,10 +57,10 @@ export function mapConstructionProgressHistory(
   dto: ProjectProgressHistoryDto,
 ): ConstructionProgressHistoryPoint[] {
   return dto.history.map((item) => ({
-    flightId: item.flightId,
-    flightDateLabel: formatDate(parseDateOnly(item.flightDate)),
+    captureSessionId: item.captureSessionId,
+    captureDateLabel: formatDate(parseDateOnly(item.captureDate)),
     observedAreaSquareMeters: item.observedAreaSquareMeters,
-    deltaAreaFromPreviousFlight: item.deltaAreaFromPreviousFlight,
+    deltaAreaFromPreviousCapture: item.deltaAreaFromPreviousCapture,
   }));
 }
 

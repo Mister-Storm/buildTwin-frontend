@@ -1,5 +1,5 @@
 import type { ProjectDashboardDto } from "@/types/api/dashboard.api";
-import type { ProjectFlightListItemDto } from "@/types/api/flight.api";
+import type { ProjectCaptureSessionListItemDto } from "@/types/api/capture-session.api";
 import type { ProjectResponseDto } from "@/types/api/project.api";
 import {
   DEMO_FLIGHT_ID,
@@ -30,10 +30,10 @@ export const DEMO_PROJECT_DTO: ProjectResponseDto = {
   plannedCompletionDate: null,
 };
 
-export const DEMO_FLIGHTS_DTO: ProjectFlightListItemDto[] = [
+export const DEMO_FLIGHTS_DTO: ProjectCaptureSessionListItemDto[] = [
   {
-    flightId: DEMO_FLIGHT_ID,
-    flightDate: "2026-06-12",
+    captureSessionId: DEMO_FLIGHT_ID,
+    captureDate: "2026-06-12",
     operatorName: "Jane Doe",
     imageCount: 42,
     latestProcessingStatus: "COMPLETED",
@@ -45,16 +45,16 @@ export const DEMO_DASHBOARD_DTO: ProjectDashboardDto = {
   projectId: DEMO_PROJECT_ID,
   projectName: "Riverside Tower",
   archived: false,
-  totalFlights: 1,
-  flightsByStatus: { COMPLETED: 1 },
-  processedFlights: 1,
-  pendingFlights: 0,
-  failedFlights: 0,
-  latestFlightDate: "2026-06-12",
-  recentFlights: [
+  totalCaptureSessions: 1,
+  captureSessionsByStatus: { COMPLETED: 1 },
+  processedCaptureSessions: 1,
+  pendingCaptureSessions: 0,
+  failedCaptureSessions: 0,
+  latestCaptureSessionDate: "2026-06-12",
+  recentCaptureSessions: [
     {
-      flightId: DEMO_FLIGHT_ID,
-      flightDate: "2026-06-12",
+      captureSessionId: DEMO_FLIGHT_ID,
+      captureDate: "2026-06-12",
       imageCount: 42,
       latestProcessingStatus: "COMPLETED",
       latestJobId: DEMO_JOB_ID,

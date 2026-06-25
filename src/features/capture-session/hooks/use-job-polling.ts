@@ -1,24 +1,24 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { getLatestFlightJob } from "@/services/flights.service";
-import type { LatestFlightJobResponseDto } from "@/types/api/processing.api";
+import { getLatestCaptureSessionJob } from "@/services/capture-sessions.service";
+import type { LatestCaptureSessionJobResponseDto } from "@/types/api/processing.api";
 import { ApiError } from "@/types/api/common.api";
 
 const POLL_INTERVAL_MS = 5000;
 
 type UseJobPollingOptions = {
   enabled?: boolean;
-  initialJob?: LatestFlightJobResponseDto | null;
-  onUpdate?: (job: LatestFlightJobResponseDto) => void;
+  initialJob?: LatestCaptureSessionJobResponseDto | null;
+  onUpdate?: (job: LatestCaptureSessionJobResponseDto) => void;
 };
 
 export function useJobPolling(
-  flightId: string,
+  captureSessionId: string,
   options: UseJobPollingOptions = {},
 ) {
   const { enabled = true, initialJob = null, onUpdate } = options;
-  const [job, setJob] = useState<LatestFlightJobResponseDto | null>(initialJob);
+  const [job, setJob] = useState<LatestCaptureSessionJobResponseDto | null>(initialJob);
   const [error, setError] = useState<string | null>(null);
   const [isPolling, setIsPolling] = useState(false);
   const onUpdateRef = useRef(onUpdate);
@@ -29,7 +29,7 @@ export function useJobPolling(
 
   const fetchJob = useCallback(async () => {
     try {
-      const latest = await getLatestFlightJob(flightId);
+      const latest = await getLatestCaptureSessionJob(captureSessionId);
       setJob(latest);
       setError(null);
       onUpdateRef.current?.(latest);
@@ -44,7 +44,7 @@ export function useJobPolling(
       );
       return null;
     }
-  }, [flightId]);
+  }, [captureSessionId]);
 
   useEffect(() => {
     if (!enabled) return;
@@ -76,7 +76,7 @@ export function useJobPolling(
       if (timer) clearInterval(timer);
       setIsPolling(false);
     };
-  }, [enabled, fetchJob, flightId]);
+  }, [enabled, fetchJob, captureSessionId]);
 
   return {
     job,

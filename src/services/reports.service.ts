@@ -3,8 +3,8 @@ import { debugLog } from "@/lib/debug";
 import type { ProgressReportResponseDto } from "@/types/api/report.api";
 
 export async function getProgressReport(
-  flightId: string,
+  captureSessionId: string,
 ): Promise<ProgressReportResponseDto> {
-  debugLog("getProgressReport", { flightId });
-  return apiFetch<ProgressReportResponseDto>(`/reports/${flightId}`);
+  debugLog("getProgressReport", { captureSessionId });
+  return apiFetch<ProgressReportResponseDto>(`/reports/${captureSessionId}`);
 }

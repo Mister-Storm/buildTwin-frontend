@@ -31,12 +31,12 @@ export function ProcessedSurveyTimeline({
           const previous = index > 0 ? enriched[index - 1]! : null;
           const compareHref =
             previous !== null
-              ? `/projects/${projectId}/compare?flightA=${previous.flightId}&flightB=${item.flightId}`
+              ? `/projects/${projectId}/compare?captureSessionA=${previous.captureSessionId}&captureSessionB=${item.captureSessionId}`
               : null;
 
           return (
             <div
-              key={item.flightId}
+              key={item.captureSessionId}
               className="flex flex-wrap items-center justify-between gap-3 border-b border-border/40 pb-4 last:border-0 last:pb-0"
             >
               <div className="flex items-start gap-3">
@@ -48,7 +48,7 @@ export function ProcessedSurveyTimeline({
                     Levantamento {item.sequenceNumber}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    {item.flightDateLabel} · {item.operatorName}
+                    {item.captureDateLabel} · {item.operatorName}
                   </p>
                 </div>
               </div>

@@ -20,8 +20,8 @@ describe("loadComparisonViewModel", () => {
       timeline: [
         {
           sequenceNumber: 1,
-          flightId: "flight-old",
-          flightDate: "2026-05-01",
+          captureSessionId: "flight-old",
+          captureDate: "2026-05-01",
           operatorName: "A",
           jobId: "job-1",
           jobStatus: "COMPLETED",
@@ -32,8 +32,8 @@ describe("loadComparisonViewModel", () => {
         },
         {
           sequenceNumber: 2,
-          flightId: "flight-new",
-          flightDate: "2026-06-15",
+          captureSessionId: "flight-new",
+          captureDate: "2026-06-15",
           operatorName: "B",
           jobId: "job-2",
           jobStatus: "COMPLETED",
@@ -49,8 +49,8 @@ describe("loadComparisonViewModel", () => {
 
     expect(result.status).toBe("success");
     if (result.status === "success") {
-      expect(result.viewModel.flightA.flightId).toBe("flight-old");
-      expect(result.viewModel.flightB.flightId).toBe("flight-new");
+      expect(result.viewModel.captureSessionA.captureSessionId).toBe("flight-old");
+      expect(result.viewModel.captureSessionB.captureSessionId).toBe("flight-new");
       expect(result.viewModel.deltaAreaLabel).toBe("+421,4 m²");
       expect(result.viewModel.intervalDaysLabel).toBe("45 dias");
     }
@@ -62,8 +62,8 @@ describe("loadComparisonViewModel", () => {
       timeline: [
         {
           sequenceNumber: 1,
-          flightId: "flight-only",
-          flightDate: "2026-06-01",
+          captureSessionId: "flight-only",
+          captureDate: "2026-06-01",
           operatorName: "Pilot",
           jobId: "job-1",
           jobStatus: "COMPLETED",

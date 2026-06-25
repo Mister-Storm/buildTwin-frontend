@@ -15,19 +15,19 @@ import { startProcessing } from "@/services/processing.service";
 import { ApiError } from "@/types/api/common.api";
 import type { JobStatusDto } from "@/types/api/processing.api";
 
-type FlightProcessPanelProps = {
-  flightId: string;
+type CaptureSessionProcessPanelProps = {
+  captureSessionId: string;
   imageCount: number;
   jobStatus: JobStatusDto | null;
   onStarted: (jobId: string) => void;
 };
 
-export function FlightProcessPanel({
-  flightId,
+export function CaptureSessionProcessPanel({
+  captureSessionId,
   imageCount,
   jobStatus,
   onStarted,
-}: FlightProcessPanelProps) {
+}: CaptureSessionProcessPanelProps) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -38,15 +38,15 @@ export function FlightProcessPanel({
   const buttonLabel = isSubmitting
     ? "Iniciando..."
     : isFailed
-      ? "Reprocessar Voo"
-      : "Processar Voo";
+      ? "Reprocessar Captura"
+      : "Processar Captura";
   const ButtonIcon = isFailed ? RotateCcw : Play;
 
   async function handleProcess() {
     setError(null);
     setIsSubmitting(true);
     try {
-      const response = await startProcessing(flightId);
+      const response = await startProcessing(captureSessionId);
       onStarted(response.jobId);
       router.refresh();
       document
@@ -69,7 +69,7 @@ export function FlightProcessPanel({
         <CardTitle className="text-lg">Processamento</CardTitle>
         <CardDescription>
           {isFailed
-            ? "O processamento anterior falhou. Dispare novamente com as imagens atuais do voo."
+            ? "O processamento anterior falhou. Dispare novamente com as imagens atuais da captura."
             : "Dispare a geração do ortomosaico após o upload das imagens."}
         </CardDescription>
       </CardHeader>

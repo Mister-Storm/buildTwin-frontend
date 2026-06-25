@@ -16,18 +16,18 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { ProjectFlightListItemDto } from "@/types/api/flight.api";
+import type { ProjectCaptureSessionListItemDto } from "@/types/api/capture-session.api";
 
 type MaterialInventorySectionProps = {
   projectId: string;
   viewModel: MaterialInventoryViewModel;
-  flights: ProjectFlightListItemDto[];
+  captureSessions: ProjectCaptureSessionListItemDto[];
 };
 
 export function MaterialInventorySection({
   projectId,
   viewModel,
-  flights,
+  captureSessions,
 }: MaterialInventorySectionProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [stockVariationLabel, setStockVariationLabel] = useState(viewModel.stockVariationLabel);
@@ -49,11 +49,11 @@ export function MaterialInventorySection({
           </div>
           <div className="flex flex-col items-end gap-2">
             <DetectMaterialInventoryButton
-              flights={flights}
+              captureSessions={captureSessions}
               onDetected={setPreviewArtifactId}
             />
             <RegisterMaterialInventoryDialog
-              flights={flights}
+              captureSessions={captureSessions}
               open={dialogOpen}
               onOpenChange={setDialogOpen}
             />
@@ -82,7 +82,7 @@ export function MaterialInventorySection({
 
       <InventoryComparePanel
         projectId={projectId}
-        flights={flights}
+        captureSessions={captureSessions}
         onCompareComplete={setStockVariationLabel}
       />
 

@@ -10,7 +10,7 @@ import {
 
 export type OrthomosaicMapping = Readonly<{
   projectId: string;
-  flightId: string;
+  captureSessionId: string;
   jobId: string;
   previewArtifactId?: string | undefined;
 }>;
@@ -18,7 +18,7 @@ export type OrthomosaicMapping = Readonly<{
 const DEMO_MAPPINGS: readonly OrthomosaicMapping[] = [
   {
     projectId: DEMO_PROJECT_ID,
-    flightId: DEMO_FLIGHT_ID,
+    captureSessionId: DEMO_FLIGHT_ID,
     jobId: DEMO_JOB_ID,
     previewArtifactId: DEMO_PREVIEW_ARTIFACT_ID,
   },
@@ -47,11 +47,11 @@ export class MockOrthomosaicResolver implements OrthomosaicResolver {
   }
 
   async resolve(
-    flightId: string,
+    captureSessionId: string,
     projectId: string,
   ): Promise<OrthomosaicResolution | null> {
     const match = this.mappings.find(
-      (m) => m.flightId === flightId && m.projectId === projectId,
+      (m) => m.captureSessionId === captureSessionId && m.projectId === projectId,
     );
     if (!match) return null;
     return this.toResolution(match);
@@ -69,8 +69,8 @@ export class MockOrthomosaicResolver implements OrthomosaicResolver {
     return this.toResolution(latest);
   }
 
-  getMappedFlightIds(): ReadonlySet<string> {
-    return new Set(this.mappings.map((m) => m.flightId));
+  getMappedCaptureSessionIds(): ReadonlySet<string> {
+    return new Set(this.mappings.map((m) => m.captureSessionId));
   }
 
   getMappings(): readonly OrthomosaicMapping[] {
@@ -80,7 +80,7 @@ export class MockOrthomosaicResolver implements OrthomosaicResolver {
   private toResolution(mapping: OrthomosaicMapping): OrthomosaicResolution {
     const resolution: OrthomosaicResolution = {
       projectId: mapping.projectId,
-      flightId: mapping.flightId,
+      captureSessionId: mapping.captureSessionId,
       jobId: mapping.jobId,
     };
     if (mapping.previewArtifactId) {
@@ -90,8 +90,8 @@ export class MockOrthomosaicResolver implements OrthomosaicResolver {
   }
 }
 
-export function getOrthomosaicFlightIds(
+export function getOrthomosaicCaptureSessionIds(
   mappings: readonly OrthomosaicMapping[],
 ): ReadonlySet<string> {
-  return new Set(mappings.map((m) => m.flightId));
+  return new Set(mappings.map((m) => m.captureSessionId));
 }

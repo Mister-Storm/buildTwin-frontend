@@ -4,11 +4,11 @@ import type { VisualProgressIntelligenceDto } from "@/types/api/visual-progress-
 
 export async function getVisualProgressIntelligence(
   projectId: string,
-  flightA: string,
-  flightB: string,
+  captureSessionA: string,
+  captureSessionB: string,
 ): Promise<VisualProgressIntelligenceDto> {
-  debugLog("getVisualProgressIntelligence", { projectId, flightA, flightB });
-  const params = new URLSearchParams({ flightA, flightB });
+  debugLog("getVisualProgressIntelligence", { projectId, captureSessionA, captureSessionB });
+  const params = new URLSearchParams({ captureSessionA, captureSessionB });
   return apiFetch<VisualProgressIntelligenceDto>(
     `/projects/${projectId}/progress?${params.toString()}`,
   );

@@ -5,8 +5,8 @@ import type { ChangeDetectionViewModel } from "@/features/change-detection/chang
 import { LOW_COMPARISON_QUALITY_WARNING } from "@/features/change-detection/change-level-mapper";
 
 const baseViewModel: ChangeDetectionViewModel = {
-  flightAId: "flight-a",
-  flightBId: "flight-b",
+  captureSessionAId: "flight-a",
+  captureSessionBId: "flight-b",
   changePercentageLabel: "62,1%",
   changedPixelsLabel: "102.314",
   changeLevel: "VERY_HIGH",

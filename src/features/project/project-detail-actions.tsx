@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { CreateFlightDialog } from "@/features/flight/create-flight-dialog";
+import { CreateCaptureSessionDialog } from "@/features/capture-session/create-capture-session-dialog";
 import { ArchiveProjectDialog } from "@/features/project/archive-project-dialog";
 import { GitCompareArrows, ImageIcon, TrendingUp } from "lucide-react";
 import type { OrthomosaicResolution } from "@/features/domain/models/orthomosaic";
@@ -25,7 +25,7 @@ export function ProjectDetailActions({
     <div className="flex flex-wrap items-center gap-2">
       {!isArchived ? (
         <>
-          <CreateFlightDialog projectId={projectId} redirectToFlight={false} />
+          <CreateCaptureSessionDialog projectId={projectId} redirectToCaptureSession={false} />
           <ArchiveProjectDialog
             projectId={projectId}
             projectName={projectName}
@@ -34,7 +34,7 @@ export function ProjectDetailActions({
       ) : null}
       {latestResolution ? (
         <Link
-          href={`/projects/${projectId}/orthomosaic?flightId=${latestResolution.flightId}`}
+          href={`/projects/${projectId}/orthomosaic?captureSessionId=${latestResolution.captureSessionId}`}
           className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-brand-accent px-3 text-sm font-medium text-white transition-opacity hover:opacity-90"
         >
           <ImageIcon className="size-4" />

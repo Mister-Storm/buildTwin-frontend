@@ -66,7 +66,7 @@ export function ComparisonInsightsCard({
               Análise de Evolução
             </CardTitle>
             <CardDescription className="mt-1">
-              Levantamento mais recente: {viewModel.flightB.flightDateLabel}
+              Levantamento mais recente: {viewModel.captureSessionB.captureDateLabel}
             </CardDescription>
           </div>
           <StatusBadge
@@ -86,7 +86,7 @@ export function ComparisonInsightsCard({
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
           <MetricCard
             icon={Clock3}
-            label="Intervalo entre voos"
+            label="Intervalo entre capturas"
             value={viewModel.intervalDaysLabel}
           />
           <MetricCard
@@ -142,7 +142,7 @@ export function ComparisonInsightsCard({
           <MetricCard
             icon={Calendar}
             label="Período analisado"
-            value={`${viewModel.flightA.flightDateLabel} → ${viewModel.flightB.flightDateLabel}`}
+            value={`${viewModel.captureSessionA.captureDateLabel} → ${viewModel.captureSessionB.captureDateLabel}`}
           />
         </div>
       </CardContent>

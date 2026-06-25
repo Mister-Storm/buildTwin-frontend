@@ -4,8 +4,8 @@ import type {
 } from "@/types/api/visual-progress-intelligence.api";
 
 export type ProgressIntelligenceViewModel = {
-  flightAId: string;
-  flightBId: string;
+  captureSessionAId: string;
+  captureSessionBId: string;
   changePercentageLabel: string;
   classification: ProgressClassificationDto;
   classificationLabel: string;
@@ -17,8 +17,8 @@ export function mapProgressIntelligence(
   dto: VisualProgressIntelligenceDto,
 ): ProgressIntelligenceViewModel {
   return {
-    flightAId: dto.flightA,
-    flightBId: dto.flightB,
+    captureSessionAId: dto.captureSessionA,
+    captureSessionBId: dto.captureSessionB,
     changePercentageLabel: formatChangePercentage(dto.changePercentage),
     classification: dto.classification,
     classificationLabel: dto.classification,

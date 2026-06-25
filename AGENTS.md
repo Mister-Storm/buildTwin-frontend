@@ -44,7 +44,7 @@ Service (DTO) → Mapper → Domain Model → Component
 ## Demo orthomosaic URL
 
 ```
-/projects/aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa/orthomosaic?flightId=bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb
+/projects/aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa/orthomosaic?captureSessionId=bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb
 ```
 
 ## Brand assets

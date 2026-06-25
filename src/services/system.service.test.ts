@@ -9,7 +9,7 @@ describe("system.service", () => {
       components: {},
       operations: {
         projects: 1,
-        flights: 2,
+        captureSessions: 2,
         jobs: 1,
         processedJobs: 1,
         pendingJobs: 0,

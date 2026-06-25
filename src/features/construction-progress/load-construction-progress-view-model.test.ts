@@ -18,9 +18,9 @@ describe("loadConstructionProgressViewModel", () => {
       projectId: "proj-1",
       timeline: [
         {
-          flightSequence: 1,
-          flightId: "flight-1",
-          flightDate: "2026-05-01",
+          captureSessionSequence: 1,
+          captureSessionId: "flight-1",
+          captureDate: "2026-05-01",
           occupiedAreaSquareMeters: 4000,
           footprintIndex: 1,
           visualChangeIndex: null,

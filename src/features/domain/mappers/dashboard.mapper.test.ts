@@ -6,16 +6,16 @@ const dashboardDto: ProjectDashboardDto = {
   projectId: "proj-1",
   projectName: "Obra Teste",
   archived: false,
-  totalFlights: 2,
-  flightsByStatus: { COMPLETED: 1, CREATED: 1 },
-  processedFlights: 1,
-  pendingFlights: 1,
-  failedFlights: 0,
-  latestFlightDate: "2026-06-12",
-  recentFlights: [
+  totalCaptureSessions: 2,
+  captureSessionsByStatus: { COMPLETED: 1, CREATED: 1 },
+  processedCaptureSessions: 1,
+  pendingCaptureSessions: 1,
+  failedCaptureSessions: 0,
+  latestCaptureSessionDate: "2026-06-12",
+  recentCaptureSessions: [
     {
-      flightId: "flight-1",
-      flightDate: "2026-06-12",
+      captureSessionId: "flight-1",
+      captureDate: "2026-06-12",
       imageCount: 10,
       latestProcessingStatus: "COMPLETED",
       latestJobId: "job-1",
@@ -28,18 +28,18 @@ describe("toProjectDashboardView", () => {
   it("maps dashboard KPIs from API", () => {
     const view = toProjectDashboardView(dashboardDto, new Set());
 
-    expect(view.processedFlights).toBe(1);
-    expect(view.pendingFlights).toBe(1);
-    expect(view.failedFlights).toBe(0);
-    expect(view.latestFlightDate?.toISOString()).toContain("2026-06-12");
+    expect(view.processedCaptureSessions).toBe(1);
+    expect(view.pendingCaptureSessions).toBe(1);
+    expect(view.failedCaptureSessions).toBe(0);
+    expect(view.latestCaptureSessionDate?.toISOString()).toContain("2026-06-12");
   });
 
-  it("marks orthomosaic availability on recent flights", () => {
+  it("marks orthomosaic availability on recent captureSessions", () => {
     const view = toProjectDashboardView(
       dashboardDto,
       new Set(["flight-1"]),
     );
 
-    expect(view.recentFlights[0]?.hasOrthomosaic).toBe(true);
+    expect(view.recentCaptureSessions[0]?.hasOrthomosaic).toBe(true);
   });
 });

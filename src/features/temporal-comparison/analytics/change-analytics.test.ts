@@ -10,7 +10,7 @@ import type { TimelineItemViewModel } from "@/features/domain/models/temporal-co
 import { parseDateOnly } from "@/lib/formatters";
 
 function item(
-  flightId: string,
+  captureSessionId: string,
   date: string,
   area: number | null,
   gsd: number | null = 2.0,
@@ -18,11 +18,11 @@ function item(
 ): TimelineItemViewModel {
   return {
     sequenceNumber,
-    flightId,
-    flightDate: parseDateOnly(date),
-    flightDateLabel: date,
+    captureSessionId,
+    captureDate: parseDateOnly(date),
+    captureDateLabel: date,
     operatorName: "Pilot",
-    previewUrl: `/preview/${flightId}`,
+    previewUrl: `/preview/${captureSessionId}`,
     areaLabel: area === null ? null : `${area} m²`,
     gsdLabel: gsd === null ? null : `${gsd} cm/pixel`,
     areaSquareMeters: area,
