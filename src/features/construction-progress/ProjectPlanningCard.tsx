@@ -17,9 +17,11 @@ import { PROJECT_TYPE_OPTIONS } from "@/features/project/project-type-options";
 import {
   PlanningFieldParseError,
   parseOptionalPlannedArea,
+  parseOptionalPlannedCompletionDate,
   parseOptionalPlannedFloors,
   parseOptionalProjectType,
   planningAreaToInputValue,
+  planningCompletionDateToInputValue,
   planningFloorsToInputValue,
   planningTypeToInputValue,
 } from "@/features/project/planning-field-parsers";
@@ -38,6 +40,7 @@ function syncPlanningStateFromProject(project: ProjectResponseDto) {
     plannedArea: planningAreaToInputValue(project.plannedAreaSquareMeters),
     plannedFloors: planningFloorsToInputValue(project.plannedFloors),
     projectType: planningTypeToInputValue(project.projectType),
+    plannedCompletionDate: planningCompletionDateToInputValue(project.plannedCompletionDate),
   };
 }
 
@@ -52,10 +55,14 @@ export function ProjectPlanningCard({ project }: ProjectPlanningCardProps) {
   const [projectType, setProjectType] = useState<ProjectTypeDto | "">(
     () => planningTypeToInputValue(project.projectType),
   );
+  const [plannedCompletionDate, setPlannedCompletionDate] = useState(
+    () => planningCompletionDateToInputValue(project.plannedCompletionDate),
+  );
   const [fieldErrors, setFieldErrors] = useState<{
     plannedArea?: string;
     plannedFloors?: string;
     projectType?: string;
+    plannedCompletionDate?: string;
   }>({});
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -72,6 +79,7 @@ export function ProjectPlanningCard({ project }: ProjectPlanningCardProps) {
     setPlannedArea(next.plannedArea);
     setPlannedFloors(next.plannedFloors);
     setProjectType(next.projectType);
+    setPlannedCompletionDate(next.plannedCompletionDate);
   }
 
   async function handleSave(event: React.FormEvent) {
@@ -85,6 +93,7 @@ export function ProjectPlanningCard({ project }: ProjectPlanningCardProps) {
       plannedAreaSquareMeters: plannedArea,
       plannedFloors: plannedFloors,
       projectType,
+      plannedCompletionDate,
     });
 
     if (!parsed.success) {
@@ -92,6 +101,7 @@ export function ProjectPlanningCard({ project }: ProjectPlanningCardProps) {
         plannedArea?: string;
         plannedFloors?: string;
         projectType?: string;
+        plannedCompletionDate?: string;
       } = {};
       for (const issue of parsed.error.issues) {
         const key = issue.path[0];
@@ -103,6 +113,9 @@ export function ProjectPlanningCard({ project }: ProjectPlanningCardProps) {
         }
         if (key === "projectType" && !errors.projectType) {
           errors.projectType = issue.message;
+        }
+        if (key === "plannedCompletionDate" && !errors.plannedCompletionDate) {
+          errors.plannedCompletionDate = issue.message;
         }
       }
       setFieldErrors(errors);
@@ -118,6 +131,7 @@ export function ProjectPlanningCard({ project }: ProjectPlanningCardProps) {
         plannedAreaSquareMeters: parseOptionalPlannedArea(plannedArea) ?? null,
         plannedFloors: parseOptionalPlannedFloors(plannedFloors) ?? null,
         projectType: parseOptionalProjectType(projectType) ?? null,
+        plannedCompletionDate: parseOptionalPlannedCompletionDate(plannedCompletionDate) ?? null,
       });
       applyProjectResponse(updated);
       setSuccessMessage("Planejamento salvo com sucesso.");
@@ -199,6 +213,18 @@ export function ProjectPlanningCard({ project }: ProjectPlanningCardProps) {
                 </option>
               ))}
             </NativeSelect>
+          </FormField>
+          <FormField
+            label="Data prevista de conclusão"
+            htmlFor="plannedCompletionDate"
+            error={fieldErrors.plannedCompletionDate}
+          >
+            <Input
+              id="plannedCompletionDate"
+              type="date"
+              value={plannedCompletionDate}
+              onChange={(event) => setPlannedCompletionDate(event.target.value)}
+            />
           </FormField>
           {successMessage ? (
             <p

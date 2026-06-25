@@ -28,6 +28,7 @@ export type ProjectResponseDto = {
   plannedAreaSquareMeters: number | null;
   plannedFloors: number | null;
   projectType: ProjectTypeDto | null;
+  plannedCompletionDate: string | null;
 };
 
 export type ProjectTypeDto =
@@ -47,6 +48,7 @@ export type CreateProjectRequestDto = {
   plannedAreaSquareMeters?: number | null;
   plannedFloors?: number | null;
   projectType?: ProjectTypeDto | null;
+  plannedCompletionDate?: string | null;
 };
 
 export type UpdateProjectRequestDto = {
@@ -56,4 +58,5 @@ export type UpdateProjectRequestDto = {
   plannedAreaSquareMeters?: number | null;
   plannedFloors?: number | null;
   projectType?: ProjectTypeDto | null;
+  plannedCompletionDate?: string | null;
 };

@@ -1,4 +1,5 @@
 import type { ProjectTypeDto } from "@/types/api/project.api";
+import { parseDateOnly } from "@/lib/formatters";
 
 export class PlanningFieldParseError extends Error {
   constructor(message: string) {
@@ -64,4 +65,25 @@ export function planningTypeToInputValue(
   value: ProjectTypeDto | null | undefined,
 ): ProjectTypeDto | "" {
   return value ?? "";
+}
+
+export function parseOptionalPlannedCompletionDate(
+  value: string | undefined,
+): string | undefined {
+  if (value === undefined || value === "") {
+    return undefined;
+  }
+
+  parseDateOnly(value);
+  return value;
+}
+
+export function planningCompletionDateToInputValue(
+  value: string | null | undefined,
+): string {
+  if (!value) {
+    return "";
+  }
+  parseDateOnly(value);
+  return value;
 }

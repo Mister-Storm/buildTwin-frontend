@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+const dateOnlyPattern = /^\d{4}-\d{2}-\d{2}$/;
+
 export const projectPlanningSchema = z.object({
   plannedAreaSquareMeters: z
     .union([
@@ -23,6 +25,12 @@ export const projectPlanningSchema = z.object({
       "INDUSTRIAL",
       "OTHER",
       "",
+    ])
+    .optional(),
+  plannedCompletionDate: z
+    .union([
+      z.literal(""),
+      z.string().regex(dateOnlyPattern, "Data prevista inválida"),
     ])
     .optional(),
 });

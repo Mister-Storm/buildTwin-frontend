@@ -20,6 +20,7 @@ const sampleProject: ProjectResponseDto = {
   plannedAreaSquareMeters: null,
   plannedFloors: null,
   projectType: null,
+  plannedCompletionDate: null,
 };
 
 describe("toProjectSummary", () => {

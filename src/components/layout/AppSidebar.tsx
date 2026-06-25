@@ -4,12 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Building2, LayoutDashboard, Presentation } from "lucide-react";
+import { BarChart3, Building2, LayoutDashboard, Presentation } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { href: "/demo", label: "Demo", icon: Presentation },
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/portfolio", label: "Portfólio", icon: BarChart3 },
   { href: "/projects", label: "Projetos", icon: Building2 },
 ] as const;
 

@@ -35,6 +35,7 @@ const mockProject: ProjectResponseDto = {
   plannedAreaSquareMeters: null,
   plannedFloors: null,
   projectType: null,
+  plannedCompletionDate: null,
 };
 
 describe("ProjectPlanningCard", () => {

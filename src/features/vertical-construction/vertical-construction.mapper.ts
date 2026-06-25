@@ -3,6 +3,12 @@ import type { ProjectConstructionProgressDto } from "@/types/api/construction-pr
 import type { ProjectResponseDto } from "@/types/api/project.api";
 import { formatAbsolutePercent, formatDate, parseDateOnly } from "@/lib/formatters";
 
+const SOURCE_PRECEDENCE: Record<string, number> = {
+  MANUAL: 1,
+  ESTIMATED: 2,
+  AI_DETECTED: 3,
+};
+
 export type VerticalConstructionHistoryRow = {
   flightId: string;
   flightDateLabel: string;
@@ -23,6 +29,8 @@ export type VerticalConstructionViewModel = {
   showVerticalCompletion: boolean;
   historyRows: VerticalConstructionHistoryRow[];
   hasSnapshots: boolean;
+  sourceLabel: string | null;
+  confidenceLabel: string | null;
 };
 
 export function mapVerticalConstructionViewModel(
@@ -57,8 +65,10 @@ export function mapVerticalConstructionViewModel(
           ? String(snapshot.observedFloors)
           : "Não informado",
       notesLabel: snapshot.notes?.trim() ? snapshot.notes : "—",
-      source: snapshot.source,
+      source: formatHistorySourceLabel(snapshot.source),
     }));
+
+  const latestSnapshot = selectLatestSnapshot(builtAreaDto.snapshots);
 
   return {
     projectId: builtAreaDto.projectId,
@@ -74,7 +84,40 @@ export function mapVerticalConstructionViewModel(
     plannedAverageAreaPerFloorLabel: formatArea(plannedAverageAreaPerFloor),
     historyRows,
     hasSnapshots: builtAreaDto.snapshots.length > 0,
+    sourceLabel: formatSourceLabel(latestSnapshot?.source),
+    confidenceLabel: formatConfidenceLabel(latestSnapshot?.confidenceScore),
   };
+}
+
+export function selectLatestSnapshot<
+  T extends {
+    flightDate: string;
+    source: string;
+    createdAt: string;
+    observedBuiltAreaSquareMeters: number;
+  },
+>(snapshots: T[]): T | null {
+  if (snapshots.length === 0) {
+    return null;
+  }
+
+  return (
+    [...snapshots].sort((left, right) => {
+      const leftDate = parseDateOnly(left.flightDate).getTime();
+      const rightDate = parseDateOnly(right.flightDate).getTime();
+      if (leftDate !== rightDate) {
+        return rightDate - leftDate;
+      }
+
+      const leftSource = SOURCE_PRECEDENCE[left.source] ?? 99;
+      const rightSource = SOURCE_PRECEDENCE[right.source] ?? 99;
+      if (leftSource !== rightSource) {
+        return leftSource - rightSource;
+      }
+
+      return right.createdAt.localeCompare(left.createdAt);
+    })[0] ?? null
+  );
 }
 
 export function calculatePlannedAverageAreaPerFloor(
@@ -103,4 +146,40 @@ function formatFloors(value: number | null | undefined): string {
     return "Não informado";
   }
   return String(value);
+}
+
+function formatSourceLabel(source: string | undefined): string | null {
+  if (!source) {
+    return null;
+  }
+  if (source === "AI_DETECTED") {
+    return "Fonte: IA";
+  }
+  if (source === "ESTIMATED") {
+    return "Fonte: Estimada";
+  }
+  if (source === "MANUAL") {
+    return "Fonte: Manual";
+  }
+  return null;
+}
+
+function formatHistorySourceLabel(source: string): string {
+  if (source === "AI_DETECTED") {
+    return "IA";
+  }
+  if (source === "ESTIMATED") {
+    return "Estimada";
+  }
+  if (source === "MANUAL") {
+    return "Manual";
+  }
+  return source;
+}
+
+function formatConfidenceLabel(confidenceScore: number | null | undefined): string | null {
+  if (confidenceScore === null || confidenceScore === undefined) {
+    return null;
+  }
+  return `Confiança: ${Math.round(confidenceScore * 100)}%`;
 }

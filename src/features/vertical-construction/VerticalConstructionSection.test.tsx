@@ -1,7 +1,11 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { VerticalConstructionSection } from "@/features/vertical-construction/VerticalConstructionSection";
 import type { VerticalConstructionViewModel } from "@/features/vertical-construction/vertical-construction.mapper";
+
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ refresh: vi.fn() }),
+}));
 
 const viewModel: VerticalConstructionViewModel = {
   projectId: "proj-1",
@@ -23,11 +27,23 @@ const viewModel: VerticalConstructionViewModel = {
     },
   ],
   hasSnapshots: true,
+  sourceLabel: null,
+  confidenceLabel: null,
 };
+
+const flights = [
+  {
+    flightId: "flight-1",
+    flightDate: "2026-06-01",
+    operatorName: "Pilot",
+    imageCount: 1,
+    status: "COMPLETED",
+  },
+];
 
 describe("VerticalConstructionSection", () => {
   it("renders vertical construction metric cards", () => {
-    render(<VerticalConstructionSection viewModel={viewModel} />);
+    render(<VerticalConstructionSection viewModel={viewModel} flights={flights} />);
 
     expect(screen.getByText("Construção Vertical")).toBeInTheDocument();
     expect(screen.getByText("Pavimentos Atuais")).toBeInTheDocument();
