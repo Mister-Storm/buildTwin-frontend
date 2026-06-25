@@ -3,11 +3,11 @@ import { debugLog } from "@/lib/debug";
 import type { DetectVerticalConstructionResponseDto } from "@/types/api/vertical-construction.api";
 
 export async function detectVerticalConstruction(
-  flightId: string,
+  captureSessionId: string,
 ): Promise<DetectVerticalConstructionResponseDto> {
-  debugLog("detectVerticalConstruction", { flightId });
+  debugLog("detectVerticalConstruction", { captureSessionId });
   return apiFetch<DetectVerticalConstructionResponseDto>(
-    `/flights/${flightId}/vertical-construction/detect`,
+    `/capture-sessions/${captureSessionId}/vertical-construction/detect`,
     {
       method: "POST",
     },

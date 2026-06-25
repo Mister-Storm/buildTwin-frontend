@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 const PROJECT_ID = "11111111-1111-4111-8111-111111111111";
-const FLIGHT_ID = "22222222-2222-4222-8222-222222222222";
+const CAPTURE_SESSION_ID = "22222222-2222-4222-8222-222222222222";
 
 test.describe("Operational workflow UI", () => {
   test("demo page shows environment health and infra checklist", async ({
@@ -59,7 +59,7 @@ test.describe("Operational workflow UI", () => {
     ).toBeVisible();
   });
 
-  test("projects page shows Nova Obra and opens flight detail", async ({
+  test("projects page shows Nova Obra and opens capture session detail", async ({
     page,
   }) => {
     await page.goto("/projects");
@@ -68,14 +68,14 @@ test.describe("Operational workflow UI", () => {
     await page.getByRole("link", { name: /Obra Integração/i }).click();
     await expect(page).toHaveURL(`/projects/${PROJECT_ID}`);
 
-    await expect(page.getByRole("button", { name: "Novo Voo" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Nova Captura" })).toBeVisible();
     await page.getByRole("link", { name: /Operador E2E/i }).first().click();
     await expect(page).toHaveURL(
-      `/projects/${PROJECT_ID}/flights/${FLIGHT_ID}`,
+      `/projects/${PROJECT_ID}/capture-sessions/${CAPTURE_SESSION_ID}`,
     );
 
     await expect(page.getByText("Upload de Imagens")).toBeVisible();
-    await expect(page.getByRole("button", { name: "Processar Voo" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Processar Captura" })).toBeVisible();
     await expect(page.getByText("Monitoramento")).toBeVisible();
   });
 });

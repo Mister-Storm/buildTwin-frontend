@@ -11,8 +11,8 @@ describe("waste-intelligence.service", () => {
   it("fetches waste analysis with benchmark version and confidence", async () => {
     vi.mocked(apiFetch).mockResolvedValue({
       projectId: "proj-1",
-      flightAId: "a",
-      flightBId: "b",
+      captureSessionAId: "a",
+      captureSessionBId: "b",
       builtAreaDelta: 420,
       overallWasteScore: 82,
       analysisConfidence: 0.85,
@@ -29,7 +29,7 @@ describe("waste-intelligence.service", () => {
     await getProjectWasteAnalysis("proj-1", "a", "b");
 
     expect(apiFetch).toHaveBeenCalledWith(
-      "/projects/proj-1/waste-analysis?flightA=a&flightB=b",
+      "/projects/proj-1/waste-analysis?captureSessionA=a&captureSessionB=b",
     );
   });
 });

@@ -8,13 +8,13 @@ describe("BuiltAreaEvolutionChart", () => {
       <BuiltAreaEvolutionChart
         points={[
           {
-            flightId: "f1",
-            flightDateLabel: "1 de mai. de 2026",
+            captureSessionId: "f1",
+            captureDateLabel: "1 de mai. de 2026",
             observedBuiltAreaSquareMeters: 1200,
           },
           {
-            flightId: "f2",
-            flightDateLabel: "1 de jun. de 2026",
+            captureSessionId: "f2",
+            captureDateLabel: "1 de jun. de 2026",
             observedBuiltAreaSquareMeters: 2500,
           },
         ]}

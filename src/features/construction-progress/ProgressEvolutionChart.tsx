@@ -12,7 +12,7 @@ import { debugLog } from "@/lib/debug";
 import { LineChart } from "lucide-react";
 
 type ProgressEvolutionChartPoint = {
-  flightDateLabel: string;
+  captureDateLabel: string;
   footprintIndex: number;
 };
 
@@ -91,10 +91,10 @@ export function ProgressEvolutionChart({ points }: ProgressEvolutionChartProps) 
               points={polyline}
             />
             {plottedPoints.map(({ x, y, point }) => (
-              <g key={`${point.flightDateLabel}-${point.footprintIndex}`}>
+              <g key={`${point.captureDateLabel}-${point.footprintIndex}`}>
                 <circle cx={x} cy={y} r="4" className="fill-brand-accent" />
                 <title>
-                  {point.flightDateLabel}: {(point.footprintIndex * 100).toFixed(0)}%
+                  {point.captureDateLabel}: {(point.footprintIndex * 100).toFixed(0)}%
                 </title>
               </g>
             ))}
@@ -102,8 +102,8 @@ export function ProgressEvolutionChart({ points }: ProgressEvolutionChartProps) 
         </div>
         <ul className="mt-4 flex flex-wrap gap-3 text-xs text-muted-foreground">
           {points.map((point) => (
-            <li key={point.flightDateLabel}>
-              {point.flightDateLabel}: {(point.footprintIndex * 100).toFixed(0)}%
+            <li key={point.captureDateLabel}>
+              {point.captureDateLabel}: {(point.footprintIndex * 100).toFixed(0)}%
             </li>
           ))}
         </ul>

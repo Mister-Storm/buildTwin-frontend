@@ -16,11 +16,11 @@ export async function getProjectMaterialInventory(
 }
 
 export async function registerMaterialInventory(
-  flightId: string,
+  captureSessionId: string,
   dto: RegisterMaterialInventoryRequestDto,
 ): Promise<RegisterMaterialInventoryResponseDto> {
-  debugLog("registerMaterialInventory", { flightId, itemCount: dto.items.length });
-  return apiFetch<RegisterMaterialInventoryResponseDto>(`/flights/${flightId}/inventory`, {
+  debugLog("registerMaterialInventory", { captureSessionId, itemCount: dto.items.length });
+  return apiFetch<RegisterMaterialInventoryResponseDto>(`/capture-sessions/${captureSessionId}/inventory`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(dto),
@@ -29,20 +29,20 @@ export async function registerMaterialInventory(
 
 export async function compareProjectMaterialInventory(
   projectId: string,
-  flightA: string,
-  flightB: string,
+  captureSessionA: string,
+  captureSessionB: string,
 ): Promise<ProjectMaterialInventoryCompareDto> {
-  debugLog("compareProjectMaterialInventory", { projectId, flightA, flightB });
+  debugLog("compareProjectMaterialInventory", { projectId, captureSessionA, captureSessionB });
   return apiFetch<ProjectMaterialInventoryCompareDto>(
-    `/projects/${projectId}/inventory/compare?flightA=${flightA}&flightB=${flightB}`,
+    `/projects/${projectId}/inventory/compare?captureSessionA=${captureSessionA}&captureSessionB=${captureSessionB}`,
   );
 }
 
 export async function detectMaterialInventory(
-  flightId: string,
+  captureSessionId: string,
 ): Promise<DetectMaterialInventoryResponseDto> {
-  debugLog("detectMaterialInventory", { flightId });
-  return apiFetch(`/flights/${flightId}/inventory/detect`, {
+  debugLog("detectMaterialInventory", { captureSessionId });
+  return apiFetch(`/capture-sessions/${captureSessionId}/inventory/detect`, {
     method: "POST",
   });
 }

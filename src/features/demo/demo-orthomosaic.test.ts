@@ -16,7 +16,7 @@ describe("buildDemoOrthomosaicViewModel", () => {
     expect(viewModel.previewUrl).toBe(DEMO_ORTHOMOSAIC_PREVIEW_URL);
     expect(viewModel.previewUrl).toBe("/demo/orthomosaic-preview.jpg");
     expect(viewModel.projectId).toBe(DEMO_PROJECT_ID);
-    expect(viewModel.flightId).toBe(DEMO_FLIGHT_ID);
+    expect(viewModel.captureSessionId).toBe(DEMO_FLIGHT_ID);
   });
 });
 

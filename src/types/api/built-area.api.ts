@@ -1,7 +1,7 @@
 export type BuiltAreaSourceDto = "MANUAL" | "ESTIMATED" | "AI_DETECTED";
 
 export type DetectBuiltAreaResponseDto = {
-  flightId: string;
+  captureSessionId: string;
   detectedAreaSquareMeters: number;
   confidenceScore: number;
   source: BuiltAreaSourceDto;
@@ -12,7 +12,7 @@ export type DetectBuiltAreaResponseDto = {
 export type BuiltAreaSnapshotResponseDto = {
   id: string;
   projectId: string;
-  flightId: string;
+  captureSessionId: string;
   observedBuiltAreaSquareMeters: number;
   confidenceScore: number | null;
   source: BuiltAreaSourceDto;
@@ -22,8 +22,8 @@ export type BuiltAreaSnapshotResponseDto = {
 };
 
 export type ProjectBuiltAreaSnapshotItemDto = {
-  flightId: string;
-  flightDate: string;
+  captureSessionId: string;
+  captureDate: string;
   observedBuiltAreaSquareMeters: number;
   confidenceScore: number | null;
   source: BuiltAreaSourceDto;

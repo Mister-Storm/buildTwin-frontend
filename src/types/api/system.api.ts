@@ -18,8 +18,8 @@ export type ComponentOverviewDto = {
 export type RecentJobSummaryDto = {
   projectId: string;
   projectName: string;
-  flightId: string;
-  flightDate: string;
+  captureSessionId: string;
+  captureDate: string;
   operatorName: string;
   status: string;
   jobId: string | null;
@@ -27,7 +27,7 @@ export type RecentJobSummaryDto = {
 
 export type OperationsSummaryDto = {
   projects: number;
-  flights: number;
+  captureSessions: number;
   jobs: number;
   processedJobs: number;
   pendingJobs: number;

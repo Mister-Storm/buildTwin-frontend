@@ -14,8 +14,8 @@ describe("loadMaterialInventoryViewModel", () => {
       projectId: "proj-1",
       snapshots: [
         {
-          flightId: "flight-1",
-          flightDate: "2026-05-01",
+          captureSessionId: "flight-1",
+          captureDate: "2026-05-01",
           materialType: "BRICK",
           quantity: 100,
           unit: "UNIT",

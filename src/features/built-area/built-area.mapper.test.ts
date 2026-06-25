@@ -11,8 +11,8 @@ describe("built-area.mapper", () => {
     projectId: "proj-1",
     snapshots: [
       {
-        flightId: "flight-1",
-        flightDate: "2026-05-01",
+        captureSessionId: "flight-1",
+        captureDate: "2026-05-01",
         observedBuiltAreaSquareMeters: 1000,
         confidenceScore: null,
         source: "MANUAL",
@@ -21,8 +21,8 @@ describe("built-area.mapper", () => {
         createdAt: "2026-05-01T10:00:00Z",
       },
       {
-        flightId: "flight-2",
-        flightDate: "2026-06-15",
+        captureSessionId: "flight-2",
+        captureDate: "2026-06-15",
         observedBuiltAreaSquareMeters: 2500,
         confidenceScore: null,
         source: "MANUAL",
@@ -50,8 +50,8 @@ describe("built-area.mapper", () => {
         projectId: "proj-1",
         snapshots: [
           {
-            flightId: "flight-1",
-            flightDate: "2026-06-15",
+            captureSessionId: "flight-1",
+            captureDate: "2026-06-15",
             observedBuiltAreaSquareMeters: 2500,
             confidenceScore: 0.82,
             source: "AI_DETECTED",
@@ -75,13 +75,13 @@ describe("built-area.mapper", () => {
   it("prefers manual source on same flight date", () => {
     const latest = selectLatestSnapshot([
       {
-        flightDate: "2026-06-01",
+        captureDate: "2026-06-01",
         source: "ESTIMATED",
         createdAt: "2026-06-01T12:00:00Z",
         observedBuiltAreaSquareMeters: 900,
       },
       {
-        flightDate: "2026-06-01",
+        captureDate: "2026-06-01",
         source: "MANUAL",
         createdAt: "2026-06-01T10:00:00Z",
         observedBuiltAreaSquareMeters: 1000,

@@ -29,7 +29,7 @@ export const MOVEMENT_TYPE_LABELS = {
 
 export type MaterialInventoryHistoryRow = {
   rowKey: string;
-  flightDateLabel: string;
+  captureDateLabel: string;
   recordedAtLabel: string;
   materialLabel: string;
   metricLabel: string;
@@ -44,11 +44,11 @@ export type MaterialInventoryHistoryRow = {
 
 export type MaterialInventoryCompareRow = {
   materialLabel: string;
-  quantityAtFlightALabel: string;
-  quantityAtFlightBLabel: string;
+  quantityAtCaptureSessionALabel: string;
+  quantityAtCaptureSessionBLabel: string;
   inventoryDeltaLabel: string;
-  storageZoneAtFlightALabel: string;
-  storageZoneAtFlightBLabel: string;
+  storageZoneAtCaptureSessionALabel: string;
+  storageZoneAtCaptureSessionBLabel: string;
 };
 
 export type MaterialInventoryViewModel = {
@@ -65,8 +65,8 @@ export function mapMaterialInventoryViewModel(
   const historyRows = dto.snapshots.map((snapshot) => {
     const isAiSource = snapshot.source === "AI_DETECTED";
   return {
-    rowKey: `${snapshot.flightId}-${snapshot.materialType}-${snapshot.source}-${snapshot.recordedAt}`,
-    flightDateLabel: formatDate(parseDateOnly(snapshot.flightDate)),
+    rowKey: `${snapshot.captureSessionId}-${snapshot.materialType}-${snapshot.source}-${snapshot.recordedAt}`,
+    captureDateLabel: formatDate(parseDateOnly(snapshot.captureDate)),
     recordedAtLabel: formatDateTime(snapshot.recordedAt),
     materialLabel: MATERIAL_TYPE_LABELS[snapshot.materialType],
     metricLabel: isAiSource ? "Objetos detectados" : "Quantidade",
@@ -85,20 +85,20 @@ export function mapMaterialInventoryViewModel(
   };
   });
 
-  const latestFlightDate =
+  const latestCaptureSessionDate =
     dto.snapshots.length > 0
       ? dto.snapshots.reduce((latest, snapshot) => {
-          const current = parseDateOnly(snapshot.flightDate).getTime();
+          const current = parseDateOnly(snapshot.captureDate).getTime();
           return current > latest ? current : latest;
         }, 0)
       : null;
 
   const latestSnapshots =
-    latestFlightDate == null
+    latestCaptureSessionDate == null
       ? []
       : dto.snapshots.filter(
           (snapshot) =>
-            parseDateOnly(snapshot.flightDate).getTime() === latestFlightDate,
+            parseDateOnly(snapshot.captureDate).getTime() === latestCaptureSessionDate,
         );
 
   const currentTotal = latestSnapshots.reduce((sum, snapshot) => {
@@ -126,11 +126,11 @@ export function mapCompareRows(
 ): MaterialInventoryCompareRow[] {
   return materials.map((item) => ({
     materialLabel: MATERIAL_TYPE_LABELS[item.materialType],
-    quantityAtFlightALabel: `${formatQuantity(item.quantityAtFlightA)} ${formatUnit(item.unit)}`,
-    quantityAtFlightBLabel: `${formatQuantity(item.quantityAtFlightB)} ${formatUnit(item.unit)}`,
+    quantityAtCaptureSessionALabel: `${formatQuantity(item.quantityAtCaptureSessionA)} ${formatUnit(item.unit)}`,
+    quantityAtCaptureSessionBLabel: `${formatQuantity(item.quantityAtCaptureSessionB)} ${formatUnit(item.unit)}`,
     inventoryDeltaLabel: formatSignedDelta(item.inventoryDelta, item.unit),
-    storageZoneAtFlightALabel: item.storageZoneAtFlightA?.trim() ? item.storageZoneAtFlightA : "—",
-    storageZoneAtFlightBLabel: item.storageZoneAtFlightB?.trim() ? item.storageZoneAtFlightB : "—",
+    storageZoneAtCaptureSessionALabel: item.storageZoneAtCaptureSessionA?.trim() ? item.storageZoneAtCaptureSessionA : "—",
+    storageZoneAtCaptureSessionBLabel: item.storageZoneAtCaptureSessionB?.trim() ? item.storageZoneAtCaptureSessionB : "—",
   }));
 }
 

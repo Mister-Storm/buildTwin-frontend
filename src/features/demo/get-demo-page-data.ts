@@ -32,7 +32,7 @@ export async function getDemoPageData(): Promise<DemoPageData> {
       components: {},
       operations: {
         projects: 0,
-        flights: 0,
+        captureSessions: 0,
         jobs: 0,
         processedJobs: 0,
         pendingJobs: 0,

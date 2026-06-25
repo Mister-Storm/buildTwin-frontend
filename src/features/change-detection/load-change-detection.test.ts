@@ -14,8 +14,8 @@ describe("loadChangeDetection", () => {
 
   it("returns success with mapped view model", async () => {
     vi.mocked(getProjectCompare).mockResolvedValue({
-      flightA: "flight-a",
-      flightB: "flight-b",
+      captureSessionA: "flight-a",
+      captureSessionB: "flight-b",
       changePercentage: 62.1,
       changedPixels: 1000,
       totalPixels: 1600,
@@ -23,8 +23,8 @@ describe("loadChangeDetection", () => {
       comparisonQuality: "NORMAL",
       heatmapArtifactId: "heatmap-1",
       metrics: {
-        flightA: { areaSquareMeters: 8000, gsdCmPerPixel: 2.2 },
-        flightB: { areaSquareMeters: 9200, gsdCmPerPixel: 2.1 },
+        captureSessionA: { areaSquareMeters: 8000, gsdCmPerPixel: 2.2 },
+        captureSessionB: { areaSquareMeters: 9200, gsdCmPerPixel: 2.1 },
       },
     });
 

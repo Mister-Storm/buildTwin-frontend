@@ -24,10 +24,10 @@ describe("RegisterMaterialInventoryDialog", () => {
     render(
       <RegisterMaterialInventoryDialog
         open
-        flights={[
+        captureSessions={[
           {
-            flightId: "flight-1",
-            flightDate: "2026-06-01",
+            captureSessionId: "flight-1",
+            captureDate: "2026-06-01",
             operatorName: "Pilot",
             status: "COMPLETED",
             imageCount: 0,

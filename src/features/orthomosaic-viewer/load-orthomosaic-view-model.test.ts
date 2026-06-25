@@ -13,17 +13,17 @@ vi.mock("@/services/artifacts.service", () => ({
   getArtifact: vi.fn(),
 }));
 
-vi.mock("@/services/flights.service", () => ({
-  getFlight: vi.fn(),
+vi.mock("@/services/capture-sessions.service", () => ({
+  getCaptureSession: vi.fn(),
 }));
 
 import { getOrthomosaicResolver } from "@/features/domain/resolvers/orthomosaic-resolver";
 import { getJob } from "@/services/jobs.service";
 import { getArtifact } from "@/services/artifacts.service";
-import { getFlight } from "@/services/flights.service";
+import { getCaptureSession } from "@/services/capture-sessions.service";
 
 const projectId = "proj-1";
-const flightId = "flight-1";
+const captureSessionId = "flight-1";
 const jobId = "job-1";
 const previewArtifactId = "preview-1";
 const downloadArtifactId = "ortho-1";
@@ -37,7 +37,7 @@ describe("loadOrthomosaicViewModel", () => {
     vi.mocked(getOrthomosaicResolver).mockReturnValue({
       resolve: vi.fn().mockResolvedValue({
         projectId,
-        flightId,
+        captureSessionId,
         jobId,
         previewArtifactId,
       }),
@@ -46,7 +46,7 @@ describe("loadOrthomosaicViewModel", () => {
 
     vi.mocked(getJob).mockResolvedValue({
       jobId,
-      flightId,
+      captureSessionId,
       jobType: "ORTHOMOSAIC_PROCESSING",
       status: "COMPLETED",
       createdAt: "2026-06-12T10:00:00Z",
@@ -117,17 +117,17 @@ describe("loadOrthomosaicViewModel", () => {
       };
     });
 
-    vi.mocked(getFlight).mockResolvedValue({
-      flightId,
+    vi.mocked(getCaptureSession).mockResolvedValue({
+      captureSessionId,
       projectId,
-      flightDate: "2026-06-12",
+      captureDate: "2026-06-12",
       operatorName: "Operador Teste",
       imageCount: 42,
       createdAt: "2026-06-12T09:00:00Z",
       latestJob: null,
     });
 
-    const result = await loadOrthomosaicViewModel(projectId, flightId);
+    const result = await loadOrthomosaicViewModel(projectId, captureSessionId);
 
     expect(getArtifact).toHaveBeenCalledWith(downloadArtifactId);
     expect(result.status).toBe("success");
@@ -157,7 +157,7 @@ describe("loadOrthomosaicViewModel", () => {
       resolveLatestForProject: vi.fn(),
     });
 
-    const result = await loadOrthomosaicViewModel(projectId, flightId);
+    const result = await loadOrthomosaicViewModel(projectId, captureSessionId);
 
     expect(result).toEqual({ status: "empty", reason: "NO_RESOLUTION" });
   });

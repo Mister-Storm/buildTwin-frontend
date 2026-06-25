@@ -10,8 +10,8 @@ const SOURCE_PRECEDENCE: Record<string, number> = {
 };
 
 export type VerticalConstructionHistoryRow = {
-  flightId: string;
-  flightDateLabel: string;
+  captureSessionId: string;
+  captureDateLabel: string;
   builtAreaLabel: string;
   floorsLabel: string;
   notesLabel: string;
@@ -54,11 +54,11 @@ export function mapVerticalConstructionViewModel(
   const historyRows = [...builtAreaDto.snapshots]
     .sort(
       (left, right) =>
-        parseDateOnly(left.flightDate).getTime() - parseDateOnly(right.flightDate).getTime(),
+        parseDateOnly(left.captureDate).getTime() - parseDateOnly(right.captureDate).getTime(),
     )
     .map((snapshot) => ({
-      flightId: snapshot.flightId,
-      flightDateLabel: formatDate(parseDateOnly(snapshot.flightDate)),
+      captureSessionId: snapshot.captureSessionId,
+      captureDateLabel: formatDate(parseDateOnly(snapshot.captureDate)),
       builtAreaLabel: formatArea(snapshot.observedBuiltAreaSquareMeters),
       floorsLabel:
         snapshot.observedFloors != null
@@ -91,7 +91,7 @@ export function mapVerticalConstructionViewModel(
 
 export function selectLatestSnapshot<
   T extends {
-    flightDate: string;
+    captureDate: string;
     source: string;
     createdAt: string;
     observedBuiltAreaSquareMeters: number;
@@ -103,8 +103,8 @@ export function selectLatestSnapshot<
 
   return (
     [...snapshots].sort((left, right) => {
-      const leftDate = parseDateOnly(left.flightDate).getTime();
-      const rightDate = parseDateOnly(right.flightDate).getTime();
+      const leftDate = parseDateOnly(left.captureDate).getTime();
+      const rightDate = parseDateOnly(right.captureDate).getTime();
       if (leftDate !== rightDate) {
         return rightDate - leftDate;
       }

@@ -25,9 +25,9 @@ export function ArtifactCard({ viewModel }: ArtifactCardProps) {
       <CardContent className="space-y-4">
         <DetailRow
           icon={Calendar}
-          label="Data do voo"
+          label="Data da captura"
           value={
-            viewModel.flightDate ? formatDate(viewModel.flightDate) : "—"
+            viewModel.captureDate ? formatDate(viewModel.captureDate) : "—"
           }
         />
         {viewModel.operatorName ? (

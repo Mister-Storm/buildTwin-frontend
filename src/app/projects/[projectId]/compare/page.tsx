@@ -14,7 +14,7 @@ import { AreaEvolutionCard } from "@/features/progress-intelligence/AreaEvolutio
 import { loadProgressIntelligence } from "@/features/progress-intelligence/load-progress-intelligence";
 import { ProgressIntelligenceCard } from "@/features/progress-intelligence/ProgressIntelligenceCard";
 import { ComparisonInsightsCard } from "@/features/temporal-comparison/ComparisonInsightsCard";
-import { FlightComparisonSelector } from "@/features/temporal-comparison/FlightComparisonSelector";
+import { CaptureSessionComparisonSelector } from "@/features/temporal-comparison/CaptureSessionComparisonSelector";
 import { loadComparisonViewModel } from "@/features/temporal-comparison/load-comparison-view-model";
 import { TemporalComparisonCard } from "@/features/temporal-comparison/TemporalComparisonCard";
 import { TemporalComparisonViewer } from "@/features/temporal-comparison/TemporalComparisonViewer";
@@ -23,7 +23,7 @@ import { ApiError } from "@/types/api/common.api";
 
 type ComparePageProps = {
   params: Promise<{ projectId: string }>;
-  searchParams: Promise<{ flightA?: string; flightB?: string }>;
+  searchParams: Promise<{ captureSessionA?: string; captureSessionB?: string }>;
 };
 
 export default async function ComparePage({
@@ -31,7 +31,7 @@ export default async function ComparePage({
   searchParams,
 }: ComparePageProps) {
   const { projectId } = await params;
-  const { flightA, flightB } = await searchParams;
+  const { captureSessionA, captureSessionB } = await searchParams;
 
   let projectName = "Obra";
   try {
@@ -43,21 +43,21 @@ export default async function ComparePage({
     }
   }
 
-  const result = await loadComparisonViewModel(projectId, flightA, flightB);
+  const result = await loadComparisonViewModel(projectId, captureSessionA, captureSessionB);
   const changeDetection =
     result.status === "success"
       ? await loadChangeDetection(
           projectId,
-          result.viewModel.flightA.flightId,
-          result.viewModel.flightB.flightId,
+          result.viewModel.captureSessionA.captureSessionId,
+          result.viewModel.captureSessionB.captureSessionId,
         )
       : null;
   const progressIntelligence =
     result.status === "success" && changeDetection?.status === "success"
       ? await loadProgressIntelligence(
           projectId,
-          result.viewModel.flightA.flightId,
-          result.viewModel.flightB.flightId,
+          result.viewModel.captureSessionA.captureSessionId,
+          result.viewModel.captureSessionB.captureSessionId,
         )
       : null;
   const constructionProgress =
@@ -86,11 +86,11 @@ export default async function ComparePage({
 
         {result.status === "success" ? (
           <div className="space-y-6">
-            <FlightComparisonSelector
+            <CaptureSessionComparisonSelector
               projectId={projectId}
               timeline={result.timeline}
-              flightAId={result.viewModel.flightA.flightId}
-              flightBId={result.viewModel.flightB.flightId}
+              captureSessionAId={result.viewModel.captureSessionA.captureSessionId}
+              captureSessionBId={result.viewModel.captureSessionB.captureSessionId}
             />
             <AreaEvolutionCard
               viewModel={result.viewModel}

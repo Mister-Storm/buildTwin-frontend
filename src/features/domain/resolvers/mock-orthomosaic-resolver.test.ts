@@ -7,13 +7,13 @@ import {
 const mappings: readonly OrthomosaicMapping[] = [
   {
     projectId: "project-a",
-    flightId: "flight-1",
+    captureSessionId: "flight-1",
     jobId: "job-1",
     previewArtifactId: "artifact-1",
   },
   {
     projectId: "project-a",
-    flightId: "flight-2",
+    captureSessionId: "flight-2",
     jobId: "job-2",
   },
 ];
@@ -26,7 +26,7 @@ describe("MockOrthomosaicResolver", () => {
 
     expect(result).toEqual({
       projectId: "project-a",
-      flightId: "flight-1",
+      captureSessionId: "flight-1",
       jobId: "job-1",
       previewArtifactId: "artifact-1",
     });
@@ -42,7 +42,7 @@ describe("MockOrthomosaicResolver", () => {
 
     expect(result).toEqual({
       projectId: "project-a",
-      flightId: "flight-2",
+      captureSessionId: "flight-2",
       jobId: "job-2",
     });
   });

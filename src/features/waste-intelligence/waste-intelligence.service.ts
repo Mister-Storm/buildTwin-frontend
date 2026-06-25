@@ -4,11 +4,11 @@ import type { ProjectWasteAnalysisDto } from "@/features/waste-intelligence/wast
 
 export async function getProjectWasteAnalysis(
   projectId: string,
-  flightA: string,
-  flightB: string,
+  captureSessionA: string,
+  captureSessionB: string,
 ): Promise<ProjectWasteAnalysisDto> {
-  debugLog("getProjectWasteAnalysis", { projectId, flightA, flightB });
+  debugLog("getProjectWasteAnalysis", { projectId, captureSessionA, captureSessionB });
   return apiFetch<ProjectWasteAnalysisDto>(
-    `/projects/${projectId}/waste-analysis?flightA=${flightA}&flightB=${flightB}`,
+    `/projects/${projectId}/waste-analysis?captureSessionA=${captureSessionA}&captureSessionB=${captureSessionB}`,
   );
 }

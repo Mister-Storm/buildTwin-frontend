@@ -23,7 +23,7 @@ export function HistoricalContextSection({
 }: HistoricalContextSectionProps) {
   const participation = formatParticipationPercent(
     comparisonAreaDelta,
-    progress.deltaAreaFromFirstFlight,
+    progress.deltaAreaFromFirstCapture,
   );
 
   return (

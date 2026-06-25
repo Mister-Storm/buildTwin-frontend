@@ -8,18 +8,18 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ProcessingStepsBar } from "@/features/flight/components/processing-steps-bar";
+import { ProcessingStepsBar } from "@/features/capture-session/components/processing-steps-bar";
 import {
   buildProcessingSteps,
   jobStatusFriendlyMessage,
-} from "@/features/flight/job-status-utils";
+} from "@/features/capture-session/job-status-utils";
 import { mapFailureReasonToFriendlyMessage } from "@/features/system/failure-reason-mapper";
 import { formatDateTime, jobStatusVariant } from "@/lib/formatters";
-import type { LatestFlightJobResponseDto } from "@/types/api/processing.api";
+import type { LatestCaptureSessionJobResponseDto } from "@/types/api/processing.api";
 
 type JobStatusPanelProps = {
   imageCount: number;
-  job: LatestFlightJobResponseDto | null;
+  job: LatestCaptureSessionJobResponseDto | null;
   isPolling?: boolean;
   error?: string | null;
 };
@@ -76,7 +76,7 @@ export function JobStatusPanel({
                   <p className="mt-1 break-all">{job.failureReason}</p>
                 </details>
                 <p className="text-xs text-muted-foreground">
-                  Use &quot;Reprocessar Voo&quot; acima para tentar novamente.
+                  Use &quot;Reprocessar Captura&quot; acima para tentar novamente.
                 </p>
               </div>
             ) : null}

@@ -10,8 +10,8 @@ describe("vertical-construction.mapper", () => {
     projectId: "proj-1",
     snapshots: [
       {
-        flightId: "flight-1",
-        flightDate: "2026-05-01",
+        captureSessionId: "flight-1",
+        captureDate: "2026-05-01",
         observedBuiltAreaSquareMeters: 1000,
         confidenceScore: null,
         source: "MANUAL",
@@ -20,8 +20,8 @@ describe("vertical-construction.mapper", () => {
         createdAt: "2026-05-01T10:00:00Z",
       },
       {
-        flightId: "flight-2",
-        flightDate: "2026-06-15",
+        captureSessionId: "flight-2",
+        captureDate: "2026-06-15",
         observedBuiltAreaSquareMeters: 5200,
         confidenceScore: 0.9,
         source: "ESTIMATED",
@@ -58,8 +58,8 @@ describe("vertical-construction.mapper", () => {
       projectId: "proj-1",
       snapshots: [
         {
-          flightId: "flight-3",
-          flightDate: "2026-07-01",
+          captureSessionId: "flight-3",
+          captureDate: "2026-07-01",
           observedBuiltAreaSquareMeters: 6000,
           confidenceScore: 0.84,
           source: "AI_DETECTED",

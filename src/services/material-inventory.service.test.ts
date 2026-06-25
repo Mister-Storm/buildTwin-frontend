@@ -20,7 +20,7 @@ describe("material-inventory.service", () => {
       recordedAt: "2026-06-15T14:30:00Z",
     });
 
-    expect(apiFetch).toHaveBeenCalledWith("/flights/flight-1/inventory", {
+    expect(apiFetch).toHaveBeenCalledWith("/capture-sessions/flight-1/inventory", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -36,16 +36,16 @@ describe("material-inventory.service", () => {
     expect(apiFetch).toHaveBeenCalledWith("/projects/proj-1/inventory");
   });
 
-  it("compares inventory between flights", async () => {
+  it("compares inventory between captureSessions", async () => {
     vi.mocked(apiFetch).mockResolvedValue({
       projectId: "proj-1",
-      flightAId: "a",
-      flightBId: "b",
+      captureSessionAId: "a",
+      captureSessionBId: "b",
       materials: [],
     });
     await compareProjectMaterialInventory("proj-1", "a", "b");
     expect(apiFetch).toHaveBeenCalledWith(
-      "/projects/proj-1/inventory/compare?flightA=a&flightB=b",
+      "/projects/proj-1/inventory/compare?captureSessionA=a&captureSessionB=b",
     );
   });
 });

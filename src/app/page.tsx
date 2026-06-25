@@ -59,15 +59,15 @@ export default async function DashboardPage() {
             icon={Building2}
           />
           <MetricCard
-            label={dashboard.lastFlight.label}
-            value={dashboard.lastFlight.value}
-            subtitle={dashboard.lastFlight.subtitle}
+            label={dashboard.lastCaptureSession.label}
+            value={dashboard.lastCaptureSession.value}
+            subtitle={dashboard.lastCaptureSession.subtitle}
             icon={Calendar}
           />
           <MetricCard
-            label={dashboard.processedFlights.label}
-            value={dashboard.processedFlights.value}
-            subtitle={dashboard.processedFlights.subtitle}
+            label={dashboard.processedCaptureSessions.label}
+            value={dashboard.processedCaptureSessions.value}
+            subtitle={dashboard.processedCaptureSessions.subtitle}
             icon={CheckCircle2}
           />
           <MetricCard

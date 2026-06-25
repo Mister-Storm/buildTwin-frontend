@@ -43,7 +43,7 @@ export function AreaEvolutionCard({
         <CardTitle className="text-lg">Evolução da Obra</CardTitle>
         <CardDescription>
           Indicadores de progresso entre{" "}
-          {viewModel.flightA.flightDateLabel} e {viewModel.flightB.flightDateLabel}
+          {viewModel.captureSessionA.captureDateLabel} e {viewModel.captureSessionB.captureDateLabel}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -51,12 +51,12 @@ export function AreaEvolutionCard({
           <MetricCard
             icon={MapPinned}
             label="Área Atual"
-            value={formatArea(viewModel.flightB.areaSquareMeters)}
+            value={formatArea(viewModel.captureSessionB.areaSquareMeters)}
           />
           <MetricCard
             icon={MapPinned}
             label="Área Anterior"
-            value={formatArea(viewModel.flightA.areaSquareMeters)}
+            value={formatArea(viewModel.captureSessionA.areaSquareMeters)}
           />
           <MetricCard
             icon={TrendingUp}

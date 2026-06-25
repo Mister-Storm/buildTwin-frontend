@@ -5,13 +5,13 @@ export type { OrthomosaicResolution };
 
 export interface OrthomosaicResolver {
   resolve(
-    flightId: string,
+    captureSessionId: string,
     projectId: string,
   ): Promise<OrthomosaicResolution | null>;
   resolveLatestForProject(
     projectId: string,
   ): Promise<OrthomosaicResolution | null>;
-  getOrthomosaicFlightIds?(
+  getOrthomosaicCaptureSessionIds?(
     projectId: string,
   ): Promise<ReadonlySet<string>>;
 }

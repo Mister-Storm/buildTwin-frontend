@@ -11,8 +11,8 @@ import { ApiError } from "@/types/api/common.api";
 
 export async function loadComparisonViewModel(
   projectId: string,
-  flightAId?: string,
-  flightBId?: string,
+  captureSessionAId?: string,
+  captureSessionBId?: string,
 ): Promise<ComparisonLoadResult> {
   try {
     const response = await getProjectTimeline(projectId);
@@ -36,8 +36,8 @@ export async function loadComparisonViewModel(
     }
 
     const defaults = resolveDefaultComparisonFlights(items);
-    const resolvedAId = flightAId ?? defaults?.flightAId;
-    const resolvedBId = flightBId ?? defaults?.flightBId;
+    const resolvedAId = captureSessionAId ?? defaults?.captureSessionAId;
+    const resolvedBId = captureSessionBId ?? defaults?.captureSessionBId;
 
     if (!resolvedAId || !resolvedBId) {
       return {
@@ -48,10 +48,10 @@ export async function loadComparisonViewModel(
       };
     }
 
-    const flightA = findTimelineItem(items, resolvedAId);
-    const flightB = findTimelineItem(items, resolvedBId);
+    const captureSessionA = findTimelineItem(items, resolvedAId);
+    const captureSessionB = findTimelineItem(items, resolvedBId);
 
-    if (!flightA || !flightB || flightA.flightId === flightB.flightId) {
+    if (!captureSessionA || !captureSessionB || captureSessionA.captureSessionId === captureSessionB.captureSessionId) {
       return {
         status: "error",
         message: "Não foi possível selecionar dois levantamentos distintos.",
@@ -60,22 +60,22 @@ export async function loadComparisonViewModel(
     }
 
     const [older, newer] =
-      flightA.flightDate <= flightB.flightDate
-        ? [flightA, flightB]
-        : [flightB, flightA];
+      captureSessionA.captureDate <= captureSessionB.captureDate
+        ? [captureSessionA, captureSessionB]
+        : [captureSessionB, captureSessionA];
 
     const viewModel = buildComparisonViewModel(projectId, older, newer);
 
     debugLog("comparison_opened", {
       projectId,
-      flightA: older.flightId,
-      flightB: newer.flightId,
+      captureSessionA: older.captureSessionId,
+      captureSessionB: newer.captureSessionId,
     });
 
     debugLog("comparison_analytics_generated", {
       projectId,
-      flightA: older.flightId,
-      flightB: newer.flightId,
+      captureSessionA: older.captureSessionId,
+      captureSessionB: newer.captureSessionId,
       daysBetween: viewModel.analytics.daysBetween,
       areaDeltaPercent: viewModel.analytics.areaDeltaPercent,
     });

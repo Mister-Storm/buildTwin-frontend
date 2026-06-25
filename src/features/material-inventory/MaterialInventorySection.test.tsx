@@ -11,7 +11,7 @@ describe("MaterialInventorySection", () => {
     render(
       <MaterialInventorySection
         projectId="proj-1"
-        flights={[]}
+        captureSessions={[]}
         viewModel={{
           projectId: "proj-1",
           currentQuantityLabel: "3.000 (1 materiais)",

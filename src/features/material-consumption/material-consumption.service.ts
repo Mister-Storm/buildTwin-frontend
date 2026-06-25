@@ -4,11 +4,11 @@ import type { ProjectMaterialConsumptionDto } from "@/features/material-consumpt
 
 export async function getProjectMaterialConsumption(
   projectId: string,
-  flightA: string,
-  flightB: string,
+  captureSessionA: string,
+  captureSessionB: string,
 ): Promise<ProjectMaterialConsumptionDto> {
-  debugLog("getProjectMaterialConsumption", { projectId, flightA, flightB });
+  debugLog("getProjectMaterialConsumption", { projectId, captureSessionA, captureSessionB });
   return apiFetch<ProjectMaterialConsumptionDto>(
-    `/projects/${projectId}/inventory/consumption?flightA=${flightA}&flightB=${flightB}`,
+    `/projects/${projectId}/inventory/consumption?captureSessionA=${captureSessionA}&captureSessionB=${captureSessionB}`,
   );
 }

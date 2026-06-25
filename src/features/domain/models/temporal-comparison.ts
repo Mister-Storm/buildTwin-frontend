@@ -3,9 +3,9 @@ import type { ChangeAnalytics } from "@/features/temporal-comparison/analytics/c
 
 export type TimelineItemViewModel = {
   sequenceNumber: number;
-  flightId: string;
-  flightDate: Date;
-  flightDateLabel: string;
+  captureSessionId: string;
+  captureDate: Date;
+  captureDateLabel: string;
   operatorName: string;
   previewUrl: string;
   areaLabel: string | null;
@@ -16,8 +16,8 @@ export type TimelineItemViewModel = {
 
 export type ComparisonViewModel = {
   projectId: string;
-  flightA: TimelineItemViewModel;
-  flightB: TimelineItemViewModel;
+  captureSessionA: TimelineItemViewModel;
+  captureSessionB: TimelineItemViewModel;
   deltaAreaLabel: string | null;
   deltaGsdLabel: string | null;
   intervalDaysLabel: string;

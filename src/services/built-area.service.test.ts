@@ -28,7 +28,7 @@ describe("built-area.service", () => {
       notes: "Structural phase completed",
     });
 
-    expect(apiFetch).toHaveBeenCalledWith("/flights/flight-1/built-area", {
+    expect(apiFetch).toHaveBeenCalledWith("/capture-sessions/flight-1/built-area", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -41,7 +41,7 @@ describe("built-area.service", () => {
 
   it("detectBuiltArea posts detect endpoint", async () => {
     vi.mocked(apiFetch).mockResolvedValue({
-      flightId: "flight-1",
+      captureSessionId: "flight-1",
       detectedAreaSquareMeters: 1243.5,
       confidenceScore: 0.82,
       source: "AI_DETECTED",
@@ -51,7 +51,7 @@ describe("built-area.service", () => {
 
     await detectBuiltArea("flight-1");
 
-    expect(apiFetch).toHaveBeenCalledWith("/flights/flight-1/built-area/detect", {
+    expect(apiFetch).toHaveBeenCalledWith("/capture-sessions/flight-1/built-area/detect", {
       method: "POST",
     });
   });

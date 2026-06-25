@@ -50,7 +50,7 @@ When `BUILDTWIN_DEMO_MODE` is not `false`, the app includes a sample project **R
 
 Direct URL:
 
-`/projects/aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa/orthomosaic?flightId=bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb`
+`/projects/aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa/orthomosaic?captureSessionId=bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb`
 
 ## Environment Variables
 
@@ -65,14 +65,14 @@ Direct URL:
 After processing a flight, populate `.env.local`:
 
 ```env
-ORTHOMOSAIC_MAPPINGS=[{"projectId":"YOUR_PROJECT_ID","flightId":"YOUR_FLIGHT_ID","jobId":"YOUR_JOB_ID","previewArtifactId":"OPTIONAL_PREVIEW_ID"}]
+ORTHOMOSAIC_MAPPINGS=[{"projectId":"YOUR_PROJECT_ID","captureSessionId":"YOUR_FLIGHT_ID","jobId":"YOUR_JOB_ID","previewArtifactId":"OPTIONAL_PREVIEW_ID"}]
 ```
 
 To discover IDs:
 
 ```bash
 # Start processing
-curl -X POST http://localhost:8080/api/v1/flights/{flightId}/process
+curl -X POST http://localhost:8080/api/v1/capture-sessions/{captureSessionId}/process
 
 # Poll until COMPLETED
 curl http://localhost:8080/api/v1/jobs/{jobId}
@@ -82,7 +82,7 @@ curl http://localhost:8080/api/v1/jobs/{jobId}
 
 ## 60-Second Demo Flow
 
-1. **Dashboard** (`/`) — executive KPIs: Obras Ativas, Último Voo, Área Monitorada, Processamentos Concluídos
+1. **Dashboard** (`/`) — executive KPIs: Obras Ativas, Última Captura, Área Monitorada, Processamentos Concluídos
 2. **Projetos** (`/projects`) — select a construction project
 3. **Detalhe da Obra** (`/projects/{id}`) — flight timeline + View Orthomosaic CTA
 4. **Visualizador** (`/projects/{id}/orthomosaic`) — processed orthomosaic JPEG preview
@@ -106,7 +106,7 @@ Validated endpoints used by this frontend:
 - `GET /api/v1/projects`
 - `GET /api/v1/projects/{id}`
 - `GET /api/v1/projects/{id}/dashboard`
-- `GET /api/v1/projects/{id}/flights`
+- `GET /api/v1/projects/{id}/capture-sessions`
 - `GET /api/v1/jobs/{id}`
 - `GET /api/v1/artifacts/{id}`
 - `GET /api/v1/artifacts/{id}/preview`

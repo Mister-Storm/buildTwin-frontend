@@ -3,7 +3,7 @@ import {
   getArtifactDownloadLink,
   getArtifactPreviewLink,
   indexArtifactsByType,
-} from "@/features/flight/artifact-links";
+} from "@/features/capture-session/artifact-links";
 
 describe("artifact-links", () => {
   const artifacts = indexArtifactsByType([

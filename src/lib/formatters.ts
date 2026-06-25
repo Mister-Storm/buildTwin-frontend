@@ -1,4 +1,4 @@
-import type { StatusVariant } from "@/features/domain/models/flight";
+import type { StatusVariant } from "@/features/domain/models/capture-session";
 
 /** Parses API date-only strings (YYYY-MM-DD) as local calendar dates. */
 export function parseDateOnly(dateString: string): Date {

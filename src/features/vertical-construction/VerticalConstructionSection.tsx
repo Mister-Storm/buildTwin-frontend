@@ -14,17 +14,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { ProjectFlightListItemDto } from "@/types/api/flight.api";
+import type { ProjectCaptureSessionListItemDto } from "@/types/api/capture-session.api";
 import { Building, Layers, Percent, Ruler, Target } from "lucide-react";
 
 type VerticalConstructionSectionProps = {
   viewModel: VerticalConstructionViewModel;
-  flights: ProjectFlightListItemDto[];
+  captureSessions: ProjectCaptureSessionListItemDto[];
 };
 
 export function VerticalConstructionSection({
   viewModel,
-  flights,
+  captureSessions,
 }: VerticalConstructionSectionProps) {
   const [previewArtifactId, setPreviewArtifactId] = useState<string | null>(null);
   const [detectedFloors, setDetectedFloors] = useState<number | null>(null);
@@ -46,7 +46,7 @@ export function VerticalConstructionSection({
             </CardDescription>
           </div>
           <DetectVerticalConstructionButton
-            flights={flights}
+            captureSessions={captureSessions}
             onDetected={(result) => {
               setPreviewArtifactId(result.previewArtifactId);
               setDetectedFloors(result.detectedFloors);

@@ -7,17 +7,17 @@ describe("mapConstructionProgressTimeline", () => {
       projectId: "proj-1",
       timeline: [
         {
-          flightSequence: 1,
-          flightId: "flight-1",
-          flightDate: "2026-05-01",
+          captureSessionSequence: 1,
+          captureSessionId: "flight-1",
+          captureDate: "2026-05-01",
           occupiedAreaSquareMeters: 4000,
           footprintIndex: 0.5,
           visualChangeIndex: null,
         },
         {
-          flightSequence: 2,
-          flightId: "flight-2",
-          flightDate: "2026-06-01",
+          captureSessionSequence: 2,
+          captureSessionId: "flight-2",
+          captureDate: "2026-06-01",
           occupiedAreaSquareMeters: 8000,
           footprintIndex: 1,
           visualChangeIndex: 18.5,
@@ -30,8 +30,8 @@ describe("mapConstructionProgressTimeline", () => {
     expect(viewModel.latest?.visualChangeLabel).toBe("18,5%");
     expect(viewModel.footprintGrowthSincePreviousLabel).toBe("+50,0%");
     expect(viewModel.chartPoints).toEqual([
-      { flightDateLabel: expect.any(String), footprintIndex: 0.5 },
-      { flightDateLabel: expect.any(String), footprintIndex: 1 },
+      { captureDateLabel: expect.any(String), footprintIndex: 0.5 },
+      { captureDateLabel: expect.any(String), footprintIndex: 1 },
     ]);
   });
 
@@ -40,9 +40,9 @@ describe("mapConstructionProgressTimeline", () => {
       projectId: "proj-1",
       timeline: [
         {
-          flightSequence: 1,
-          flightId: "flight-1",
-          flightDate: "2026-05-01",
+          captureSessionSequence: 1,
+          captureSessionId: "flight-1",
+          captureDate: "2026-05-01",
           occupiedAreaSquareMeters: null,
           footprintIndex: null,
           visualChangeIndex: null,

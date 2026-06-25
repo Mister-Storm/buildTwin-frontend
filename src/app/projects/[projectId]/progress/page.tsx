@@ -27,7 +27,7 @@ import { ProgressHistoryChart } from "@/features/construction-progress/ProgressH
 import { ProgressMetricsGrid } from "@/features/construction-progress/ProgressMetricsGrid";
 import { ProgressOverviewCard } from "@/features/construction-progress/ProgressOverviewCard";
 import { getProject } from "@/services/projects.service";
-import { listFlightsByProject } from "@/services/flights.service";
+import { listCaptureSessionsByProject } from "@/services/capture-sessions.service";
 import { ApiError } from "@/types/api/common.api";
 import type { ProjectResponseDto } from "@/types/api/project.api";
 
@@ -63,7 +63,7 @@ export default async function ProjectProgressPage({ params }: ProgressPageProps)
     materialInventoryResult,
     executiveIntelligenceResult,
     forecastIntelligenceResult,
-    flights,
+    captureSessions,
   ] = await Promise.all([
     loadProjectProgress(projectId),
     loadProjectProgressHistory(projectId),
@@ -73,7 +73,7 @@ export default async function ProjectProgressPage({ params }: ProgressPageProps)
     loadMaterialInventoryViewModel(projectId),
     loadExecutiveIntelligenceViewModel(projectId),
     loadForecastIntelligenceViewModel(projectId),
-    listFlightsByProject(projectId).catch(() => []),
+    listCaptureSessionsByProject(projectId).catch(() => []),
   ]);
 
   return (
@@ -132,7 +132,7 @@ export default async function ProjectProgressPage({ params }: ProgressPageProps)
           <div className="space-y-4">
             <BuiltAreaSection
               viewModel={builtAreaResult.viewModel}
-              flights={flights}
+              captureSessions={captureSessions}
             />
             <EmptyState
               title="Área construída não registrada"
@@ -142,7 +142,7 @@ export default async function ProjectProgressPage({ params }: ProgressPageProps)
         ) : (
           <BuiltAreaSection
             viewModel={builtAreaResult.viewModel}
-            flights={flights}
+            captureSessions={captureSessions}
           />
         )}
 
@@ -153,14 +153,14 @@ export default async function ProjectProgressPage({ params }: ProgressPageProps)
           />
         ) : verticalConstructionResult.status === "empty" ? (
           <div className="space-y-4">
-            <VerticalConstructionSection viewModel={verticalConstructionResult.viewModel} flights={flights} />
+            <VerticalConstructionSection viewModel={verticalConstructionResult.viewModel} captureSessions={captureSessions} />
             <EmptyState
               title="Construção vertical não registrada"
               message={verticalConstructionResult.message}
             />
           </div>
         ) : (
-          <VerticalConstructionSection viewModel={verticalConstructionResult.viewModel} flights={flights} />
+          <VerticalConstructionSection viewModel={verticalConstructionResult.viewModel} captureSessions={captureSessions} />
         )}
 
         {materialInventoryResult.status === "error" ? (
@@ -173,7 +173,7 @@ export default async function ProjectProgressPage({ params }: ProgressPageProps)
             <MaterialInventorySection
               projectId={projectId}
               viewModel={materialInventoryResult.viewModel}
-              flights={flights}
+              captureSessions={captureSessions}
             />
             <EmptyState
               title="Inventário não registrado"
@@ -184,13 +184,13 @@ export default async function ProjectProgressPage({ params }: ProgressPageProps)
           <MaterialInventorySection
             projectId={projectId}
             viewModel={materialInventoryResult.viewModel}
-            flights={flights}
+            captureSessions={captureSessions}
           />
         )}
 
-        <MaterialConsumptionSection projectId={projectId} flights={flights} />
+        <MaterialConsumptionSection projectId={projectId} captureSessions={captureSessions} />
 
-        <WasteIntelligenceSection projectId={projectId} flights={flights} />
+        <WasteIntelligenceSection projectId={projectId} captureSessions={captureSessions} />
 
         {constructionProgressResult.status === "success" ? (
           <div className="space-y-6">

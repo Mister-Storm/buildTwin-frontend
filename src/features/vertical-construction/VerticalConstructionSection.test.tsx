@@ -18,8 +18,8 @@ const viewModel: VerticalConstructionViewModel = {
   plannedAverageAreaPerFloorLabel: "1.000 m²",
   historyRows: [
     {
-      flightId: "flight-1",
-      flightDateLabel: "1 de jun. de 2026",
+      captureSessionId: "flight-1",
+      captureDateLabel: "1 de jun. de 2026",
       builtAreaLabel: "5.200 m²",
       floorsLabel: "4",
       notesLabel: "Structural phase",
@@ -31,10 +31,10 @@ const viewModel: VerticalConstructionViewModel = {
   confidenceLabel: null,
 };
 
-const flights = [
+const captureSessions = [
   {
-    flightId: "flight-1",
-    flightDate: "2026-06-01",
+    captureSessionId: "flight-1",
+    captureDate: "2026-06-01",
     operatorName: "Pilot",
     imageCount: 1,
     status: "COMPLETED",
@@ -43,7 +43,7 @@ const flights = [
 
 describe("VerticalConstructionSection", () => {
   it("renders vertical construction metric cards", () => {
-    render(<VerticalConstructionSection viewModel={viewModel} flights={flights} />);
+    render(<VerticalConstructionSection viewModel={viewModel} captureSessions={captureSessions} />);
 
     expect(screen.getByText("Construção Vertical")).toBeInTheDocument();
     expect(screen.getByText("Pavimentos Atuais")).toBeInTheDocument();

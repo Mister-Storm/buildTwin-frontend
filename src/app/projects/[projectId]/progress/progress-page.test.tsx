@@ -55,7 +55,7 @@ describe("ProjectProgressPage", () => {
         periodLabel: "1 de mai. de 2026 — 15 de jun. de 2026",
         timelineSize: 2,
         currentObservedAreaSquareMeters: 8421,
-        deltaAreaFromFirstFlight: 5120,
+        deltaAreaFromFirstCapture: 5120,
         currentObservedAreaLabel: "8.421 m²",
         accumulatedEvolutionLabel: "+5.120 m²",
         lastEvolutionLabel: "+210 m²",
@@ -69,10 +69,10 @@ describe("ProjectProgressPage", () => {
       status: "success",
       history: [
         {
-          flightId: "f1",
-          flightDateLabel: "1 de mai. de 2026",
+          captureSessionId: "f1",
+          captureDateLabel: "1 de mai. de 2026",
           observedAreaSquareMeters: 3300,
-          deltaAreaFromPreviousFlight: null,
+          deltaAreaFromPreviousCapture: null,
         },
       ],
     });

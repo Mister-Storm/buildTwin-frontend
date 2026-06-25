@@ -8,13 +8,13 @@ function buildViewModel(
 ): OrthomosaicViewModel {
   return {
     projectId: "proj-1",
-    flightId: "flight-1",
+    captureSessionId: "flight-1",
     jobId: "job-1",
     previewArtifactId: "preview-1",
     downloadArtifactId: "ortho-1",
     previewUrl: "/preview",
     downloadUrl: "/download",
-    flightDate: new Date("2026-06-14"),
+    captureDate: new Date("2026-06-14"),
     operatorName: "Operador",
     jobStatus: "Concluído",
     jobStatusVariant: "success",

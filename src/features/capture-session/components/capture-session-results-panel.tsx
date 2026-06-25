@@ -13,24 +13,24 @@ import {
   getArtifactDownloadLink,
   getArtifactPreviewLink,
   indexArtifactsByType,
-} from "@/features/flight/artifact-links";
+} from "@/features/capture-session/artifact-links";
 import { formatDateTime } from "@/lib/formatters";
 import type { ProcessingJobDetailResponseDto } from "@/types/api/processing.api";
 import type { ProgressReportResponseDto } from "@/types/api/report.api";
 
-type FlightResultsPanelProps = {
+type CaptureSessionResultsPanelProps = {
   projectId: string;
-  flightId: string;
+  captureSessionId: string;
   job: ProcessingJobDetailResponseDto;
   report: ProgressReportResponseDto | null;
 };
 
-export function FlightResultsPanel({
+export function CaptureSessionResultsPanel({
   projectId,
-  flightId,
+  captureSessionId,
   job,
   report,
-}: FlightResultsPanelProps) {
+}: CaptureSessionResultsPanelProps) {
   const artifacts = indexArtifactsByType(job.artifacts);
   const previewUrl = getArtifactPreviewLink(artifacts, "ORTHOMOSAIC_PREVIEW");
   const thumbnailUrl = getArtifactPreviewLink(
@@ -116,7 +116,7 @@ export function FlightResultsPanel({
             </a>
           ))}
           <Link
-            href={`/projects/${projectId}/orthomosaic?flightId=${flightId}`}
+            href={`/projects/${projectId}/orthomosaic?captureSessionId=${captureSessionId}`}
             className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-secondary px-3 text-sm font-medium text-secondary-foreground transition-colors hover:opacity-90"
           >
             <ExternalLink className="size-4" />

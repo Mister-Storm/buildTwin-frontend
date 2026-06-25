@@ -8,16 +8,16 @@ describe("VerticalConstructionHistoryList", () => {
       <VerticalConstructionHistoryList
         rows={[
           {
-            flightId: "flight-1",
-            flightDateLabel: "1 de mai. de 2026",
+            captureSessionId: "flight-1",
+            captureDateLabel: "1 de mai. de 2026",
             builtAreaLabel: "1.000 m²",
             floorsLabel: "2",
             notesLabel: "Foundation",
             source: "MANUAL",
           },
           {
-            flightId: "flight-2",
-            flightDateLabel: "15 de jun. de 2026",
+            captureSessionId: "flight-2",
+            captureDateLabel: "15 de jun. de 2026",
             builtAreaLabel: "5.200 m²",
             floorsLabel: "4",
             notesLabel: "—",

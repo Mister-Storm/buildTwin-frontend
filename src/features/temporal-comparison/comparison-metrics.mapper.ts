@@ -22,7 +22,7 @@ export function computeIntervalDays(
 ): number {
   const msPerDay = 1000 * 60 * 60 * 24;
   return Math.round(
-    (later.flightDate.getTime() - earlier.flightDate.getTime()) / msPerDay,
+    (later.captureDate.getTime() - earlier.captureDate.getTime()) / msPerDay,
   );
 }
 
@@ -30,25 +30,25 @@ export { formatIntervalDays } from "@/lib/formatters";
 
 export function buildComparisonViewModel(
   projectId: string,
-  flightA: TimelineItemViewModel,
-  flightB: TimelineItemViewModel,
+  captureSessionA: TimelineItemViewModel,
+  captureSessionB: TimelineItemViewModel,
 ): ComparisonViewModel {
   const deltaArea =
-    flightA.areaSquareMeters !== null && flightB.areaSquareMeters !== null
-      ? flightB.areaSquareMeters - flightA.areaSquareMeters
+    captureSessionA.areaSquareMeters !== null && captureSessionB.areaSquareMeters !== null
+      ? captureSessionB.areaSquareMeters - captureSessionA.areaSquareMeters
       : null;
 
   const deltaGsd =
-    flightA.gsdCmPerPixel !== null && flightB.gsdCmPerPixel !== null
-      ? flightB.gsdCmPerPixel - flightA.gsdCmPerPixel
+    captureSessionA.gsdCmPerPixel !== null && captureSessionB.gsdCmPerPixel !== null
+      ? captureSessionB.gsdCmPerPixel - captureSessionA.gsdCmPerPixel
       : null;
 
-  const intervalDays = computeIntervalDays(flightA, flightB);
+  const intervalDays = computeIntervalDays(captureSessionA, captureSessionB);
 
   return {
     projectId,
-    flightA,
-    flightB,
+    captureSessionA,
+    captureSessionB,
     deltaAreaLabel:
       deltaArea === null ? UNAVAILABLE : formatSignedDelta(deltaArea, "m²"),
     deltaGsdLabel:
@@ -56,12 +56,12 @@ export function buildComparisonViewModel(
         ? UNAVAILABLE
         : formatSignedDelta(deltaGsd, "cm/pixel"),
     intervalDaysLabel: formatIntervalDays(intervalDays),
-    analytics: computeChangeAnalytics(flightA, flightB),
+    analytics: computeChangeAnalytics(captureSessionA, captureSessionB),
     areaEvolutionMetrics: calculateAreaEvolutionMetrics(
-      flightA.areaSquareMeters,
-      flightB.areaSquareMeters,
-      flightA.flightDate,
-      flightB.flightDate,
+      captureSessionA.areaSquareMeters,
+      captureSessionB.areaSquareMeters,
+      captureSessionA.captureDate,
+      captureSessionB.captureDate,
     ),
   };
 }

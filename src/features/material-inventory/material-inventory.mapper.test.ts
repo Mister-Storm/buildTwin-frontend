@@ -12,8 +12,8 @@ describe("material-inventory.mapper", () => {
     projectId: "proj-1",
     snapshots: [
       {
-        flightId: "flight-1",
-        flightDate: "2026-05-01",
+        captureSessionId: "flight-1",
+        captureDate: "2026-05-01",
         materialType: "BRICK",
         quantity: 5000,
         detectedObjects: null,
@@ -28,8 +28,8 @@ describe("material-inventory.mapper", () => {
         createdAt: "2026-05-01T10:00:00Z",
       },
       {
-        flightId: "flight-2",
-        flightDate: "2026-06-15",
+        captureSessionId: "flight-2",
+        captureDate: "2026-06-15",
         materialType: "BRICK",
         quantity: 3000,
         detectedObjects: null,
@@ -67,8 +67,8 @@ describe("material-inventory.mapper", () => {
       projectId: "proj-1",
       snapshots: [
         {
-          flightId: "flight-3",
-          flightDate: "2026-06-20",
+          captureSessionId: "flight-3",
+          captureDate: "2026-06-20",
           materialType: "WOOD",
           quantity: null,
           detectedObjects: 42,
@@ -98,17 +98,17 @@ describe("material-inventory.mapper", () => {
     const rows = mapCompareRows([
       {
         materialType: "BRICK",
-        quantityAtFlightA: 5000,
-        quantityAtFlightB: 3000,
+        quantityAtCaptureSessionA: 5000,
+        quantityAtCaptureSessionB: 3000,
         inventoryDelta: 2000,
-        storageZoneAtFlightA: "North Yard",
-        storageZoneAtFlightB: null,
+        storageZoneAtCaptureSessionA: "North Yard",
+        storageZoneAtCaptureSessionB: null,
         unit: "UNIT",
       },
     ]);
 
     expect(rows[0].inventoryDeltaLabel).toContain("+2.000");
-    expect(rows[0].storageZoneAtFlightALabel).toBe("North Yard");
+    expect(rows[0].storageZoneAtCaptureSessionALabel).toBe("North Yard");
   });
 
   it("calculates stock variation from inventoryDelta values", () => {
@@ -116,11 +116,11 @@ describe("material-inventory.mapper", () => {
       calculateStockVariation([
         {
           materialType: "BRICK",
-          quantityAtFlightA: 5000,
-          quantityAtFlightB: 3000,
+          quantityAtCaptureSessionA: 5000,
+          quantityAtCaptureSessionB: 3000,
           inventoryDelta: 2000,
-          storageZoneAtFlightA: null,
-          storageZoneAtFlightB: null,
+          storageZoneAtCaptureSessionA: null,
+          storageZoneAtCaptureSessionB: null,
           unit: "UNIT",
         },
       ]),

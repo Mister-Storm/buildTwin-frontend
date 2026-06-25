@@ -32,9 +32,9 @@ export function mapTimelineItem(
 
   return {
     sequenceNumber: item.sequenceNumber,
-    flightId: item.flightId,
-    flightDate: parseDateOnly(item.flightDate),
-    flightDateLabel: formatDate(parseDateOnly(item.flightDate)),
+    captureSessionId: item.captureSessionId,
+    captureDate: parseDateOnly(item.captureDate),
+    captureDateLabel: formatDate(parseDateOnly(item.captureDate)),
     operatorName: item.operatorName,
     previewUrl: artifactPreviewUrl(item.orthomosaicPreviewArtifactId),
     areaLabel: formatAreaLabel(areaSquareMeters),
@@ -52,21 +52,21 @@ export function mapTimelineItems(
 
 export function resolveDefaultComparisonFlights(
   items: TimelineItemViewModel[],
-): { flightAId: string; flightBId: string } | null {
+): { captureSessionAId: string; captureSessionBId: string } | null {
   if (items.length < 2) {
     return null;
   }
   const previous = items[items.length - 2]!;
   const latest = items[items.length - 1]!;
   return {
-    flightAId: previous.flightId,
-    flightBId: latest.flightId,
+    captureSessionAId: previous.captureSessionId,
+    captureSessionBId: latest.captureSessionId,
   };
 }
 
 export function findTimelineItem(
   items: TimelineItemViewModel[],
-  flightId: string,
+  captureSessionId: string,
 ): TimelineItemViewModel | undefined {
-  return items.find((item) => item.flightId === flightId);
+  return items.find((item) => item.captureSessionId === captureSessionId);
 }

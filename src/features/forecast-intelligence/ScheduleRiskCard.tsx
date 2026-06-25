@@ -1,7 +1,7 @@
 import { AlertTriangle } from "lucide-react";
 import { MetricCard } from "@/components/shared/MetricCard";
 import { StatusBadge } from "@/components/shared/StatusBadge";
-import type { StatusVariant } from "@/features/domain/models/flight";
+import type { StatusVariant } from "@/features/domain/models/capture-session";
 
 type ScheduleRiskCardProps = {
   scheduleRiskLabel: string | null;

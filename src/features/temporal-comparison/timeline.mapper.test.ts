@@ -10,8 +10,8 @@ const baseItem = (
   overrides: Partial<ProjectTimelineItemDto>,
 ): ProjectTimelineItemDto => ({
   sequenceNumber: 1,
-  flightId: "flight-1",
-  flightDate: "2026-05-01",
+  captureSessionId: "flight-1",
+  captureDate: "2026-05-01",
   operatorName: "Pilot A",
   jobId: "job-1",
   jobStatus: "COMPLETED",
@@ -29,18 +29,18 @@ describe("timeline.mapper", () => {
     expect(item.areaSquareMeters).toBe(8000);
     expect(item.gsdLabel).toBe("2,2 cm/pixel");
     expect(item.previewUrl).toBe("/api/v1/artifacts/preview-1/preview");
-    expect(item.flightDateLabel).toBe("01 de mai. de 2026");
+    expect(item.captureDateLabel).toBe("01 de mai. de 2026");
   });
 
   it("auto-selects last and second-to-last items from asc timeline", () => {
     const items = mapTimelineItems([
-      baseItem({ sequenceNumber: 1, flightId: "older", flightDate: "2026-05-01" }),
-      baseItem({ sequenceNumber: 2, flightId: "newer", flightDate: "2026-06-01" }),
+      baseItem({ sequenceNumber: 1, captureSessionId: "older", captureDate: "2026-05-01" }),
+      baseItem({ sequenceNumber: 2, captureSessionId: "newer", captureDate: "2026-06-01" }),
     ]);
 
     expect(resolveDefaultComparisonFlights(items)).toEqual({
-      flightAId: "older",
-      flightBId: "newer",
+      captureSessionAId: "older",
+      captureSessionBId: "newer",
     });
   });
 

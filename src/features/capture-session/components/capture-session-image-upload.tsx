@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { validateImageFile } from "@/features/project/schemas/create-project.schema";
-import { uploadFlightImages } from "@/services/flights.service";
+import { uploadCaptureSessionImages } from "@/services/capture-sessions.service";
 import { ApiError } from "@/types/api/common.api";
 import { cn } from "@/lib/utils";
 
@@ -26,15 +26,15 @@ type QueueItem = {
   error?: string;
 };
 
-type FlightImageUploadProps = {
-  flightId: string;
+type CaptureSessionImageUploadProps = {
+  captureSessionId: string;
   onUploaded: () => void;
 };
 
-export function FlightImageUpload({
-  flightId,
+export function CaptureSessionImageUpload({
+  captureSessionId,
   onUploaded,
-}: FlightImageUploadProps) {
+}: CaptureSessionImageUploadProps) {
   const [queue, setQueue] = useState<QueueItem[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -106,8 +106,8 @@ export function FlightImageUpload({
       );
 
       try {
-        await uploadFlightImages(
-          flightId,
+        await uploadCaptureSessionImages(
+          captureSessionId,
           batch.map((b) => b.file),
           (progress) => {
             const batchFraction = progress.percent / 100;

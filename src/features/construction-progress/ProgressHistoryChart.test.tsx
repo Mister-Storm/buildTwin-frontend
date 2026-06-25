@@ -8,16 +8,16 @@ describe("ProgressHistoryChart", () => {
       <ProgressHistoryChart
         history={[
           {
-            flightId: "f1",
-            flightDateLabel: "1 de mai. de 2026",
+            captureSessionId: "f1",
+            captureDateLabel: "1 de mai. de 2026",
             observedAreaSquareMeters: 3200,
-            deltaAreaFromPreviousFlight: null,
+            deltaAreaFromPreviousCapture: null,
           },
           {
-            flightId: "f2",
-            flightDateLabel: "1 de jun. de 2026",
+            captureSessionId: "f2",
+            captureDateLabel: "1 de jun. de 2026",
             observedAreaSquareMeters: 8421,
-            deltaAreaFromPreviousFlight: 5221,
+            deltaAreaFromPreviousCapture: 5221,
           },
         ]}
       />,

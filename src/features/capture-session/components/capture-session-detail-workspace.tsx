@@ -2,45 +2,45 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { FlightImageList } from "@/features/flight/components/flight-image-list";
-import { FlightImageUpload } from "@/features/flight/components/flight-image-upload";
-import { FlightProcessPanel } from "@/features/flight/components/flight-process-panel";
-import { FlightResultsPanel } from "@/features/flight/components/flight-results-panel";
-import { JobStatusPanel } from "@/features/flight/components/job-status-panel";
-import { useJobPolling } from "@/features/flight/hooks/use-job-polling";
+import { CaptureSessionImageList } from "@/features/capture-session/components/capture-session-image-list";
+import { CaptureSessionImageUpload } from "@/features/capture-session/components/capture-session-image-upload";
+import { CaptureSessionProcessPanel } from "@/features/capture-session/components/capture-session-process-panel";
+import { CaptureSessionResultsPanel } from "@/features/capture-session/components/capture-session-results-panel";
+import { JobStatusPanel } from "@/features/capture-session/components/job-status-panel";
+import { useJobPolling } from "@/features/capture-session/hooks/use-job-polling";
 import { getJob } from "@/services/jobs.service";
 import type {
-  FlightDetailsResponseDto,
-  FlightImageResponseDto,
-} from "@/types/api/flight.api";
+  CaptureSessionDetailsResponseDto,
+  CaptureImageResponseDto,
+} from "@/types/api/capture-session.api";
 import type {
-  LatestFlightJobResponseDto,
+  LatestCaptureSessionJobResponseDto,
   ProcessingJobDetailResponseDto,
 } from "@/types/api/processing.api";
 import type { ProgressReportResponseDto } from "@/types/api/report.api";
 
-type FlightDetailWorkspaceProps = {
+type CaptureSessionDetailWorkspaceProps = {
   projectId: string;
-  flight: FlightDetailsResponseDto;
-  initialImages: FlightImageResponseDto[];
-  initialJob: LatestFlightJobResponseDto | null;
+  captureSession: CaptureSessionDetailsResponseDto;
+  initialImages: CaptureImageResponseDto[];
+  initialJob: LatestCaptureSessionJobResponseDto | null;
   initialJobDetail: ProcessingJobDetailResponseDto | null;
   initialReport: ProgressReportResponseDto | null;
 };
 
-export function FlightDetailWorkspace({
+export function CaptureSessionDetailWorkspace({
   projectId,
-  flight,
+  captureSession,
   initialImages,
   initialJob,
   initialJobDetail,
   initialReport,
-}: FlightDetailWorkspaceProps) {
+}: CaptureSessionDetailWorkspaceProps) {
   const router = useRouter();
   const [images, setImages] = useState(initialImages);
   const [jobDetail, setJobDetail] = useState(initialJobDetail);
   const [report] = useState(initialReport);
-  const [localJob, setLocalJob] = useState<LatestFlightJobResponseDto | null>(
+  const [localJob, setLocalJob] = useState<LatestCaptureSessionJobResponseDto | null>(
     initialJob,
   );
 
@@ -49,7 +49,7 @@ export function FlightDetailWorkspace({
     activeJob?.status === "PENDING" || activeJob?.status === "RUNNING";
 
   const { job: polledJob, error, isPolling, setJob, refresh } = useJobPolling(
-    flight.flightId,
+    captureSession.captureSessionId,
     {
       enabled: shouldPoll,
       initialJob: activeJob,
@@ -69,19 +69,19 @@ export function FlightDetailWorkspace({
   );
 
   const currentJob = polledJob ?? localJob;
-  const imageCount = images.length || flight.imageCount;
+  const imageCount = images.length || captureSession.imageCount;
 
   async function handleUploaded() {
     router.refresh();
-    const { listFlightImages } = await import("@/services/flights.service");
-    const updated = await listFlightImages(flight.flightId);
+    const { listCaptureSessionImages } = await import("@/services/capture-sessions.service");
+    const updated = await listCaptureSessionImages(captureSession.captureSessionId);
     setImages(updated);
   }
 
   function handleProcessStarted(jobId: string) {
-    const pendingJob: LatestFlightJobResponseDto = {
+    const pendingJob: LatestCaptureSessionJobResponseDto = {
       jobId,
-      flightId: flight.flightId,
+      captureSessionId: captureSession.captureSessionId,
       jobType: "ORTHOMOSAIC_PROCESSING",
       status: "PENDING",
       createdAt: new Date().toISOString(),
@@ -101,10 +101,10 @@ export function FlightDetailWorkspace({
 
   return (
     <div className="space-y-8">
-      <FlightImageUpload flightId={flight.flightId} onUploaded={handleUploaded} />
-      <FlightImageList images={images} />
-      <FlightProcessPanel
-        flightId={flight.flightId}
+      <CaptureSessionImageUpload captureSessionId={captureSession.captureSessionId} onUploaded={handleUploaded} />
+      <CaptureSessionImageList images={images} />
+      <CaptureSessionProcessPanel
+        captureSessionId={captureSession.captureSessionId}
         imageCount={imageCount}
         jobStatus={currentJob?.status ?? null}
         onStarted={handleProcessStarted}
@@ -116,9 +116,9 @@ export function FlightDetailWorkspace({
         error={error}
       />
       {showResults && jobDetail ? (
-        <FlightResultsPanel
+        <CaptureSessionResultsPanel
           projectId={projectId}
-          flightId={flight.flightId}
+          captureSessionId={captureSession.captureSessionId}
           job={jobDetail}
           report={report}
         />

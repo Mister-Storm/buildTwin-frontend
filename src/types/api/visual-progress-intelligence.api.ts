@@ -3,8 +3,8 @@ export type ProgressClassificationDto = "LOW" | "MEDIUM" | "HIGH";
 export type TrendDto = "UNKNOWN" | "STABLE";
 
 export type VisualProgressIntelligenceDto = {
-  flightA: string;
-  flightB: string;
+  captureSessionA: string;
+  captureSessionB: string;
   changePercentage: number;
   deltaDays: number;
   averageDailyChange: number;

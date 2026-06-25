@@ -3,10 +3,10 @@ import { UNAVAILABLE_EXECUTIVE_DASHBOARD } from "@/features/domain/models/dashbo
 import { formatDate } from "@/lib/formatters";
 import { debugLog } from "@/lib/debug";
 import { getProjectDashboard } from "@/services/dashboard.service";
-import { listFlightsByProject } from "@/services/flights.service";
+import { listCaptureSessionsByProject } from "@/services/capture-sessions.service";
 import { listProjects } from "@/services/projects.service";
 
-type FlightAggregate = {
+type CaptureSessionAggregate = {
   date: Date;
   projectName: string;
 };
@@ -16,31 +16,31 @@ export async function getExecutiveDashboard(): Promise<ExecutiveDashboard> {
     const projects = await listProjects();
     const activeProjects = projects.filter((p) => p.archivedAt === null);
 
-    const flightAggregates: FlightAggregate[] = [];
+    const captureSessionAggregates: CaptureSessionAggregate[] = [];
     let completedProcessings = 0;
-    let processedFlightsTotal = 0;
+    let processedCaptureSessionsTotal = 0;
 
     await Promise.all(
       activeProjects.map(async (project) => {
-        const [flights, dashboard] = await Promise.all([
-          listFlightsByProject(project.id),
+        const [captureSessions, dashboard] = await Promise.all([
+          listCaptureSessionsByProject(project.id),
           getProjectDashboard(project.id),
         ]);
 
-        processedFlightsTotal += dashboard.processedFlights;
+        processedCaptureSessionsTotal += dashboard.processedCaptureSessions;
 
-        for (const flight of flights) {
-          flightAggregates.push({
-            date: new Date(flight.flightDate),
+        for (const captureSession of captureSessions) {
+          captureSessionAggregates.push({
+            date: new Date(captureSession.captureDate),
             projectName: project.name,
           });
         }
 
-        completedProcessings += dashboard.processedFlights;
+        completedProcessings += dashboard.processedCaptureSessions;
       }),
     );
 
-    const lastFlight = flightAggregates.sort(
+    const lastCaptureSession = captureSessionAggregates.sort(
       (a, b) => b.date.getTime() - a.date.getTime(),
     )[0];
 
@@ -55,20 +55,20 @@ export async function getExecutiveDashboard(): Promise<ExecutiveDashboard> {
         value: String(activeProjects.length),
         subtitle: `${projects.length} obras no total`,
       },
-      lastFlight: lastFlight
+      lastCaptureSession: lastCaptureSession
         ? {
-            label: "Último Voo Realizado",
-            value: formatDate(lastFlight.date),
-            subtitle: lastFlight.projectName,
+            label: "Última Captura Realizado",
+            value: formatDate(lastCaptureSession.date),
+            subtitle: lastCaptureSession.projectName,
           }
         : {
-            label: "Último Voo Realizado",
+            label: "Última Captura Realizado",
             value: "—",
-            subtitle: "Nenhum voo registrado",
+            subtitle: "Nenhuma captura registrado",
           },
-      processedFlights: {
-        label: "Voos Processados",
-        value: String(processedFlightsTotal),
+      processedCaptureSessions: {
+        label: "Capturas Processadas",
+        value: String(processedCaptureSessionsTotal),
         subtitle: "Com ortomosaico concluído",
       },
       completedProcessings: {

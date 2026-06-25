@@ -9,7 +9,7 @@ describe("MaterialInventoryHistoryList", () => {
         rows={[
           {
             rowKey: "row-1",
-            flightDateLabel: "01/05/2026",
+            captureDateLabel: "01/05/2026",
             recordedAtLabel: "01/05/2026, 10:00",
             materialLabel: "Tijolo",
             metricLabel: "Quantidade",
@@ -37,7 +37,7 @@ describe("MaterialInventoryHistoryList", () => {
         rows={[
           {
             rowKey: "row-ai",
-            flightDateLabel: "20/06/2026",
+            captureDateLabel: "20/06/2026",
             recordedAtLabel: "20/06/2026, 10:00",
             materialLabel: "Madeira",
             metricLabel: "Objetos detectados",

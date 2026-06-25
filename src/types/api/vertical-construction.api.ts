@@ -1,5 +1,5 @@
 export type DetectVerticalConstructionResponseDto = {
-  flightId: string;
+  captureSessionId: string;
   detectedFloors: number;
   estimatedHeightMeters: number;
   confidenceScore: number;

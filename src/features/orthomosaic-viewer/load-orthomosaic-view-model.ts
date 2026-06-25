@@ -12,7 +12,7 @@ import {
   artifactPreviewUrl,
 } from "@/services/api-client";
 import { getArtifact } from "@/services/artifacts.service";
-import { getFlight } from "@/services/flights.service";
+import { getCaptureSession } from "@/services/capture-sessions.service";
 import { getJob } from "@/services/jobs.service";
 import { ApiError } from "@/types/api/common.api";
 import {
@@ -43,19 +43,19 @@ function toLoadError(error: unknown): OrthomosaicLoadError {
 
 export async function loadOrthomosaicViewModel(
   projectId: string,
-  flightId?: string,
+  captureSessionId?: string,
 ): Promise<OrthomosaicLoadResult> {
   const resolver = getOrthomosaicResolver();
 
   let resolution: OrthomosaicResolution | null;
-  if (flightId) {
-    resolution = await resolver.resolve(flightId, projectId);
+  if (captureSessionId) {
+    resolution = await resolver.resolve(captureSessionId, projectId);
   } else {
     resolution = await resolver.resolveLatestForProject(projectId);
   }
 
   if (!resolution) {
-    debugLog("loadOrthomosaicViewModel: no resolution", { projectId, flightId });
+    debugLog("loadOrthomosaicViewModel: no resolution", { projectId, captureSessionId });
     return { status: "empty", reason: "NO_RESOLUTION" };
   }
 
@@ -72,25 +72,25 @@ export async function loadOrthomosaicViewModel(
 
     const downloadArtifactId = findOrthomosaicDownloadArtifactId(job.artifacts);
 
-    const [previewArtifact, orthomosaicArtifact, flight] = await Promise.all([
+    const [previewArtifact, orthomosaicArtifact, captureSession] = await Promise.all([
       getArtifact(previewArtifactId),
       downloadArtifactId
         ? getArtifact(downloadArtifactId).catch(() => null)
         : Promise.resolve(null),
-      getFlight(resolution.flightId).catch(() => null),
+      getCaptureSession(resolution.captureSessionId).catch(() => null),
     ]);
 
-    const flightDate = flight ? parseDateOnly(flight.flightDate) : null;
+    const captureDate = captureSession ? parseDateOnly(captureSession.captureDate) : null;
     const surveyFields = mapOrthomosaicSurveyFields(
       orthomosaicArtifact?.metadata ?? {},
-      flightDate,
+      captureDate,
     );
 
     return {
       status: "success",
       viewModel: {
         projectId,
-        flightId: resolution.flightId,
+        captureSessionId: resolution.captureSessionId,
         jobId: resolution.jobId,
         previewArtifactId,
         downloadArtifactId,
@@ -98,8 +98,8 @@ export async function loadOrthomosaicViewModel(
         downloadUrl: downloadArtifactId
           ? artifactDownloadUrl(downloadArtifactId)
           : null,
-        flightDate,
-        operatorName: flight?.operatorName ?? null,
+        captureDate,
+        operatorName: captureSession?.operatorName ?? null,
         jobStatus: jobStatusLabel(job.status),
         jobStatusVariant: jobStatusVariant(job.status),
         fileSizeBytes: previewArtifact.fileSize,
@@ -121,7 +121,7 @@ export async function loadOrthomosaicViewModel(
   } catch (error) {
     debugLog("loadOrthomosaicViewModel: failed", {
       projectId,
-      flightId,
+      captureSessionId,
       error: error instanceof Error ? error.message : String(error),
     });
     return { status: "empty", reason: toLoadError(error) };

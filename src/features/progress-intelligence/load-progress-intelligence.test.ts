@@ -14,8 +14,8 @@ describe("loadProgressIntelligence", () => {
 
   it("returns success with mapped view model", async () => {
     vi.mocked(getVisualProgressIntelligence).mockResolvedValue({
-      flightA: "flight-a",
-      flightB: "flight-b",
+      captureSessionA: "flight-a",
+      captureSessionB: "flight-b",
       changePercentage: 24.3,
       deltaDays: 14,
       averageDailyChange: 1.73,

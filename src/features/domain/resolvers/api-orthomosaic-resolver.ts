@@ -5,24 +5,24 @@ import {
 } from "@/features/orthomosaic-viewer/artifact-utils";
 import { debugLog } from "@/lib/debug";
 import {
-  getLatestFlightJob,
-  listFlightsByProject,
-} from "@/services/flights.service";
+  getLatestCaptureSessionJob,
+  listCaptureSessionsByProject,
+} from "@/services/capture-sessions.service";
 import { getJob } from "@/services/jobs.service";
 import { ApiError } from "@/types/api/common.api";
 
 export class ApiOrthomosaicResolver implements OrthomosaicResolver {
   async resolve(
-    flightId: string,
+    captureSessionId: string,
     projectId: string,
   ): Promise<OrthomosaicResolution | null> {
-    debugLog("ApiOrthomosaicResolver.resolve", { flightId, projectId });
+    debugLog("ApiOrthomosaicResolver.resolve", { captureSessionId, projectId });
 
     try {
-      const latestJob = await getLatestFlightJob(flightId);
+      const latestJob = await getLatestCaptureSessionJob(captureSessionId);
       return this.resolutionFromJob(
         projectId,
-        flightId,
+        captureSessionId,
         latestJob.jobId,
         undefined,
       );
@@ -39,38 +39,38 @@ export class ApiOrthomosaicResolver implements OrthomosaicResolver {
   ): Promise<OrthomosaicResolution | null> {
     debugLog("ApiOrthomosaicResolver.resolveLatestForProject", { projectId });
 
-    const flights = await listFlightsByProject(projectId);
-    const sorted = [...flights].sort(
+    const captureSessions = await listCaptureSessionsByProject(projectId);
+    const sorted = [...captureSessions].sort(
       (a, b) =>
-        new Date(b.flightDate).getTime() - new Date(a.flightDate).getTime(),
+        new Date(b.captureDate).getTime() - new Date(a.captureDate).getTime(),
     );
 
-    for (const flight of sorted) {
-      const resolution = await this.resolve(flight.flightId, projectId);
+    for (const captureSession of sorted) {
+      const resolution = await this.resolve(captureSession.captureSessionId, projectId);
       if (resolution) return resolution;
     }
 
     return null;
   }
 
-  async getOrthomosaicFlightIds(
+  async getOrthomosaicCaptureSessionIds(
     projectId: string,
   ): Promise<ReadonlySet<string>> {
-    debugLog("ApiOrthomosaicResolver.getOrthomosaicFlightIds", { projectId });
+    debugLog("ApiOrthomosaicResolver.getOrthomosaicCaptureSessionIds", { projectId });
 
-    const flights = await listFlightsByProject(projectId);
+    const captureSessions = await listCaptureSessionsByProject(projectId);
     const ids = new Set<string>();
 
     await Promise.all(
-      flights.map(async (flight) => {
-        if (!flight.latestJobId) return;
+      captureSessions.map(async (captureSession) => {
+        if (!captureSession.latestJobId) return;
         const resolution = await this.resolutionFromJob(
           projectId,
-          flight.flightId,
-          flight.latestJobId,
+          captureSession.captureSessionId,
+          captureSession.latestJobId,
           undefined,
         );
-        if (resolution) ids.add(flight.flightId);
+        if (resolution) ids.add(captureSession.captureSessionId);
       }),
     );
 
@@ -79,7 +79,7 @@ export class ApiOrthomosaicResolver implements OrthomosaicResolver {
 
   private async resolutionFromJob(
     projectId: string,
-    flightId: string,
+    captureSessionId: string,
     jobId: string,
     preferredPreviewId?: string,
   ): Promise<OrthomosaicResolution | null> {
@@ -99,7 +99,7 @@ export class ApiOrthomosaicResolver implements OrthomosaicResolver {
 
       return {
         projectId,
-        flightId,
+        captureSessionId,
         jobId,
         previewArtifactId,
       };

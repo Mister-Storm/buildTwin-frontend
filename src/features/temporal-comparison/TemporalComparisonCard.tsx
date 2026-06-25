@@ -19,25 +19,25 @@ export function TemporalComparisonCard({ viewModel }: TemporalComparisonCardProp
         <MetricCard
           icon={MapPinned}
           label="Área Coberta"
-          value={`${viewModel.flightA.areaLabel ?? "—"} → ${viewModel.flightB.areaLabel ?? "—"}`}
+          value={`${viewModel.captureSessionA.areaLabel ?? "—"} → ${viewModel.captureSessionB.areaLabel ?? "—"}`}
           subtitle={`Diferença: ${viewModel.deltaAreaLabel ?? "Não disponível"}`}
         />
         <MetricCard
           icon={Crosshair}
           label="Resolução (GSD)"
-          value={`${viewModel.flightA.gsdLabel ?? "—"} → ${viewModel.flightB.gsdLabel ?? "—"}`}
+          value={`${viewModel.captureSessionA.gsdLabel ?? "—"} → ${viewModel.captureSessionB.gsdLabel ?? "—"}`}
           subtitle={`Diferença: ${viewModel.deltaGsdLabel ?? "Não disponível"}`}
         />
         <MetricCard
           icon={Calendar}
           label="Data do levantamento"
-          value={`${viewModel.flightA.flightDateLabel} → ${viewModel.flightB.flightDateLabel}`}
+          value={`${viewModel.captureSessionA.captureDateLabel} → ${viewModel.captureSessionB.captureDateLabel}`}
           subtitle={`Intervalo: ${viewModel.intervalDaysLabel}`}
         />
         <MetricCard
           icon={Clock3}
           label="Sequência"
-          value={`#${viewModel.flightA.sequenceNumber} → #${viewModel.flightB.sequenceNumber}`}
+          value={`#${viewModel.captureSessionA.sequenceNumber} → #${viewModel.captureSessionB.sequenceNumber}`}
         />
       </div>
     </section>

@@ -9,8 +9,8 @@ const SOURCE_PRECEDENCE: Record<string, number> = {
 };
 
 export type BuiltAreaChartPoint = {
-  flightId: string;
-  flightDateLabel: string;
+  captureSessionId: string;
+  captureDateLabel: string;
   observedBuiltAreaSquareMeters: number;
 };
 
@@ -43,8 +43,8 @@ export function mapBuiltAreaViewModel(
   const chartPoints = builtAreaDto.snapshots
     .filter((snapshot) => snapshot.source === "MANUAL")
     .map((snapshot) => ({
-      flightId: snapshot.flightId,
-      flightDateLabel: formatDate(parseDateOnly(snapshot.flightDate)),
+      captureSessionId: snapshot.captureSessionId,
+      captureDateLabel: formatDate(parseDateOnly(snapshot.captureDate)),
       observedBuiltAreaSquareMeters: snapshot.observedBuiltAreaSquareMeters,
     }));
 
@@ -67,7 +67,7 @@ export function mapBuiltAreaViewModel(
 
 export function selectLatestSnapshot<
   T extends {
-    flightDate: string;
+    captureDate: string;
     source: string;
     createdAt: string;
     observedBuiltAreaSquareMeters: number;
@@ -79,8 +79,8 @@ export function selectLatestSnapshot<
 
   return (
     [...snapshots].sort((left, right) => {
-      const leftDate = parseDateOnly(left.flightDate).getTime();
-      const rightDate = parseDateOnly(right.flightDate).getTime();
+      const leftDate = parseDateOnly(left.captureDate).getTime();
+      const rightDate = parseDateOnly(right.captureDate).getTime();
       if (leftDate !== rightDate) {
         return rightDate - leftDate;
       }

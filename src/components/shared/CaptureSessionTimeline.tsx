@@ -1,19 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import type { FlightTimelineEntry } from "@/features/domain/models/flight";
+import type { CaptureSessionTimelineEntry } from "@/features/domain/models/capture-session";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { formatDate } from "@/lib/formatters";
 import { cn } from "@/lib/utils";
 import { ImageIcon } from "lucide-react";
 
-type FlightTimelineProps = {
+type CaptureSessionTimelineProps = {
   projectId: string;
-  flights: FlightTimelineEntry[];
+  captureSessions: CaptureSessionTimelineEntry[];
 };
 
-export function FlightTimeline({ projectId, flights }: FlightTimelineProps) {
-  if (flights.length === 0) {
+export function CaptureSessionTimeline({ projectId, captureSessions }: CaptureSessionTimelineProps) {
+  if (captureSessions.length === 0) {
     return null;
   }
 
@@ -22,10 +22,10 @@ export function FlightTimeline({ projectId, flights }: FlightTimelineProps) {
       <div className="hidden md:block">
         <div className="relative flex items-start justify-between gap-4 overflow-x-auto pb-4">
           <div className="absolute left-0 right-0 top-5 h-0.5 bg-border" />
-          {flights.map((flight) => (
+          {captureSessions.map((captureSession) => (
             <TimelineNode
-              key={flight.id}
-              flight={flight}
+              key={captureSession.id}
+              captureSession={captureSession}
               projectId={projectId}
               orientation="horizontal"
             />
@@ -35,10 +35,10 @@ export function FlightTimeline({ projectId, flights }: FlightTimelineProps) {
       <div className="md:hidden">
         <div className="relative space-y-6 pl-6">
           <div className="absolute bottom-0 left-2.5 top-0 w-0.5 bg-border" />
-          {flights.map((flight) => (
+          {captureSessions.map((captureSession) => (
             <TimelineNode
-              key={flight.id}
-              flight={flight}
+              key={captureSession.id}
+              captureSession={captureSession}
               projectId={projectId}
               orientation="vertical"
             />
@@ -50,14 +50,14 @@ export function FlightTimeline({ projectId, flights }: FlightTimelineProps) {
 }
 
 type TimelineNodeProps = {
-  flight: FlightTimelineEntry;
+  captureSession: CaptureSessionTimelineEntry;
   projectId: string;
   orientation: "horizontal" | "vertical";
 };
 
-function TimelineNode({ flight, projectId, orientation }: TimelineNodeProps) {
-  const href = `/projects/${projectId}/flights/${flight.id}`;
-  const isHighlighted = flight.isLatest || flight.hasOrthomosaic;
+function TimelineNode({ captureSession, projectId, orientation }: TimelineNodeProps) {
+  const href = `/projects/${projectId}/capture-sessions/${captureSession.id}`;
+  const isHighlighted = captureSession.isLatest || captureSession.hasOrthomosaic;
 
   return (
     <Link
@@ -76,11 +76,11 @@ function TimelineNode({ flight, projectId, orientation }: TimelineNodeProps) {
           orientation === "vertical" && "absolute -left-6 top-0",
         )}
       >
-        {flight.hasOrthomosaic ? (
+        {captureSession.hasOrthomosaic ? (
           <ImageIcon className="size-4" />
         ) : (
           <span className="text-xs font-bold">
-            {flight.date.getDate()}
+            {captureSession.date.getDate()}
           </span>
         )}
       </div>
@@ -90,12 +90,12 @@ function TimelineNode({ flight, projectId, orientation }: TimelineNodeProps) {
           orientation === "vertical" && "mt-0 flex-1",
         )}
       >
-        <p className="text-sm font-semibold">{formatDate(flight.date)}</p>
-        <StatusBadge label={flight.statusLabel} variant={flight.statusVariant} />
+        <p className="text-sm font-semibold">{formatDate(captureSession.date)}</p>
+        <StatusBadge label={captureSession.statusLabel} variant={captureSession.statusVariant} />
         <p className="text-xs text-muted-foreground">
-          {flight.operatorName} · {flight.imageCount} imgs · {flight.processingStatus}
+          {captureSession.operatorName} · {captureSession.imageCount} imgs · {captureSession.processingStatus}
         </p>
-        {flight.hasOrthomosaic ? (
+        {captureSession.hasOrthomosaic ? (
           <p className="text-xs font-medium text-brand-accent">Ortomosaico disponível</p>
         ) : null}
       </div>

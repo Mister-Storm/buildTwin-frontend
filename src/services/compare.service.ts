@@ -4,11 +4,11 @@ import type { ProjectCompareDto } from "@/types/api/compare.api";
 
 export async function getProjectCompare(
   projectId: string,
-  flightA: string,
-  flightB: string,
+  captureSessionA: string,
+  captureSessionB: string,
 ): Promise<ProjectCompareDto> {
-  debugLog("getProjectCompare", { projectId, flightA, flightB });
-  const params = new URLSearchParams({ flightA, flightB });
+  debugLog("getProjectCompare", { projectId, captureSessionA, captureSessionB });
+  const params = new URLSearchParams({ captureSessionA, captureSessionB });
   return apiFetch<ProjectCompareDto>(
     `/projects/${projectId}/compare?${params.toString()}`,
   );

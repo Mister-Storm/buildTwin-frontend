@@ -5,11 +5,11 @@ import type { ComparisonViewModel } from "@/features/domain/models/temporal-comp
 import { calculateAreaEvolutionMetrics } from "@/features/progress-intelligence/area-evolution-metrics";
 
 function buildViewModel(): ComparisonViewModel {
-  const flightA = {
+  const captureSessionA = {
     sequenceNumber: 1,
-    flightId: "flight-a",
-    flightDate: new Date(2026, 4, 1),
-    flightDateLabel: "1 de mai. de 2026",
+    captureSessionId: "flight-a",
+    captureDate: new Date(2026, 4, 1),
+    captureDateLabel: "1 de mai. de 2026",
     operatorName: "Pilot A",
     previewUrl: "/preview-a",
     areaLabel: "7.250 m²",
@@ -17,11 +17,11 @@ function buildViewModel(): ComparisonViewModel {
     areaSquareMeters: 7250,
     gsdCmPerPixel: 2.2,
   };
-  const flightB = {
+  const captureSessionB = {
     sequenceNumber: 2,
-    flightId: "flight-b",
-    flightDate: new Date(2026, 5, 15),
-    flightDateLabel: "15 de jun. de 2026",
+    captureSessionId: "flight-b",
+    captureDate: new Date(2026, 5, 15),
+    captureDateLabel: "15 de jun. de 2026",
     operatorName: "Pilot B",
     previewUrl: "/preview-b",
     areaLabel: "8.441 m²",
@@ -30,22 +30,22 @@ function buildViewModel(): ComparisonViewModel {
     gsdCmPerPixel: 2.1,
   };
   const areaEvolutionMetrics = calculateAreaEvolutionMetrics(
-    flightA.areaSquareMeters,
-    flightB.areaSquareMeters,
-    flightA.flightDate,
-    flightB.flightDate,
+    captureSessionA.areaSquareMeters,
+    captureSessionB.areaSquareMeters,
+    captureSessionA.captureDate,
+    captureSessionB.captureDate,
   );
 
   return {
     projectId: "proj-1",
-    flightA,
-    flightB,
+    captureSessionA,
+    captureSessionB,
     deltaAreaLabel: "+1.191 m²",
     deltaGsdLabel: "−0,1 cm/pixel",
     intervalDaysLabel: "45 dias",
     analytics: {
-      flightAId: "flight-a",
-      flightBId: "flight-b",
+      captureSessionAId: "flight-a",
+      captureSessionBId: "flight-b",
       daysBetween: 45,
       areaA: 7250,
       areaB: 8441,
@@ -90,9 +90,9 @@ describe("AreaEvolutionCard", () => {
     const viewModel = buildViewModel();
     const metrics = calculateAreaEvolutionMetrics(
       null,
-      viewModel.flightB.areaSquareMeters,
-      viewModel.flightA.flightDate,
-      viewModel.flightB.flightDate,
+      viewModel.captureSessionB.areaSquareMeters,
+      viewModel.captureSessionA.captureDate,
+      viewModel.captureSessionB.captureDate,
     );
 
     render(<AreaEvolutionCard viewModel={viewModel} metrics={metrics} />);

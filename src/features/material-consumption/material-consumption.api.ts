@@ -7,8 +7,8 @@ export type ConsumptionDataCompletenessDto = {
 
 export type MaterialConsumptionItemDto = {
   materialType: MaterialType;
-  quantityAtFlightA: number;
-  quantityAtFlightB: number;
+  quantityAtCaptureSessionA: number;
+  quantityAtCaptureSessionB: number;
   quantityConsumed: number;
   consumptionPerSquareMeter: number | null;
   unit: InventoryUnit;
@@ -16,12 +16,12 @@ export type MaterialConsumptionItemDto = {
 
 export type ProjectMaterialConsumptionDto = {
   projectId: string;
-  flightAId: string;
-  flightBId: string;
+  captureSessionAId: string;
+  captureSessionBId: string;
   analysisGeneratedAt: string;
   dataCompleteness: ConsumptionDataCompletenessDto;
-  builtAreaAtFlightA: number | null;
-  builtAreaAtFlightB: number | null;
+  builtAreaAtCaptureSessionA: number | null;
+  builtAreaAtCaptureSessionB: number | null;
   builtAreaDelta: number | null;
   totalConsumedMaterials: number;
   materials: MaterialConsumptionItemDto[];

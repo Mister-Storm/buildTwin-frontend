@@ -1,22 +1,22 @@
 export type JobStatusDto = "PENDING" | "RUNNING" | "COMPLETED" | "FAILED";
 
-export type FlightStatusDto =
+export type CaptureSessionStatusDto =
   | "CREATED"
   | "UPLOADING"
   | "PROCESSING"
   | "COMPLETED"
   | "FAILED";
 
-export type ProjectFlightListItemDto = {
-  flightId: string;
-  flightDate: string;
+export type ProjectCaptureSessionListItemDto = {
+  captureSessionId: string;
+  captureDate: string;
   operatorName: string;
   imageCount: number;
   latestProcessingStatus: JobStatusDto | null;
   latestJobId: string | null;
 };
 
-export type FlightLatestJobSummaryDto = {
+export type CaptureSessionLatestJobSummaryDto = {
   jobId: string;
   status: JobStatusDto;
   createdAt: string;
@@ -24,38 +24,38 @@ export type FlightLatestJobSummaryDto = {
   completedAt: string | null;
 };
 
-export type FlightDetailsResponseDto = {
-  flightId: string;
+export type CaptureSessionDetailsResponseDto = {
+  captureSessionId: string;
   projectId: string;
-  flightDate: string;
+  captureDate: string;
   operatorName: string;
   imageCount: number;
   createdAt: string | null;
-  latestJob: FlightLatestJobSummaryDto | null;
+  latestJob: CaptureSessionLatestJobSummaryDto | null;
 };
 
-export type CreateFlightRequestDto = {
-  flightDate: string;
+export type CreateCaptureSessionRequestDto = {
+  captureDate: string;
   operatorName: string;
 };
 
-export type CreateFlightResponseDto = {
+export type CreateCaptureSessionResponseDto = {
   id: string;
   projectId: string;
-  flightDate: string;
+  captureDate: string;
   operatorName: string;
-  status: FlightStatusDto;
+  status: CaptureSessionStatusDto;
   imageCount: number;
 };
 
-export type FlightImageMetadataDto = {
+export type CaptureImageMetadataDto = {
   capturedAt: string | null;
   latitude: number | null;
   longitude: number | null;
   altitude: number | null;
 };
 
-export type FlightImageResponseDto = {
+export type CaptureImageResponseDto = {
   id: string;
   fileName: string;
   contentType: string;
@@ -63,10 +63,10 @@ export type FlightImageResponseDto = {
   checksum: string;
   storagePath: string;
   uploadedAt: string;
-  metadata: FlightImageMetadataDto | null;
+  metadata: CaptureImageMetadataDto | null;
 };
 
-export type UploadFlightImageResponseDto = {
+export type UploadCaptureImageResponseDto = {
   imageId: string;
   fileName: string;
   storagePath: string;

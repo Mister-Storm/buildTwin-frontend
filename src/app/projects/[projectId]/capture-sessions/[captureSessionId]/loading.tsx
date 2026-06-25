@@ -1,7 +1,7 @@
 import { AppShell } from "@/components/layout/AppShell";
 import { ProjectDetailSkeleton } from "@/components/shared/States";
 
-export default function FlightDetailLoading() {
+export default function CaptureSessionDetailLoading() {
   return (
     <AppShell
       breadcrumbs={[

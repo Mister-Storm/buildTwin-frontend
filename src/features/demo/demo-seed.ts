@@ -17,6 +17,6 @@ export function isDemoProject(projectId: string): boolean {
   return projectId === DEMO_PROJECT_ID;
 }
 
-export function isDemoFlight(flightId: string): boolean {
-  return flightId === DEMO_FLIGHT_ID;
+export function isDemoFlight(captureSessionId: string): boolean {
+  return captureSessionId === DEMO_FLIGHT_ID;
 }

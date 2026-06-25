@@ -17,16 +17,16 @@ describe("loadProjectProgressHistory", () => {
       projectId: "proj-1",
       history: [
         {
-          flightId: "flight-1",
-          flightDate: "2026-05-01",
+          captureSessionId: "flight-1",
+          captureDate: "2026-05-01",
           observedAreaSquareMeters: 3200,
-          deltaAreaFromPreviousFlight: null,
+          deltaAreaFromPreviousCapture: null,
         },
         {
-          flightId: "flight-2",
-          flightDate: "2026-06-01",
+          captureSessionId: "flight-2",
+          captureDate: "2026-06-01",
           observedAreaSquareMeters: 4100,
-          deltaAreaFromPreviousFlight: 900,
+          deltaAreaFromPreviousCapture: 900,
         },
       ],
     });
@@ -36,7 +36,7 @@ describe("loadProjectProgressHistory", () => {
     expect(result.status).toBe("success");
     if (result.status === "success") {
       expect(result.history).toHaveLength(2);
-      expect(result.history[1].deltaAreaFromPreviousFlight).toBe(900);
+      expect(result.history[1].deltaAreaFromPreviousCapture).toBe(900);
     }
   });
 

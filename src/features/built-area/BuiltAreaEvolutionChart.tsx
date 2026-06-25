@@ -85,10 +85,10 @@ export function BuiltAreaEvolutionChart({ points }: BuiltAreaEvolutionChartProps
             points={polyline}
           />
           {chartPoints.map(({ x, y, point }) => (
-            <g key={point.flightId}>
+            <g key={point.captureSessionId}>
               <circle cx={x} cy={y} r="4" className="fill-brand-accent" />
               <title>
-                {point.flightDateLabel}:{" "}
+                {point.captureDateLabel}:{" "}
                 {point.observedBuiltAreaSquareMeters.toLocaleString("pt-BR")} m²
               </title>
             </g>
@@ -96,8 +96,8 @@ export function BuiltAreaEvolutionChart({ points }: BuiltAreaEvolutionChartProps
         </svg>
         <div className="mt-4 flex flex-wrap gap-3 text-xs text-muted-foreground">
           {points.map((point) => (
-            <span key={point.flightId}>
-              {point.flightDateLabel}:{" "}
+            <span key={point.captureSessionId}>
+              {point.captureDateLabel}:{" "}
               {point.observedBuiltAreaSquareMeters.toLocaleString("pt-BR")} m²
             </span>
           ))}

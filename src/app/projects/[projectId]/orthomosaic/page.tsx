@@ -13,14 +13,14 @@ import { ApiError } from "@/types/api/common.api";
 
 type OrthomosaicPageProps = {
   params: Promise<{ projectId: string }>;
-  searchParams: Promise<{ flightId?: string }>;
+  searchParams: Promise<{ captureSessionId?: string }>;
 };
 
 const ERROR_MESSAGES: Record<OrthomosaicLoadError, { title: string; message: string }> = {
   NO_RESOLUTION: {
     title: "Ortomosaico não disponível",
     message:
-      "Nenhum voo com processamento concluído foi encontrado para esta obra.",
+      "Nenhuma captura com processamento concluído foi encontrado para esta obra.",
   },
   NO_PREVIEW: {
     title: "Preview não encontrado",
@@ -47,7 +47,7 @@ export default async function OrthomosaicPage({
   searchParams,
 }: OrthomosaicPageProps) {
   const { projectId } = await params;
-  const { flightId } = await searchParams;
+  const { captureSessionId } = await searchParams;
 
   let projectName = "Obra";
 
@@ -60,7 +60,7 @@ export default async function OrthomosaicPage({
     }
   }
 
-  const result = await loadOrthomosaicViewModel(projectId, flightId);
+  const result = await loadOrthomosaicViewModel(projectId, captureSessionId);
 
   return (
     <AppShell
