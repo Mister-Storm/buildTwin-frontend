@@ -3,6 +3,11 @@ import { notFound } from "next/navigation";
 import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { EmptyState, ErrorState } from "@/components/shared/States";
+import { ExecutiveIntelligenceSection } from "@/features/executive-intelligence/ExecutiveIntelligenceSection";
+import { loadExecutiveIntelligenceViewModel } from "@/features/executive-intelligence/load-executive-intelligence-view-model";
+import { ForecastIntelligenceSection } from "@/features/forecast-intelligence/ForecastIntelligenceSection";
+import { loadForecastIntelligenceViewModel } from "@/features/forecast-intelligence/load-forecast-intelligence-view-model";
+import { ProjectCopilotSection } from "@/features/copilot-chat/ProjectCopilotSection";
 import { VerticalConstructionSection } from "@/features/vertical-construction/VerticalConstructionSection";
 import { loadVerticalConstructionViewModel } from "@/features/vertical-construction/load-vertical-construction-view-model";
 import { MaterialInventorySection } from "@/features/material-inventory/MaterialInventorySection";
@@ -56,6 +61,8 @@ export default async function ProjectProgressPage({ params }: ProgressPageProps)
     builtAreaResult,
     verticalConstructionResult,
     materialInventoryResult,
+    executiveIntelligenceResult,
+    forecastIntelligenceResult,
     flights,
   ] = await Promise.all([
     loadProjectProgress(projectId),
@@ -64,6 +71,8 @@ export default async function ProjectProgressPage({ params }: ProgressPageProps)
     loadBuiltAreaViewModel(projectId),
     loadVerticalConstructionViewModel(projectId),
     loadMaterialInventoryViewModel(projectId),
+    loadExecutiveIntelligenceViewModel(projectId),
+    loadForecastIntelligenceViewModel(projectId),
     listFlightsByProject(projectId).catch(() => []),
   ]);
 
@@ -89,10 +98,30 @@ export default async function ProjectProgressPage({ params }: ProgressPageProps)
           />
         ) : project ? (
           <ProjectPlanningCard
-            key={`${project.id}-${project.plannedAreaSquareMeters}-${project.plannedFloors}-${project.projectType}`}
+            key={`${project.id}-${project.plannedAreaSquareMeters}-${project.plannedFloors}-${project.projectType}-${project.plannedCompletionDate}`}
             project={project}
           />
         ) : null}
+
+        {executiveIntelligenceResult.status === "error" ? (
+          <ErrorState
+            title="Erro ao carregar inteligência executiva"
+            message={executiveIntelligenceResult.message}
+          />
+        ) : executiveIntelligenceResult.status === "success" ? (
+          <ExecutiveIntelligenceSection viewModel={executiveIntelligenceResult.viewModel} />
+        ) : null}
+
+        {forecastIntelligenceResult.status === "error" ? (
+          <ErrorState
+            title="Erro ao carregar inteligência preditiva"
+            message={forecastIntelligenceResult.message}
+          />
+        ) : forecastIntelligenceResult.status === "success" ? (
+          <ForecastIntelligenceSection viewModel={forecastIntelligenceResult.viewModel} />
+        ) : null}
+
+        <ProjectCopilotSection projectId={projectId} />
 
         {builtAreaResult.status === "error" ? (
           <ErrorState
@@ -124,14 +153,14 @@ export default async function ProjectProgressPage({ params }: ProgressPageProps)
           />
         ) : verticalConstructionResult.status === "empty" ? (
           <div className="space-y-4">
-            <VerticalConstructionSection viewModel={verticalConstructionResult.viewModel} />
+            <VerticalConstructionSection viewModel={verticalConstructionResult.viewModel} flights={flights} />
             <EmptyState
               title="Construção vertical não registrada"
               message={verticalConstructionResult.message}
             />
           </div>
         ) : (
-          <VerticalConstructionSection viewModel={verticalConstructionResult.viewModel} />
+          <VerticalConstructionSection viewModel={verticalConstructionResult.viewModel} flights={flights} />
         )}
 
         {materialInventoryResult.status === "error" ? (

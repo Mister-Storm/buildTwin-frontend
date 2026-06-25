@@ -25,6 +25,7 @@ const mockProject: ProjectResponseDto = {
   plannedAreaSquareMeters: null,
   plannedFloors: null,
   projectType: null,
+  plannedCompletionDate: null,
 };
 
 vi.mock("@/services/projects.service", () => ({

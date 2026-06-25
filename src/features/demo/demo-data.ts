@@ -27,6 +27,7 @@ export const DEMO_PROJECT_DTO: ProjectResponseDto = {
   plannedAreaSquareMeters: 25_000,
   plannedFloors: 12,
   projectType: "RESIDENTIAL_BUILDING",
+  plannedCompletionDate: null,
 };
 
 export const DEMO_FLIGHTS_DTO: ProjectFlightListItemDto[] = [
