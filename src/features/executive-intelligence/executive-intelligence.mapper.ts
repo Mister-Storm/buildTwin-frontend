@@ -1,4 +1,6 @@
 import type { StatusVariant } from "@/features/domain/models/capture-session";
+import { mapProjectBenchmarkIntelligence } from "@/features/benchmark-intelligence/benchmark-intelligence.mapper";
+import type { ProjectBenchmarkIntelligenceViewModel } from "@/features/benchmark-intelligence/benchmark-intelligence.mapper";
 import { mapMetricExplanation } from "@/features/explainability/explainability.mapper";
 import type { MetricExplanationViewModel } from "@/features/explainability/explainability.mapper";
 import type {
@@ -33,6 +35,7 @@ export type ExecutiveIntelligenceViewModel = {
   wasteTrendLabel: string;
   generatedAtLabel: string;
   healthExplanation: MetricExplanationViewModel;
+  benchmarks: ProjectBenchmarkIntelligenceViewModel;
 };
 
 const HEALTH_CLASSIFICATION_LABELS: Record<HealthClassification, string> = {
@@ -119,6 +122,7 @@ export function mapExecutiveIntelligenceViewModel(
     wasteTrendLabel: WASTE_TREND_LABELS[dto.wasteTrend],
     generatedAtLabel: formatGeneratedAt(dto.generatedAt),
     healthExplanation: mapMetricExplanation(dto.healthExplanation),
+    benchmarks: mapProjectBenchmarkIntelligence(dto.benchmarks),
   };
 }
 

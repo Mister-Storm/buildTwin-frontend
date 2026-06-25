@@ -3,6 +3,8 @@ import { describe, expect, it } from "vitest";
 import { ExecutiveIntelligenceSection } from "@/features/executive-intelligence/ExecutiveIntelligenceSection";
 import type { ExecutiveIntelligenceViewModel } from "@/features/executive-intelligence/executive-intelligence.mapper";
 import { mapMetricExplanation } from "@/features/explainability/explainability.mapper";
+import { mapProjectBenchmarkIntelligence } from "@/features/benchmark-intelligence/benchmark-intelligence.mapper";
+import { sampleProjectBenchmarksDto } from "@/features/benchmark-intelligence/benchmark-intelligence.test-fixtures";
 import { sampleMetricExplanationDto } from "@/features/explainability/explainability.test-fixtures";
 
 const viewModel: ExecutiveIntelligenceViewModel = {
@@ -27,6 +29,7 @@ const viewModel: ExecutiveIntelligenceViewModel = {
   wasteTrendLabel: "Melhorando",
   generatedAtLabel: "15/06/2026, 09:00:00",
   healthExplanation: mapMetricExplanation(sampleMetricExplanationDto),
+  benchmarks: mapProjectBenchmarkIntelligence(sampleProjectBenchmarksDto),
 };
 
 describe("ExecutiveIntelligenceSection", () => {
@@ -38,5 +41,6 @@ describe("ExecutiveIntelligenceSection", () => {
     expect(screen.getByText("Velocidade de Construção")).toBeInTheDocument();
     expect(screen.getByText("Produtividade Material")).toBeInTheDocument();
     expect(screen.getByText("Tendência de Eficiência")).toBeInTheDocument();
+    expect(screen.getByText("Top 10%")).toBeInTheDocument();
   });
 });

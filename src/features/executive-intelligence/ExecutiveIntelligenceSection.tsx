@@ -30,15 +30,26 @@ export function ExecutiveIntelligenceSection({
       </CardHeader>
       <CardContent>
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <ExecutiveHealthCard viewModel={viewModel} />
+          <ExecutiveHealthCard
+            viewModel={{
+              ...viewModel,
+              healthBenchmark: viewModel.benchmarks.healthBenchmark,
+            }}
+          />
           <VelocityCard
             builtAreaVelocityLabel={viewModel.builtAreaVelocityLabel}
             floorVelocityLabel={viewModel.floorVelocityLabel}
           />
-          <ProductivityCard viewModel={viewModel} />
+          <ProductivityCard
+            viewModel={{
+              ...viewModel,
+              productivityBenchmark: viewModel.benchmarks.productivityBenchmark,
+            }}
+          />
           <WasteTrendCard
             wasteTrend={viewModel.wasteTrend}
             wasteTrendLabel={viewModel.wasteTrendLabel}
+            wasteBenchmark={viewModel.benchmarks.wasteBenchmark}
           />
         </div>
         <ExecutiveExplanationCard explanation={viewModel.healthExplanation} />

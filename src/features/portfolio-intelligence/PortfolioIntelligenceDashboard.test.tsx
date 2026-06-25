@@ -2,6 +2,8 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { PortfolioIntelligenceDashboard } from "@/features/portfolio-intelligence/PortfolioIntelligenceDashboard";
 import type { PortfolioIntelligenceViewModel } from "@/features/portfolio-intelligence/portfolio-intelligence.mapper";
+import { mapPortfolioBenchmarkSummary } from "@/features/benchmark-intelligence/benchmark-intelligence.mapper";
+import { samplePortfolioBenchmarkSummaryDto } from "@/features/benchmark-intelligence/benchmark-intelligence.test-fixtures";
 import { mapPortfolioExplanation } from "@/features/explainability/explainability.mapper";
 import { samplePortfolioExplanationDto } from "@/features/explainability/explainability.test-fixtures";
 
@@ -46,6 +48,7 @@ const viewModel: PortfolioIntelligenceViewModel = {
   },
   generatedAtLabel: "15/06/2026",
   portfolioExplanation: mapPortfolioExplanation(samplePortfolioExplanationDto),
+  benchmarkSummary: mapPortfolioBenchmarkSummary(samplePortfolioBenchmarkSummaryDto),
 };
 
 describe("PortfolioIntelligenceDashboard", () => {
@@ -53,6 +56,7 @@ describe("PortfolioIntelligenceDashboard", () => {
     render(<PortfolioIntelligenceDashboard viewModel={viewModel} />);
 
     expect(screen.getByText("Obras ativas")).toBeInTheDocument();
+    expect(screen.getByText("Benchmarks da carteira")).toBeInTheDocument();
     expect(screen.getByText("Ranking de eficiência de recursos")).toBeInTheDocument();
     expect(screen.getByText("Distribuição de saúde")).toBeInTheDocument();
   });

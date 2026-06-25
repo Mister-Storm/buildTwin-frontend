@@ -1,4 +1,6 @@
 import type { StatusVariant } from "@/features/domain/models/capture-session";
+import { mapPortfolioBenchmarkSummary } from "@/features/benchmark-intelligence/benchmark-intelligence.mapper";
+import type { PortfolioBenchmarkSummaryViewModel } from "@/features/benchmark-intelligence/benchmark-intelligence.mapper";
 import {
   mapMetricExplanation,
   mapPortfolioExplanation,
@@ -86,6 +88,7 @@ export type PortfolioIntelligenceViewModel = {
   progressDistribution: DistributionChartViewModel;
   generatedAtLabel: string;
   portfolioExplanation: PortfolioExplanationViewModel;
+  benchmarkSummary: PortfolioBenchmarkSummaryViewModel;
 };
 
 const ATTENTION_LEVEL_LABELS: Record<ExecutiveAttentionLevel, string> = {
@@ -206,6 +209,7 @@ export function mapPortfolioIntelligenceViewModel(
     ),
     generatedAtLabel: new Date(dto.generatedAt).toLocaleString("pt-BR"),
     portfolioExplanation: mapPortfolioExplanation(dto.portfolioExplanation),
+    benchmarkSummary: mapPortfolioBenchmarkSummary(dto.benchmarkSummary),
   };
 }
 
