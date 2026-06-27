@@ -7,6 +7,8 @@ import { ExecutiveIntelligenceSection } from "@/features/executive-intelligence/
 import { loadExecutiveIntelligenceViewModel } from "@/features/executive-intelligence/load-executive-intelligence-view-model";
 import { ForecastIntelligenceSection } from "@/features/forecast-intelligence/ForecastIntelligenceSection";
 import { loadForecastIntelligenceViewModel } from "@/features/forecast-intelligence/load-forecast-intelligence-view-model";
+import { SpatialIntelligenceSection } from "@/features/spatial-intelligence/SpatialIntelligenceSection";
+import { loadSpatialIntelligenceViewModel } from "@/features/spatial-intelligence/load-spatial-intelligence-view-model";
 import { ProjectCopilotSection } from "@/features/copilot-chat/ProjectCopilotSection";
 import { VerticalConstructionSection } from "@/features/vertical-construction/VerticalConstructionSection";
 import { loadVerticalConstructionViewModel } from "@/features/vertical-construction/load-vertical-construction-view-model";
@@ -63,6 +65,7 @@ export default async function ProjectProgressPage({ params }: ProgressPageProps)
     materialInventoryResult,
     executiveIntelligenceResult,
     forecastIntelligenceResult,
+    spatialIntelligenceResult,
     captureSessions,
   ] = await Promise.all([
     loadProjectProgress(projectId),
@@ -73,6 +76,7 @@ export default async function ProjectProgressPage({ params }: ProgressPageProps)
     loadMaterialInventoryViewModel(projectId),
     loadExecutiveIntelligenceViewModel(projectId),
     loadForecastIntelligenceViewModel(projectId),
+    loadSpatialIntelligenceViewModel(projectId),
     listCaptureSessionsByProject(projectId).catch(() => []),
   ]);
 
@@ -119,6 +123,15 @@ export default async function ProjectProgressPage({ params }: ProgressPageProps)
           />
         ) : forecastIntelligenceResult.status === "success" ? (
           <ForecastIntelligenceSection viewModel={forecastIntelligenceResult.viewModel} />
+        ) : null}
+
+        {spatialIntelligenceResult.status === "error" ? (
+          <ErrorState
+            title="Erro ao carregar inteligência espacial"
+            message={spatialIntelligenceResult.message}
+          />
+        ) : spatialIntelligenceResult.status === "success" ? (
+          <SpatialIntelligenceSection viewModel={spatialIntelligenceResult.viewModel} />
         ) : null}
 
         <ProjectCopilotSection projectId={projectId} />

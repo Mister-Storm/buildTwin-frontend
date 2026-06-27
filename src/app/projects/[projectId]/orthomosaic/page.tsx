@@ -8,6 +8,8 @@ import {
   loadOrthomosaicViewModel,
   type OrthomosaicLoadError,
 } from "@/features/orthomosaic-viewer/load-orthomosaic-view-model";
+import { SpatialHeatmapsSection } from "@/features/spatial-intelligence/SpatialHeatmapsSection";
+import { loadSpatialIntelligenceViewModel } from "@/features/spatial-intelligence/load-spatial-intelligence-view-model";
 import { getProject } from "@/services/projects.service";
 import { ApiError } from "@/types/api/common.api";
 
@@ -61,6 +63,7 @@ export default async function OrthomosaicPage({
   }
 
   const result = await loadOrthomosaicViewModel(projectId, captureSessionId);
+  const spatialResult = await loadSpatialIntelligenceViewModel(projectId);
 
   return (
     <AppShell
@@ -97,6 +100,9 @@ export default async function OrthomosaicPage({
             </div>
             <ArtifactCard viewModel={result.viewModel} />
             </div>
+            {spatialResult.status === "success" ? (
+              <SpatialHeatmapsSection viewModel={spatialResult.viewModel} />
+            ) : null}
           </div>
         )}
       </div>
