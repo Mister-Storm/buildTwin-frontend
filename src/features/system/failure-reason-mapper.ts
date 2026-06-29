@@ -20,6 +20,11 @@ const PROCESSOR_PATTERNS: Array<{ pattern: RegExp; message: string }> = [
     message: "Timeout de processamento",
   },
   {
+    pattern: /Cannot process dataset/i,
+    message:
+      "O conjunto de imagens não pôde ser reconstruído em modo completo; o sistema tenta perfil degradado e, se necessário, ortomosaico simplificado.",
+  },
+  {
     pattern: /ODM_EXECUTION_FAILED/i,
     message: "Falha na execução do NodeODM",
   },

@@ -14,6 +14,10 @@ import {
   getArtifactPreviewLink,
   indexArtifactsByType,
 } from "@/features/capture-session/artifact-links";
+import {
+  getOrthomosaicQualityInfo,
+  shouldShowDegradedQualityBanner,
+} from "@/features/capture-session/orthomosaic-quality";
 import { formatDateTime } from "@/lib/formatters";
 import type { ProcessingJobDetailResponseDto } from "@/types/api/processing.api";
 import type { ProgressReportResponseDto } from "@/types/api/report.api";
@@ -32,6 +36,8 @@ export function CaptureSessionResultsPanel({
   report,
 }: CaptureSessionResultsPanelProps) {
   const artifacts = indexArtifactsByType(job.artifacts);
+  const orthomosaicQuality = getOrthomosaicQualityInfo(artifacts.ORTHOMOSAIC);
+  const showQualityBanner = shouldShowDegradedQualityBanner(orthomosaicQuality);
   const previewUrl = getArtifactPreviewLink(artifacts, "ORTHOMOSAIC_PREVIEW");
   const thumbnailUrl = getArtifactPreviewLink(
     artifacts,
@@ -69,6 +75,23 @@ export function CaptureSessionResultsPanel({
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
+        {showQualityBanner ? (
+          <div
+            role="status"
+            className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-950 dark:text-amber-100"
+          >
+            <p className="font-medium">
+              {orthomosaicQuality?.processingProfile === "FALLBACK"
+                ? "Ortomosaico disponível em modo simplificado"
+                : "Ortomosaico gerado com qualidade reduzida"}
+            </p>
+            <p className="mt-1 text-amber-900/90 dark:text-amber-100/90">
+              {orthomosaicQuality?.qualityNotice ??
+                "A reconstrução fotogramétrica completa não foi possível com este conjunto de imagens; a resolução e a precisão métrica estão reduzidas."}
+            </p>
+          </div>
+        ) : null}
+
         <div className="grid gap-4 lg:grid-cols-[1fr_160px]">
           {previewUrl ? (
             <div className="overflow-hidden rounded-xl border border-border/60 bg-primary">
