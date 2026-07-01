@@ -56,12 +56,17 @@ function useLeafletSetup() {
     // Load CSS
     import("leaflet/dist/leaflet.css");
 
-    // Fix marker icon
+    // Fix marker icon (Leaflet + bundlers omit default asset URLs)
     // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const L = require("leaflet");
-    if (!(L as any)._defaultIconFixed) {
-      (L as any)._defaultIconFixed = true;
-      delete (L.Icon.Default.prototype as any)._getIconUrl;
+    const L = require("leaflet") as typeof import("leaflet") & {
+      _defaultIconFixed?: boolean;
+    };
+    if (!L._defaultIconFixed) {
+      L._defaultIconFixed = true;
+      const iconPrototype = L.Icon.Default.prototype as {
+        _getIconUrl?: unknown;
+      };
+      delete iconPrototype._getIconUrl;
       L.Icon.Default.mergeOptions({
         iconRetinaUrl:
           "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",

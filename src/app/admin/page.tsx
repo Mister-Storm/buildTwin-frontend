@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import {
   Building2,
   Plus,
-  Shield,
   Users,
   ToggleLeft,
   ToggleRight,
@@ -20,7 +19,6 @@ import {
   listUsers,
   createUser,
   toggleUserActive,
-  updateUserRoles,
 } from "@/services/auth.service";
 
 type UserRow = {
@@ -91,21 +89,6 @@ export default function AdminPage() {
 
   async function handleToggleActive(userId: string) {
     await toggleUserActive(userId);
-    await loadUsers();
-  }
-
-  async function handleRoleToggle(userId: string, roleName: string) {
-    const user = users.find((u) => u.id === userId);
-    if (!user) return;
-
-    const currentRoles = user.roles;
-    const newRolesList = currentRoles.includes(roleName)
-      ? currentRoles.filter((r) => r !== roleName)
-      : [...currentRoles, roleName];
-
-    // Map role names to IDs — we don't have IDs from the list endpoint,
-    // so we use a simplified approach. In production, use /admin/roles first.
-    await updateUserRoles(userId, newRolesList.map((_) => userId)); // placeholder
     await loadUsers();
   }
 

@@ -1,5 +1,3 @@
-import { redirect } from "next/navigation";
-
 /**
  * Middleware helper — redirects unauthenticated users to /login.
  * Call from server components that require auth.
