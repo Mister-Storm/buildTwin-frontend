@@ -1,4 +1,4 @@
-import type { PhotoLocation } from "@/features/spatial-intelligence/PhotoMap";
+import type { PhotoLocation } from "@/types/photo-location";
 
 /**
  * Demo GPS metadata for photos when no real GPS-tagged images exist.

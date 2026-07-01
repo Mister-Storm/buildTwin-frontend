@@ -1,11 +1,9 @@
 /**
- * Middleware helper — redirects unauthenticated users to /login.
- * Call from server components that require auth.
+ * Placeholder for future SSR cookie auth.
+ * Client routes use auth.service guards until httpOnly sessions exist.
  */
 export function requireAuth(): void {
-  // In a real app this would read a cookie/session.
-  // For the demo MVP, the client side handles auth checks.
-  // This server-side guard is a future enhancement with SSR cookies.
+  // TODO: read session cookie and redirect when backend supports SSR auth.
 }
 
 export function getAuthToken(): string | null {

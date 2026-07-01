@@ -106,7 +106,8 @@ export default function LoginPage() {
         <p className="mt-6 text-center text-xs text-muted-foreground">
           <span className="block">Demo: admin@buildtwin.io / buildtwin123</span>
           <span className="mt-1 block">
-            Ative a segurança com BUILDTWIN_SECURITY_ENABLED=true
+            JWT exigido quando o backend está com segurança habilitada
+            (buildtwin.security.enabled=true).
           </span>
         </p>
       </div>

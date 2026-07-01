@@ -23,6 +23,13 @@ const TOKEN_KEY = "buildtwin_token";
 const REFRESH_KEY = "buildtwin_refresh";
 const USER_KEY = "buildtwin_user";
 
+/** MVP: tokens in localStorage (XSS-sensitive). Prefer httpOnly cookies when backend supports SSR auth. */
+function persistSession(data: LoginResponse): void {
+  localStorage.setItem(TOKEN_KEY, data.token);
+  localStorage.setItem(REFRESH_KEY, data.refreshToken);
+  localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+}
+
 export function getStoredToken(): string | null {
   if (typeof window === "undefined") return null;
   return localStorage.getItem(TOKEN_KEY);
@@ -68,9 +75,7 @@ export async function login(
   }
 
   const data = (await res.json()) as LoginResponse;
-  localStorage.setItem(TOKEN_KEY, data.token);
-  localStorage.setItem(REFRESH_KEY, data.refreshToken);
-  localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+  persistSession(data);
   return data;
 }
 
@@ -94,8 +99,7 @@ export async function refreshToken(): Promise<string | null> {
     });
     if (!res.ok) throw new Error("refresh failed");
     const data = (await res.json()) as LoginResponse;
-    localStorage.setItem(TOKEN_KEY, data.token);
-    localStorage.setItem(REFRESH_KEY, data.refreshToken);
+    persistSession(data);
     return data.token;
   } catch {
     logout();
@@ -111,13 +115,16 @@ async function adminFetch<T>(
 ): Promise<T> {
   const token = getStoredToken();
   const base = getApiBaseUrl();
+  const headers = new Headers(options?.headers);
+  if (!headers.has("Content-Type")) {
+    headers.set("Content-Type", "application/json");
+  }
+  if (token && !headers.has("Authorization")) {
+    headers.set("Authorization", `Bearer ${token}`);
+  }
   const res = await fetch(`${base}/api/v1/admin${path}`, {
     ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...options?.headers,
-    },
+    headers,
   });
   if (!res.ok) throw new Error(`Admin API error: ${res.status}`);
   if (res.status === 204) return undefined as T;
