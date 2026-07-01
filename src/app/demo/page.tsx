@@ -12,6 +12,8 @@ import {
 import { DemoRecentJobsTable } from "@/features/demo/demo-recent-jobs-table";
 import { DemoSelfTestPanel } from "@/features/demo/demo-self-test-panel";
 import { getDemoPageData } from "@/features/demo/get-demo-page-data";
+import { PhotoMap } from "@/features/spatial-intelligence/PhotoMap";
+import { fetchPhotoLocations } from "@/services/photo-geo.service";
 import { cn } from "@/lib/utils";
 import {
   Activity,
@@ -36,6 +38,7 @@ function overallVariant(status: string) {
 
 export default async function DemoPage() {
   const data = await getDemoPageData();
+  const photoLocations = await fetchPhotoLocations();
   const checklist = buildInfraChecklist({
     timestamp: data.timestamp,
     overallStatus: data.overallStatus,
@@ -83,7 +86,7 @@ export default async function DemoPage() {
         {data.isUnavailable ? (
           <ErrorState
             title="Backend indisponível"
-            message="Inicie o backend BuildTwin para carregar o painel de demonstração."
+            message="Inicie o backend BuildTwin para carregar o painel de demonstração completo. O mapa abaixo usa dados ilustrativos."
           />
         ) : null}
 
@@ -147,8 +150,20 @@ export default async function DemoPage() {
               <h3 className="text-xl font-semibold">Últimos Processamentos</h3>
               <DemoRecentJobsTable jobs={data.operations.recentJobs} />
             </section>
+          </>
+        ) : null}
 
-            <section className="grid gap-6 lg:grid-cols-2">
+        <section className="space-y-4">
+          <h3 className="text-xl font-semibold">Mapa da Obra</h3>
+          <PhotoMap
+            locations={photoLocations}
+            center={[-23.5505, -46.6333]}
+            zoom={15}
+          />
+        </section>
+
+        {!data.isUnavailable ? (
+          <section className="grid gap-6 lg:grid-cols-2">
               <div className="rounded-xl border border-border/60 bg-card p-6">
                 <h3 className="text-lg font-semibold">
                   Checklist de Demonstração
@@ -209,9 +224,8 @@ export default async function DemoPage() {
                 ) : null}
               </div>
             </section>
-          </>
-        ) : null}
-      </div>
+          ) : null}
+        </div>
     </AppShell>
   );
 }
