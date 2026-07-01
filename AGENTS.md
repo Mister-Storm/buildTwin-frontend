@@ -58,6 +58,7 @@ Service (DTO) → Mapper → Domain Model → Component
 - **Production:** strict CSP (`script-src 'self' 'unsafe-inline'` — no `unsafe-eval`)
 - **Development:** adds `'unsafe-eval'` (React/Turbopack) + `ws:` for HMR
 - `unsafe-inline` required for `next-themes`
+- Map tiles: `img-src` allows `https://*.tile.openstreetmap.org`; marker PNGs served from `/public/leaflet/`
 
 ## TypeScript
 

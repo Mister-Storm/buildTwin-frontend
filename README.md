@@ -26,6 +26,10 @@ npm run dev
 
 Open [http://localhost:3000/demo](http://localhost:3000/demo) for the operational demo dashboard (Sprint 6C).
 
+## Map dependencies (license note)
+
+The photo map uses `leaflet` (BSD-2-Clause) and `react-leaflet` (which pulls `@react-leaflet/core` under **Hippocratic License 2.1**). Confirm org policy before production; the stack can be reduced to plain `leaflet` if needed.
+
 ## Demo dashboard (`/demo`)
 
 The demo page consumes a single backend call: `GET /api/v1/system/overview`.
