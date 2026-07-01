@@ -14,6 +14,8 @@ export const MATERIAL_TYPE_LABELS: Record<MaterialType, string> = {
   CONCRETE_BLOCK: "Bloco de Concreto",
   WOOD: "Madeira",
   REBAR: "Vergalhão",
+  TILE: "Azulejo",
+  MORTAR: "Argamassa",
   FORMWORK: "Forma",
   PIPES: "Tubulação",
   CABLES: "Cabos",

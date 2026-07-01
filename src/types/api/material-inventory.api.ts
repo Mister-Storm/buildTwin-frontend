@@ -7,6 +7,8 @@ export type MaterialType =
   | "CONCRETE_BLOCK"
   | "WOOD"
   | "REBAR"
+  | "TILE"
+  | "MORTAR"
   | "FORMWORK"
   | "PIPES"
   | "CABLES"

@@ -2,9 +2,16 @@ import type { InventoryUnit, MaterialType } from "@/types/api/material-inventory
 
 export type BenchmarkSource =
   | "SYSTEM_DEFAULT"
+  | "TCPO_SINAPI"
   | "REGIONAL"
   | "PROJECT_TYPE"
   | "AI_GENERATED";
+
+export type ConstructionType =
+  | "RESIDENTIAL_1F"
+  | "RESIDENTIAL_MF"
+  | "COMMERCIAL"
+  | "INDUSTRIAL";
 
 export type WasteClassification = "NORMAL" | "WARNING" | "CRITICAL";
 
@@ -35,6 +42,7 @@ export type ProjectWasteAnalysisDto = {
   analysisConfidence: number;
   normalizationType: WasteNormalizationType;
   benchmarkVersion: string;
+  constructionType: ConstructionType;
   materials: WasteAnalysisMaterialItemDto[];
   dataCompleteness: WasteDataCompletenessDto;
 };

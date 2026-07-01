@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { mapWasteIntelligenceViewModel } from "@/features/waste-intelligence/waste-intelligence.mapper";
+import { DEMO_WASTE_ANALYSIS_DTO } from "@/features/demo/demo-data";
 import type { ProjectWasteAnalysisDto } from "@/features/waste-intelligence/waste-intelligence.api";
 
 const dto: ProjectWasteAnalysisDto = {
@@ -11,6 +12,7 @@ const dto: ProjectWasteAnalysisDto = {
   analysisConfidence: 0.85,
   normalizationType: "AREA_BASED",
   benchmarkVersion: "2026.1",
+  constructionType: "RESIDENTIAL_MF",
   dataCompleteness: {
     inventoryAvailable: true,
     builtAreaAvailable: true,
@@ -41,5 +43,12 @@ describe("waste-intelligence.mapper", () => {
     const viewModel = mapWasteIntelligenceViewModel(dto);
     expect(viewModel.materialsAtRiskLabel).toBe("1");
     expect(viewModel.criticalMaterialsLabel).toBe("0");
+  });
+
+  it("maps demo Riverside waste fixture", () => {
+    const viewModel = mapWasteIntelligenceViewModel(DEMO_WASTE_ANALYSIS_DTO);
+    expect(viewModel.wasteScoreLabel).toBe("18.4");
+    expect(viewModel.materialsAtRiskLabel).toBe("2");
+    expect(viewModel.rows.length).toBe(5);
   });
 });

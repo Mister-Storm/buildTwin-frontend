@@ -18,6 +18,7 @@ const CLASSIFICATION_VARIANTS: Record<WasteClassification, StatusVariant> = {
 
 const BENCHMARK_SOURCE_LABELS: Record<BenchmarkSource, string> = {
   SYSTEM_DEFAULT: "Padrão do sistema",
+  TCPO_SINAPI: "TCPO / SINAPI",
   REGIONAL: "Regional",
   PROJECT_TYPE: "Tipo de obra",
   AI_GENERATED: "Gerado por IA",
