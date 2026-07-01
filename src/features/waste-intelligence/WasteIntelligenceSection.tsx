@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Scale } from "lucide-react";
 import { WasteAnalysisTable } from "@/features/waste-intelligence/WasteAnalysisTable";
 import { WasteScoreCard } from "@/features/waste-intelligence/WasteScoreCard";
@@ -90,8 +90,10 @@ export function WasteIntelligenceSection({
     await runAnalysis(captureSessionA, captureSessionB);
   }
 
+  const demoAutoPreviewScheduled = useRef(false);
+
   useEffect(() => {
-    if (!isDemo || captureSessions.length < 2) {
+    if (!isDemo || captureSessions.length < 2 || demoAutoPreviewScheduled.current) {
       return;
     }
     const sessionA = captureSessions[0]?.captureSessionId ?? "";
@@ -99,11 +101,13 @@ export function WasteIntelligenceSection({
     if (!sessionA || !sessionB || sessionA === sessionB) {
       return;
     }
-    setCaptureSessionA(sessionA);
-    setCaptureSessionB(sessionB);
-    void runAnalysis(sessionA, sessionB);
+    demoAutoPreviewScheduled.current = true;
+    const timer = window.setTimeout(() => {
+      void runAnalysis(sessionA, sessionB);
+    }, 0);
+    return () => window.clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- auto-preview once on demo mount
-  }, [isDemo, projectId]);
+  }, [isDemo, projectId, captureSessions]);
 
   const canAnalyze = captureSessions.length >= 2 || isDemo;
   const showEmptyState =
