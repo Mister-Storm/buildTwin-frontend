@@ -49,7 +49,17 @@ describe("material-inventory.mapper", () => {
   it("maps all material type labels in Portuguese", () => {
     expect(MATERIAL_TYPE_LABELS.BRICK).toBe("Tijolo");
     expect(MATERIAL_TYPE_LABELS.CONCRETE_BLOCK).toBe("Bloco de Concreto");
+    expect(MATERIAL_TYPE_LABELS.TILE).toBe("Azulejo");
+    expect(MATERIAL_TYPE_LABELS.MORTAR).toBe("Argamassa");
     expect(MATERIAL_TYPE_LABELS.CABLES).toBe("Cabos");
+  });
+
+  it("defines a label for every MaterialType union member", () => {
+    const materialTypes = Object.keys(MATERIAL_TYPE_LABELS) as (keyof typeof MATERIAL_TYPE_LABELS)[];
+    expect(materialTypes).toHaveLength(14);
+    for (const materialType of materialTypes) {
+      expect(MATERIAL_TYPE_LABELS[materialType].length).toBeGreaterThan(0);
+    }
   });
 
   it("maps history rows and current quantity from latest flight", () => {
