@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Scale } from "lucide-react";
 import { WasteAnalysisTable } from "@/features/waste-intelligence/WasteAnalysisTable";
 import { WasteScoreCard } from "@/features/waste-intelligence/WasteScoreCard";
@@ -9,6 +9,7 @@ import {
   type WasteIntelligenceViewModel,
 } from "@/features/waste-intelligence/waste-intelligence.mapper";
 import { getProjectWasteAnalysis } from "@/features/waste-intelligence/waste-intelligence.service";
+import { DEMO_ENABLED, isDemoProject } from "@/features/demo/demo-seed";
 import { formatDate, parseDateOnly } from "@/lib/formatters";
 import { FormField } from "@/components/shared/FormField";
 import { NativeSelect } from "@/components/shared/NativeSelect";
@@ -20,6 +21,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ApiError } from "@/types/api/common.api";
 import type { ProjectCaptureSessionListItemDto } from "@/types/api/capture-session.api";
 
@@ -28,30 +30,49 @@ type WasteIntelligenceSectionProps = {
   captureSessions: ProjectCaptureSessionListItemDto[];
 };
 
+function WasteAnalysisSkeleton() {
+  return (
+    <div className="space-y-4" data-testid="waste-analysis-skeleton">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {Array.from({ length: 4 }).map((_, index) => (
+          <Skeleton key={index} className="h-24 rounded-xl" />
+        ))}
+      </div>
+      <Skeleton className="h-48 rounded-xl" />
+    </div>
+  );
+}
+
 export function WasteIntelligenceSection({
   projectId,
   captureSessions,
 }: WasteIntelligenceSectionProps) {
-  const [captureSessionA, setCaptureSessionA] = useState(captureSessions[0]?.captureSessionId ?? "");
-  const [captureSessionB, setCaptureSessionB] = useState(captureSessions[1]?.captureSessionId ?? captureSessions[0]?.captureSessionId ?? "");
+  const isDemo = DEMO_ENABLED && isDemoProject(projectId);
+  const defaultSessionA = captureSessions[0]?.captureSessionId ?? "";
+  const defaultSessionB = captureSessions[1]?.captureSessionId ?? captureSessions[0]?.captureSessionId ?? "";
+
+  const [captureSessionA, setCaptureSessionA] = useState(defaultSessionA);
+  const [captureSessionB, setCaptureSessionB] = useState(defaultSessionB);
   const [viewModel, setViewModel] = useState<WasteIntelligenceViewModel | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [hasAttemptedAnalysis, setHasAttemptedAnalysis] = useState(false);
 
-  async function handleAnalyze() {
+  async function runAnalysis(sessionA: string, sessionB: string) {
     setError(null);
-    if (!captureSessionA || !captureSessionB) {
+    if (!sessionA || !sessionB) {
       setError("Selecione dois levantamentos.");
       return;
     }
-    if (captureSessionA === captureSessionB) {
+    if (sessionA === sessionB) {
       setError("Selecione levantamentos diferentes.");
       return;
     }
 
     setIsLoading(true);
+    setHasAttemptedAnalysis(true);
     try {
-      const result = await getProjectWasteAnalysis(projectId, captureSessionA, captureSessionB);
+      const result = await getProjectWasteAnalysis(projectId, sessionA, sessionB);
       setViewModel(mapWasteIntelligenceViewModel(result));
     } catch (analyzeError) {
       setViewModel(null);
@@ -64,6 +85,29 @@ export function WasteIntelligenceSection({
       setIsLoading(false);
     }
   }
+
+  async function handleAnalyze() {
+    await runAnalysis(captureSessionA, captureSessionB);
+  }
+
+  useEffect(() => {
+    if (!isDemo || captureSessions.length < 2) {
+      return;
+    }
+    const sessionA = captureSessions[0]?.captureSessionId ?? "";
+    const sessionB = captureSessions[1]?.captureSessionId ?? "";
+    if (!sessionA || !sessionB || sessionA === sessionB) {
+      return;
+    }
+    setCaptureSessionA(sessionA);
+    setCaptureSessionB(sessionB);
+    void runAnalysis(sessionA, sessionB);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- auto-preview once on demo mount
+  }, [isDemo, projectId]);
+
+  const canAnalyze = captureSessions.length >= 2 || isDemo;
+  const showEmptyState =
+    !isLoading && !viewModel && !error && (hasAttemptedAnalysis || !isDemo);
 
   return (
     <Card className="border-border/60">
@@ -113,12 +157,14 @@ export function WasteIntelligenceSection({
           type="button"
           variant="outline"
           onClick={handleAnalyze}
-          disabled={isLoading || captureSessions.length < 2}
+          disabled={isLoading || !canAnalyze}
         >
           {isLoading ? "Analisando..." : "Analisar desperdício"}
         </Button>
 
         {error ? <p className="text-sm text-destructive">{error}</p> : null}
+
+        {isLoading ? <WasteAnalysisSkeleton /> : null}
 
         {viewModel ? (
           <div className="space-y-4">
@@ -134,6 +180,12 @@ export function WasteIntelligenceSection({
             ) : null}
             <WasteAnalysisTable rows={viewModel.rows} />
           </div>
+        ) : null}
+
+        {showEmptyState ? (
+          <p className="text-sm text-muted-foreground">
+            Envie fotos e processe dois levantamentos para analisar desperdício.
+          </p>
         ) : null}
       </CardContent>
     </Card>
