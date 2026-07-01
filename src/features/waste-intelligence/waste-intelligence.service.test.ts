@@ -41,6 +41,7 @@ describe("waste-intelligence.service", () => {
       analysisConfidence: 0.85,
       normalizationType: "AREA_BASED",
       benchmarkVersion: "2026.1",
+      constructionType: "RESIDENTIAL_MF",
       materials: [],
       dataCompleteness: {
         inventoryAvailable: true,

@@ -109,7 +109,7 @@ export function WasteIntelligenceSection({
     // eslint-disable-next-line react-hooks/exhaustive-deps -- auto-preview once on demo mount
   }, [isDemo, projectId, captureSessions]);
 
-  const canAnalyze = captureSessions.length >= 2 || isDemo;
+  const canAnalyze = captureSessions.length >= 2;
   const showEmptyState =
     !isLoading && !viewModel && !error && (hasAttemptedAnalysis || !isDemo);
 
