@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -26,9 +26,9 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
   const [speedMps, setSpeedMps] = useState(10);
 
   // Resolve projectId from params
-  useState(() => {
+  useEffect(() => {
     params.then((p) => setProjectId(p.projectId));
-  });
+  }, [params]);
 
   const handlePlan = async () => {
     if (boundary.length < 3) return;
@@ -67,7 +67,7 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
   };
 
   return (
-    <AppShell>
+    <AppShell breadcrumbs={[{ label: "Navegação de Drone" }]}>
       <PageHeader
         title="Navegação de Drone"
         description="Planeje a rota de voo do drone para captura da área"

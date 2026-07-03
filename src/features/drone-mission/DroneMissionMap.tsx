@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import type { Map as LeafletMap, Polyline, Polygon, Marker, LeafletEvent } from "leaflet";
 import type { GeoPoint, PlanMissionResponse } from "@/features/drone-mission/drone-mission.api";
 
 type DroneMissionMapProps = {
@@ -9,23 +10,27 @@ type DroneMissionMapProps = {
   loading: boolean;
 };
 
+type MapInstance = {
+  map: LeafletMap;
+};
+
 export function DroneMissionMap({ onBoundaryChange, mission, loading }: DroneMissionMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<any>(null);
-  const drawnPolygonRef = useRef<any>(null);
-  const waypointLayerRef = useRef<any>(null);
+  const mapInstanceRef = useRef<MapInstance | null>(null);
+  const drawnPolygonRef = useRef<Polygon | null>(null);
+  const waypointLayerRef = useRef<Polyline | null>(null);
   const [mapReady, setMapReady] = useState(false);
 
   // Initialize Leaflet map
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return;
 
-    let L: any;
     const initMap = async () => {
-      L = (await import("leaflet")).default;
+      const L = (await import("leaflet")).default;
       await import("leaflet/dist/leaflet.css");
 
-      // Fix default marker icon
+      // Fix default marker icon (Leaflet workaround)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       delete (L.Icon.Default.prototype as any)._getIconUrl;
       L.Icon.Default.mergeOptions({
         iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
@@ -38,7 +43,7 @@ export function DroneMissionMap({ onBoundaryChange, mission, loading }: DroneMis
         attribution: "&copy; OpenStreetMap contributors",
       }).addTo(map);
 
-      mapInstanceRef.current = { L, map };
+      mapInstanceRef.current = { map };
       setMapReady(true);
     };
     initMap();
@@ -53,8 +58,10 @@ export function DroneMissionMap({ onBoundaryChange, mission, loading }: DroneMis
 
   // Handle polygon drawing
   const startDrawing = useCallback(() => {
-    const { L, map } = mapInstanceRef.current || {};
-    if (!L || !map) return;
+    const instance = mapInstanceRef.current;
+    if (!instance) return;
+
+    const { map } = instance;
 
     // Remove existing polygon
     if (drawnPolygonRef.current) {
@@ -63,77 +70,82 @@ export function DroneMissionMap({ onBoundaryChange, mission, loading }: DroneMis
     }
 
     const points: GeoPoint[] = [];
-    const markers: any[] = [];
+    const markers: Marker[] = [];
 
-    const onMapClick = (e: any) => {
-      const { lat, lng } = e.latlng;
-      points.push({ lat, lon: lng });
+    const initMap = async () => {
+      const L = (await import("leaflet")).default;
 
-      const marker = L.marker([lat, lng]).addTo(map);
-      markers.push(marker);
+      const onMapClick = (e: LeafletEvent & { latlng: { lat: number; lng: number } }) => {
+        const { lat, lng } = e.latlng;
+        points.push({ lat, lon: lng });
 
-      if (points.length >= 3) {
-        const polygon = L.polygon(points.map((p: GeoPoint) => [p.lat, p.lon]), {
-          color: "#2563eb",
-          fillColor: "#3b82f6",
-          fillOpacity: 0.2,
-          weight: 2,
-        }).addTo(map);
-        drawnPolygonRef.current = polygon;
-        onBoundaryChange(points);
-      }
+        const marker = L.marker([lat, lng]).addTo(map);
+        markers.push(marker);
+
+        if (points.length >= 3) {
+          const polygon = L.polygon(points.map((p: GeoPoint) => [p.lat, p.lon]), {
+            color: "#2563eb",
+            fillColor: "#3b82f6",
+            fillOpacity: 0.2,
+            weight: 2,
+          }).addTo(map);
+          drawnPolygonRef.current = polygon;
+          onBoundaryChange(points);
+        }
+      };
+
+      map.on("click", onMapClick);
     };
-
-    map.on("click", onMapClick);
-
-    // Return cleanup
-    return () => {
-      map.off("click", onMapClick);
-      markers.forEach((m: any) => map.removeLayer(m));
-    };
+    initMap();
   }, [onBoundaryChange]);
 
   // Draw mission waypoints
   useEffect(() => {
-    const { L, map } = mapInstanceRef.current || {};
-    if (!L || !map || !mission) return;
+    const initWaypoints = async () => {
+      const instance = mapInstanceRef.current;
+      if (!instance || !mission) return;
 
-    // Remove existing waypoint layer
-    if (waypointLayerRef.current) {
-      map.removeLayer(waypointLayerRef.current);
-    }
+      const L = (await import("leaflet")).default;
+      const { map } = instance;
 
-    const waypoints = mission.waypoints.filter((wp) => !wp.triggerCamera);
-    const latlngs = waypoints.map((wp) => [wp.lat, wp.lon]);
+      // Remove existing waypoint layer
+      if (waypointLayerRef.current) {
+        map.removeLayer(waypointLayerRef.current);
+      }
 
-    const polyline = L.polyline(latlngs, {
-      color: "#10b981",
-      weight: 2,
-      opacity: 0.8,
-      dashArray: "8, 4",
-    }).addTo(map);
-    waypointLayerRef.current = polyline;
+      const waypoints = mission.waypoints.filter((wp) => !wp.triggerCamera);
+      const latlngs: [number, number][] = waypoints.map((wp) => [wp.lat, wp.lon]);
 
-    // Fit map to show the route
-    map.fitBounds(polyline.getBounds().pad(0.1));
-
-    // Add start/end markers
-    if (waypoints.length > 0) {
-      const first = waypoints[0];
-      const last = waypoints[waypoints.length - 1];
-      L.circleMarker([first.lat, first.lon], {
+      const polyline = L.polyline(latlngs, {
         color: "#10b981",
-        fillColor: "#10b981",
-        fillOpacity: 1,
-        radius: 6,
-      }).bindTooltip("Início").addTo(map);
-      L.circleMarker([last.lat, last.lon], {
-        color: "#ef4444",
-        fillColor: "#ef4444",
-        fillOpacity: 1,
-        radius: 6,
-      }).bindTooltip("Fim").addTo(map);
-    }
+        weight: 2,
+        opacity: 0.8,
+        dashArray: "8, 4",
+      }).addTo(map);
+      waypointLayerRef.current = polyline;
+
+      // Fit map to show the route
+      map.fitBounds(polyline.getBounds().pad(0.1));
+
+      // Add start/end markers
+      if (waypoints.length > 0) {
+        const first = waypoints[0]!;
+        const last = waypoints[waypoints.length - 1]!;
+        L.circleMarker([first.lat, first.lon], {
+          color: "#10b981",
+          fillColor: "#10b981",
+          fillOpacity: 1,
+          radius: 6,
+        }).bindTooltip("Início").addTo(map);
+        L.circleMarker([last.lat, last.lon], {
+          color: "#ef4444",
+          fillColor: "#ef4444",
+          fillOpacity: 1,
+          radius: 6,
+        }).bindTooltip("Fim").addTo(map);
+      }
+    };
+    initWaypoints();
   }, [mission]);
 
   return (
