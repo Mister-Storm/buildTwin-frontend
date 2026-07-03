@@ -65,7 +65,7 @@ jobs:
             # Pull latest compose file
 
             # Log in to GHCR on the VM
-            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u Mister-Storm --password-stdin
 
             # Pull new image from ghcr.io
             docker compose -f docker-compose.prod.yml pull frontend
