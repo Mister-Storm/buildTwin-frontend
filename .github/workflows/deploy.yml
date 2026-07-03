@@ -63,7 +63,6 @@ jobs:
             cd /home/fernandoleiteadvogado/buildtwin
 
             # Pull latest compose file
-            git pull origin main
 
             # Pull new image from ghcr.io
             docker compose -f docker-compose.prod.yml pull frontend
