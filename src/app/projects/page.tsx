@@ -21,6 +21,19 @@ export default function ProjectsPage() {
     async function load() {
       const token = getStoredToken();
       if (!token) {
+        const { DEMO_ENABLED, DEMO_PROJECT_ID } = await import("@/features/demo/demo-seed");
+        if (DEMO_ENABLED) {
+          setProjects([{
+            id: DEMO_PROJECT_ID,
+            name: "Obra Integração",
+            locationLabel: "São Paulo, SP",
+            startDate: new Date("2026-01-15"),
+            status: "active",
+            statusLabel: "Ativo",
+          }]);
+          setLoading(false);
+          return;
+        }
         if (!cancelled) {
           setLoadError("Autenticação necessária.");
           setLoading(false);
@@ -48,6 +61,24 @@ export default function ProjectsPage() {
         if (!cancelled) setProjects(summaries);
       } catch (error) {
         if (!cancelled) {
+          // Demo mode fallback: use demo project when API is unavailable
+          const { DEMO_ENABLED, DEMO_PROJECT_ID } = await import(
+            "@/features/demo/demo-seed"
+          );
+          if (DEMO_ENABLED) {
+            setProjects([
+              {
+                id: DEMO_PROJECT_ID,
+                name: "Obra Integração",
+                locationLabel: "São Paulo, SP",
+                startDate: new Date("2026-01-15"),
+                status: "active",
+                statusLabel: "Ativo",
+              },
+            ]);
+            setLoading(false);
+            return;
+          }
           setLoadError(
             error instanceof Error
               ? error.message
