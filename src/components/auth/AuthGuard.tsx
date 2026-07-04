@@ -3,6 +3,7 @@
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { isAuthenticated } from "@/services/auth.service";
+import { DEMO_ENABLED } from "@/features/demo/demo-seed";
 
 const PUBLIC_ROUTES = ["/login", "/demo"];
 
@@ -15,6 +16,12 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     const check = async () => {
       // Skip auth check for public routes
       if (PUBLIC_ROUTES.some((route) => pathname.startsWith(route))) {
+        setChecking(false);
+        return;
+      }
+
+      // Demo mode: bypass auth so pages render without login
+      if (DEMO_ENABLED) {
         setChecking(false);
         return;
       }
