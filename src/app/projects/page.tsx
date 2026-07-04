@@ -21,10 +21,10 @@ export default function ProjectsPage() {
     async function load() {
       const token = getStoredToken();
       if (!token) {
-        const { DEMO_ENABLED, DEMO_PROJECT_ID } = await import("@/features/demo/demo-seed");
+        const { DEMO_ENABLED } = await import("@/features/demo/demo-seed");
         if (DEMO_ENABLED) {
           setProjects([{
-            id: DEMO_PROJECT_ID,
+            id: "11111111-1111-4111-8111-111111111111",
             name: "Obra Integração",
             locationLabel: "São Paulo, SP",
             startDate: new Date("2026-01-15"),
@@ -62,13 +62,13 @@ export default function ProjectsPage() {
       } catch (error) {
         if (!cancelled) {
           // Demo mode fallback: use demo project when API is unavailable
-          const { DEMO_ENABLED, DEMO_PROJECT_ID } = await import(
+          const { DEMO_ENABLED } = await import(
             "@/features/demo/demo-seed"
           );
           if (DEMO_ENABLED) {
             setProjects([
               {
-                id: DEMO_PROJECT_ID,
+                id: "11111111-1111-4111-8111-111111111111",
                 name: "Obra Integração",
                 locationLabel: "São Paulo, SP",
                 startDate: new Date("2026-01-15"),
