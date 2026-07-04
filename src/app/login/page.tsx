@@ -22,7 +22,7 @@ export default function LoginPage() {
       if (data.user.roles.includes("ADMIN")) {
         router.push("/admin");
       } else {
-        router.push("/demo");
+        router.push("/dashboard");
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erro ao autenticar");

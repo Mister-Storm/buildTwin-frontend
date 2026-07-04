@@ -10,7 +10,7 @@ import { getStoredUser } from "@/services/auth.service";
 
 const baseNavItems = [
   { href: "/demo", label: "Demo", icon: Presentation },
-  { href: "/", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/portfolio", label: "Portfólio", icon: BarChart3 },
   { href: "/projects", label: "Projetos", icon: Building2 },
 ] as const;

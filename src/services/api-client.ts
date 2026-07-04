@@ -74,6 +74,28 @@ export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> 
     cache: "no-store",
   });
 
+  // Auto-refresh on 401: try refreshing token once, then retry
+  if (response.status === 401 && typeof window !== "undefined") {
+    const { refreshToken, getStoredToken } = await import("@/services/auth.service");
+    const newToken = await refreshToken();
+    if (newToken) {
+      const retryHeaders = await buildHeaders(init);
+      const retryResponse = await fetch(url, {
+        ...init,
+        headers: retryHeaders,
+        cache: "no-store",
+      });
+      if (retryResponse.ok) {
+        if (retryResponse.status === 204) return undefined as T;
+        return (await retryResponse.json()) as T;
+      }
+    }
+    // Refresh failed or still 401: redirect to login
+    const { logout } = await import("@/services/auth.service");
+    logout();
+    throw new ApiError(401, "SESSION_EXPIRED", "Sessão expirada. Faça login novamente.");
+  }
+
   if (!response.ok) {
     throw await parseApiError(response);
   }
