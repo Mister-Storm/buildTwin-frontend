@@ -91,3 +91,23 @@ PRs must pass CI: lint → test → build → e2e (see `.github/workflows/ci.yml
 ## Out of scope (current sprint)
 
 Auth, maps (Leaflet/Cesium), temporal comparison, backend changes.
+
+## E2E tests (Playwright)
+
+E2E tests run in **demo mode** (`BUILDTWIN_DEMO_MODE=true`) — no backend required. The CI spins up the Next.js dev server and Playwright runs against it.
+
+**Rules for E2E to pass:**
+1. Pages must have **demo fallback** data when API returns 401/5xx (see `projects/page.tsx` for pattern)
+2. `middleware.ts` must NOT redirect to `/login` when `BUILDTWIN_DEMO_MODE !== "false"`
+3. `AuthGuard` must skip auth check when `DEMO_ENABLED` is true
+4. The demo project ID must match `11111111-1111-4111-8111-111111111111` (hardcoded in E2E tests)
+
+**Always verify before merging:**
+```bash
+npm run lint      # 0 errors
+npm test           # 280 tests passing  
+npm run build      # production build
+npm run test:e2e   # 5 E2E tests passing (requires demo mode)
+```
+
+Pipeline failure = tarefa não concluída.
