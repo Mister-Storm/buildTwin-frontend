@@ -20,13 +20,6 @@ type DashboardData = {
   completedProcessings: Metric;
 };
 
-const UNAVAILABLE: DashboardData = {
-  activeProjects: { label: "Obras Ativas", value: "—", subtitle: "Indisponível" },
-  lastCaptureSession: { label: "Última Captura Realizado", value: "—", subtitle: "Indisponível" },
-  processedCaptureSessions: { label: "Capturas Processadas", value: "—", subtitle: "Indisponível" },
-  completedProcessings: { label: "Processamentos Concluídos", value: "—", subtitle: "Indisponível" },
-};
-
 export function ClientDashboard() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [error, setError] = useState(false);
@@ -55,7 +48,7 @@ export function ClientDashboard() {
 
         const projects = await res.json();
         const activeProjects = Array.isArray(projects)
-          ? projects.filter((p: any) => p.archivedAt === null)
+          ? projects.filter((p: { archivedAt: string | null }) => p.archivedAt === null)
           : [];
 
         if (cancelled) return;

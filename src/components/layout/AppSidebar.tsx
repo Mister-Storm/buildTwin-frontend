@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { BarChart3, Building2, LayoutDashboard, Presentation, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getStoredUser } from "@/services/auth.service";
@@ -18,12 +18,9 @@ const baseNavItems = [
 export function AppSidebar() {
   const pathname = usePathname();
   const [logoError, setLogoError] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
-
-  useEffect(() => {
-    const user = getStoredUser();
-    setIsAdmin(user?.roles?.includes("ADMIN") ?? false);
-  }, []);
+  const isAdmin = typeof window !== "undefined"
+    ? getStoredUser()?.roles?.includes("ADMIN") ?? false
+    : false;
 
   const navItems = isAdmin
     ? [...baseNavItems, { href: "/admin", label: "Administração", icon: Shield }]

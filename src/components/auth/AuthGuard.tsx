@@ -12,17 +12,20 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   const [checking, setChecking] = useState(true);
 
   useEffect(() => {
-    // Skip auth check for public routes
-    if (PUBLIC_ROUTES.some((route) => pathname.startsWith(route))) {
-      setChecking(false);
-      return;
-    }
+    const check = async () => {
+      // Skip auth check for public routes
+      if (PUBLIC_ROUTES.some((route) => pathname.startsWith(route))) {
+        setChecking(false);
+        return;
+      }
 
-    if (!isAuthenticated()) {
-      router.replace("/login");
-    } else {
-      setChecking(false);
-    }
+      if (!isAuthenticated()) {
+        router.replace("/login");
+      } else {
+        setChecking(false);
+      }
+    };
+    check();
   }, [pathname, router]);
 
   // Show nothing while checking to avoid flash of protected content

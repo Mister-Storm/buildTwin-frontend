@@ -6,12 +6,13 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { ErrorState } from "@/components/shared/States";
 import { PortfolioIntelligenceDashboard } from "@/features/portfolio-intelligence/PortfolioIntelligenceDashboard";
 import { mapPortfolioIntelligenceViewModel } from "@/features/portfolio-intelligence/portfolio-intelligence.mapper";
+import type { PortfolioIntelligenceViewModel } from "@/features/portfolio-intelligence/portfolio-intelligence.mapper";
 import { getStoredToken } from "@/services/auth.service";
 
 export default function PortfolioPage() {
   const [state, setState] = useState<{
     status: "loading" | "success" | "error";
-    viewModel?: any;
+    viewModel?: PortfolioIntelligenceViewModel;
     message?: string;
   }>({ status: "loading" });
 
