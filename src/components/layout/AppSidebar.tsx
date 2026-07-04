@@ -3,11 +3,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
-import { BarChart3, Building2, LayoutDashboard, Presentation } from "lucide-react";
+import { useState, useEffect } from "react";
+import { BarChart3, Building2, LayoutDashboard, Presentation, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getStoredUser } from "@/services/auth.service";
 
-const navItems = [
+const baseNavItems = [
   { href: "/demo", label: "Demo", icon: Presentation },
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/portfolio", label: "Portfólio", icon: BarChart3 },
@@ -17,6 +18,16 @@ const navItems = [
 export function AppSidebar() {
   const pathname = usePathname();
   const [logoError, setLogoError] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const user = getStoredUser();
+    setIsAdmin(user?.roles?.includes("ADMIN") ?? false);
+  }, []);
+
+  const navItems = isAdmin
+    ? [...baseNavItems, { href: "/admin", label: "Administração", icon: Shield }]
+    : baseNavItems;
 
   return (
     <aside className="flex w-64 shrink-0 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground">

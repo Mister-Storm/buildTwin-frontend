@@ -40,6 +40,21 @@ Service (DTO) → Mapper → Domain Model → Component
 | `/projects` | Project list |
 | `/projects/[id]` | Flight timeline + orthomosaic CTA |
 | `/projects/[id]/orthomosaic` | Preview viewer (hero demo) |
+| `/projects/[id]/capture-sessions/[id]` | Capture session details |
+| `/projects/[id]/progress` | Project progress tracking |
+| `/projects/[id]/compare` | Temporal comparison |
+| `/projects/[id]/drone-mission` | Drone mission planning |
+| `/admin` | Admin panel (users, roles, system health) — ADMIN only |
+| `/login` | Authentication (email + password) |
+| `/demo` | Commercial demo (public) |
+| `/portfolio` | Multi-project portfolio view |
+
+## AppShell layout
+
+All authenticated pages use `<AppShell breadcrumbs={[...]}>` which wraps:
+- `AppSidebar` — navigation links (admin link visible only for ADMIN role)
+- `AppTopbar` — breadcrumbs + theme toggle + logout button + user name
+- `AuthGuard` — redirects to `/login` if not authenticated
 
 ## Demo orthomosaic URL
 

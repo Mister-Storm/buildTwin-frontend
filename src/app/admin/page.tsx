@@ -9,6 +9,10 @@ import {
   ToggleLeft,
   ToggleRight,
   LogOut,
+  Shield,
+  Activity,
+  Server,
+  HardDrive,
 } from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/layout/PageHeader";
@@ -20,6 +24,7 @@ import {
   createUser,
   toggleUserActive,
 } from "@/services/auth.service";
+import { apiFetch } from "@/services/api-client";
 
 type UserRow = {
   id: string;
@@ -29,42 +34,66 @@ type UserRow = {
   active: boolean;
 };
 
+type RoleRow = {
+  id: string;
+  name: string;
+  description: string;
+  system: boolean;
+};
+
 export default function AdminPage() {
   const router = useRouter();
   const currentUser = getStoredUser();
   const [users, setUsers] = useState<UserRow[]>([]);
+  const [roles, setRoles] = useState<RoleRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
   const [newEmail, setNewEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [newName, setNewName] = useState("");
   const [newRoles, setNewRoles] = useState("USER");
+  const [systemHealth, setSystemHealth] = useState<string | null>(null);
+  const [projectCount, setProjectCount] = useState<number | null>(null);
 
   useEffect(() => {
     if (!isAuthenticated()) {
       router.push("/login");
       return;
     }
-    loadUsers();
+    loadData();
   }, [router]);
 
-  async function loadUsers() {
+  async function loadData() {
     setLoading(true);
     try {
-      const data = await listUsers();
+      const [userData, roleData, healthData] = await Promise.all([
+        listUsers(),
+        apiFetch<RoleRow[]>("/admin/roles").catch(() => []),
+        apiFetch<{ status: string }>("/system/readiness").catch(() => null),
+      ]);
       setUsers(
-        data.map((u) => ({
+        userData.map((u) => ({
           id: u.id,
           email: u.email,
           displayName: u.displayName,
           roles: u.roles,
           active: u.active ?? true,
-        })) as UserRow[],
+        })),
       );
+      setRoles(roleData);
+      setSystemHealth(healthData?.status ?? null);
     } catch {
-      // silently fail — user may not have ADMIN role
+      // silently fail
     } finally {
       setLoading(false);
+    }
+
+    // Carregar contagem de projetos
+    try {
+      const projects = await apiFetch<unknown[]>("/projects");
+      setProjectCount(Array.isArray(projects) ? projects.length : null);
+    } catch {
+      // ignore
     }
   }
 
@@ -81,7 +110,7 @@ export default function AdminPage() {
       setNewEmail("");
       setNewPassword("");
       setNewName("");
-      await loadUsers();
+      await loadData();
     } catch {
       // ignore
     }
@@ -89,7 +118,7 @@ export default function AdminPage() {
 
   async function handleToggleActive(userId: string) {
     await toggleUserActive(userId);
-    await loadUsers();
+    await loadData();
   }
 
   return (
@@ -97,7 +126,7 @@ export default function AdminPage() {
       <div className="space-y-8">
         <PageHeader
           title="Administração"
-          description="Gerenciamento de usuários, papéis e permissões"
+          description="Gerenciamento do sistema: usuários, papéis e monitoramento"
           actions={
             <button
               onClick={logout}
@@ -108,6 +137,56 @@ export default function AdminPage() {
             </button>
           }
         />
+
+        {/* Status Cards */}
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="rounded-xl border border-border/60 bg-card p-4">
+            <div className="flex items-center gap-3">
+              <div className="flex size-10 items-center justify-center rounded-lg bg-green-500/10">
+                <Activity className="size-5 text-green-500" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Sistema</p>
+                <p className="font-semibold">
+                  {systemHealth === "UP" ? "Online" : systemHealth ?? "—"}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="rounded-xl border border-border/60 bg-card p-4">
+            <div className="flex items-center gap-3">
+              <div className="flex size-10 items-center justify-center rounded-lg bg-brand-accent/10">
+                <Users className="size-5 text-brand-accent" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Usuários</p>
+                <p className="font-semibold">{users.length}</p>
+              </div>
+            </div>
+          </div>
+          <div className="rounded-xl border border-border/60 bg-card p-4">
+            <div className="flex items-center gap-3">
+              <div className="flex size-10 items-center justify-center rounded-lg bg-blue-500/10">
+                <Building2 className="size-5 text-blue-500" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Projetos</p>
+                <p className="font-semibold">{projectCount ?? "—"}</p>
+              </div>
+            </div>
+          </div>
+          <div className="rounded-xl border border-border/60 bg-card p-4">
+            <div className="flex items-center gap-3">
+              <div className="flex size-10 items-center justify-center rounded-lg bg-purple-500/10">
+                <Shield className="size-5 text-purple-500" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Papéis</p>
+                <p className="font-semibold">{roles.length}</p>
+              </div>
+            </div>
+          </div>
+        </div>
 
         {/* Current user info */}
         {currentUser && (
@@ -203,21 +282,11 @@ export default function AdminPage() {
               <table className="w-full text-sm">
                 <thead className="bg-muted/50">
                   <tr>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                      Email
-                    </th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                      Nome
-                    </th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                      Papéis
-                    </th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                      Ativo
-                    </th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                      Ações
-                    </th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">Email</th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">Nome</th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">Papéis</th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">Ativo</th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">Ações</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border/40">
@@ -241,13 +310,9 @@ export default function AdminPage() {
                       </td>
                       <td className="px-4 py-3">
                         {user.active ? (
-                          <span className="text-xs font-medium text-green-500">
-                            Ativo
-                          </span>
+                          <span className="text-xs font-medium text-green-500">Ativo</span>
                         ) : (
-                          <span className="text-xs font-medium text-red-400">
-                            Inativo
-                          </span>
+                          <span className="text-xs font-medium text-red-400">Inativo</span>
                         )}
                       </td>
                       <td className="px-4 py-3">
@@ -273,13 +338,42 @@ export default function AdminPage() {
           )}
         </section>
 
+        {/* Roles section */}
+        <section className="space-y-4">
+          <h3 className="flex items-center gap-2 text-lg font-semibold">
+            <Shield className="size-5" />
+            Papéis do Sistema
+          </h3>
+          <div className="grid gap-3 sm:grid-cols-3">
+            {roles.map((role) => (
+              <div
+                key={role.id}
+                className="rounded-xl border border-border/60 bg-card p-4"
+              >
+                <div className="flex items-center gap-2">
+                  <Shield className="size-4 text-brand-accent" />
+                  <span className="font-semibold">{role.name}</span>
+                  {role.system && (
+                    <span className="ml-auto text-[10px] uppercase tracking-wider text-muted-foreground">
+                      Sistema
+                    </span>
+                  )}
+                </div>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {role.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+
         {/* Footer info */}
         <p className="text-center text-xs text-muted-foreground">
-          As permissões de endpoint são controladas pela tabela{" "}
+          Permissões de endpoint controladas pela tabela{" "}
           <code className="rounded bg-muted px-1 py-0.5 font-mono text-brand-accent">
             buildtwin_role_permission
           </code>{" "}
-          no banco de dados. Configure pela API{" "}
+          no banco. Configure via{" "}
           <code className="rounded bg-muted px-1 py-0.5 font-mono">
             POST /api/v1/admin/roles/:id/permissions
           </code>
