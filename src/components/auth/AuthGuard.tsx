@@ -21,6 +21,8 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
 
       if (!isAuthenticated()) {
         router.replace("/login");
+        setChecking(false);
+        return;
       } else {
         setChecking(false);
       }

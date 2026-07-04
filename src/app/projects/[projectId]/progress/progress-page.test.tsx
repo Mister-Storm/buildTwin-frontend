@@ -4,7 +4,7 @@ import type { ProjectResponseDto } from "@/types/api/project.api";
 
 vi.mock("next/navigation", () => ({
   usePathname: () => "/projects/proj-1/progress",
-  useRouter: () => ({ push: vi.fn(), refresh: vi.fn() }),
+  useRouter: () => ({ push: vi.fn(), replace: vi.fn(), refresh: vi.fn() }),
 }));
 
 const mockProject: ProjectResponseDto = {
