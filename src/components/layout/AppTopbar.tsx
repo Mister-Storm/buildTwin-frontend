@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, LogOut } from "lucide-react";
+import { logout, getStoredUser } from "@/services/auth.service";
 
 export type BreadcrumbItem = {
   label: string;
@@ -33,7 +34,20 @@ export function AppTopbar({ breadcrumbs }: AppTopbarProps) {
           </span>
         ))}
       </nav>
-      <ThemeToggle />
+      <div className="flex items-center gap-2">
+        <span className="hidden text-sm text-muted-foreground md:inline">
+          {getStoredUser()?.displayName}
+        </span>
+        <button
+          onClick={logout}
+          className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+          title="Sair"
+        >
+          <LogOut className="size-4" />
+          <span className="hidden sm:inline">Sair</span>
+        </button>
+        <ThemeToggle />
+      </div>
     </header>
   );
 }
