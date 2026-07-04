@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { EmptyState, ErrorState } from "@/components/shared/States";
@@ -5,24 +8,60 @@ import { toProjectSummary } from "@/features/domain/mappers/project.mapper";
 import type { ProjectSummary } from "@/features/domain/models/project";
 import { ProjectListCard } from "@/features/project/project-list-card";
 import { ProjectsPageActions } from "@/features/project/projects-page-actions";
-import { listProjects } from "@/services/projects.service";
-import { ApiError } from "@/types/api/common.api";
+import { getStoredToken } from "@/services/auth.service";
 
-export default async function ProjectsPage() {
-  let projects: ProjectSummary[] = [];
-  let loadError: string | null = null;
+export default function ProjectsPage() {
+  const [projects, setProjects] = useState<ProjectSummary[]>([]);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  try {
-    const dtos = await listProjects();
-    projects = dtos.map(toProjectSummary);
-  } catch (error) {
-    projects = [];
-    if (error instanceof ApiError) {
-      loadError = error.message;
-    } else {
-      loadError = "Não foi possível carregar as obras.";
+  useEffect(() => {
+    let cancelled = false;
+
+    async function load() {
+      const token = getStoredToken();
+      if (!token) {
+        if (!cancelled) {
+          setLoadError("Autenticação necessária.");
+          setLoading(false);
+        }
+        return;
+      }
+
+      try {
+        const res = await fetch("/api/v1/projects", {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          cache: "no-store",
+        });
+
+        if (!res.ok) {
+          const msg = res.status === 401 ? "Autenticação necessária." : `HTTP ${res.status}`;
+          throw new Error(msg);
+        }
+
+        const dtos = await res.json();
+        const summaries = Array.isArray(dtos) ? dtos.map(toProjectSummary) : [];
+
+        if (!cancelled) setProjects(summaries);
+      } catch (error) {
+        if (!cancelled) {
+          setLoadError(
+            error instanceof Error
+              ? error.message
+              : "Não foi possível carregar as obras.",
+          );
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
     }
-  }
+
+    load();
+    return () => { cancelled = true; };
+  }, []);
 
   return (
     <AppShell
@@ -38,11 +77,18 @@ export default async function ProjectsPage() {
           actions={<ProjectsPageActions />}
         />
 
-        {loadError ? (
+        {loading && (
+          <div className="flex items-center justify-center py-12 text-muted-foreground">
+            <span className="inline-block size-5 animate-spin rounded-full border-2 border-brand-accent border-t-transparent" />
+            <span className="ml-2 text-sm">Carregando...</span>
+          </div>
+        )}
+
+        {loadError && !loading ? (
           <ErrorState title="Backend indisponível" message={loadError} />
         ) : null}
 
-        {!loadError && projects.length === 0 ? (
+        {!loadError && !loading && projects.length === 0 ? (
           <EmptyState
             title="Nenhuma obra encontrada"
             message="Crie sua primeira obra para iniciar uma demonstração."

@@ -142,8 +142,13 @@ export function CaptureSessionImageUpload({
     }
 
     setIsUploading(false);
-    setUploadMessage(`${uploaded} de ${total} imagens enviadas.`);
-    onUploaded();
+    if (uploaded > 0) {
+      setUploadMessage(`${uploaded} de ${total} imagens enviadas.`);
+      onUploaded();
+    } else {
+      // Don't overwrite the error message already set in the catch block
+      // and don't trigger onUploaded — no images were actually stored
+    }
   }
 
   return (

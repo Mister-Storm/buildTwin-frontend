@@ -7,13 +7,9 @@ import {
 } from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { MetricCard } from "@/components/shared/MetricCard";
-import { ErrorState } from "@/components/shared/States";
-import { getExecutiveDashboard } from "@/features/dashboard/get-executive-dashboard";
+import { ClientDashboard } from "@/features/dashboard/client-dashboard";
 
-export default async function DashboardPage() {
-  const dashboard = await getExecutiveDashboard();
-
+export default function DashboardPage() {
   return (
     <AppShell breadcrumbs={[{ label: "Dashboard" }]}>
       <div className="space-y-8">
@@ -44,39 +40,7 @@ export default async function DashboardPage() {
           description="Indicadores operacionais da plataforma BuildTwin."
         />
 
-        {dashboard.isUnavailable ? (
-          <ErrorState
-            title="Backend indisponível"
-            message="Não foi possível carregar os indicadores. Verifique se o backend está rodando em http://localhost:8080."
-          />
-        ) : null}
-
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <MetricCard
-            label={dashboard.activeProjects.label}
-            value={dashboard.activeProjects.value}
-            subtitle={dashboard.activeProjects.subtitle}
-            icon={Building2}
-          />
-          <MetricCard
-            label={dashboard.lastCaptureSession.label}
-            value={dashboard.lastCaptureSession.value}
-            subtitle={dashboard.lastCaptureSession.subtitle}
-            icon={Calendar}
-          />
-          <MetricCard
-            label={dashboard.processedCaptureSessions.label}
-            value={dashboard.processedCaptureSessions.value}
-            subtitle={dashboard.processedCaptureSessions.subtitle}
-            icon={CheckCircle2}
-          />
-          <MetricCard
-            label={dashboard.completedProcessings.label}
-            value={dashboard.completedProcessings.value}
-            subtitle={dashboard.completedProcessings.subtitle}
-            icon={Activity}
-          />
-        </div>
+        <ClientDashboard />
       </div>
     </AppShell>
   );

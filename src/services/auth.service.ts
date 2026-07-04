@@ -23,11 +23,29 @@ const TOKEN_KEY = "buildtwin_token";
 const REFRESH_KEY = "buildtwin_refresh";
 const USER_KEY = "buildtwin_user";
 
+/** Set a non-httpOnly cookie so the Next.js middleware can detect auth state server-side. */
+function setAuthCookie(token: string) {
+  if (typeof document === "undefined") return;
+  document.cookie =
+    "buildtwin_auth=true; path=/; max-age=2592000; SameSite=Lax";
+  document.cookie =
+    `buildtwin_token=${token}; path=/; max-age=2592000; SameSite=Lax`;
+}
+
+function clearAuthCookie() {
+  if (typeof document === "undefined") return;
+  document.cookie =
+    "buildtwin_auth=; path=/; max-age=0; SameSite=Lax";
+  document.cookie =
+    "buildtwin_token=; path=/; max-age=0; SameSite=Lax";
+}
+
 /** MVP: tokens in localStorage (XSS-sensitive). Prefer httpOnly cookies when backend supports SSR auth. */
 function persistSession(data: LoginResponse): void {
   localStorage.setItem(TOKEN_KEY, data.token);
   localStorage.setItem(REFRESH_KEY, data.refreshToken);
   localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+  setAuthCookie(data.token);
 }
 
 export function getStoredToken(): string | null {
@@ -83,6 +101,7 @@ export function logout(): void {
   localStorage.removeItem(TOKEN_KEY);
   localStorage.removeItem(REFRESH_KEY);
   localStorage.removeItem(USER_KEY);
+  clearAuthCookie();
   window.location.href = "/login";
 }
 

@@ -16,6 +16,41 @@ function buildApiUrl(path: string): string {
   return `${base}/api/v1${path}`;
 }
 
+async function buildHeaders(
+  init?: RequestInit,
+): Promise<Record<string, string>> {
+  const headers: Record<string, string> = {
+    Accept: "application/json",
+    ...Object.fromEntries(
+      Object.entries(init?.headers ?? {}).map(([k, v]) => [k, String(v)]),
+    ),
+  };
+
+  // Read JWT from localStorage (client) or cookie (server)
+  let token: string | null = null;
+  if (typeof window !== "undefined") {
+    try {
+      token = localStorage.getItem("buildtwin_token");
+    } catch {
+      // localStorage may be blocked
+    }
+  } else {
+    try {
+      const { cookies } = await import("next/headers");
+      const store = await cookies();
+      token = store.get("buildtwin_token")?.value ?? null;
+    } catch {
+      // cookies() not available in this context
+    }
+  }
+
+  if (token && !headers["Authorization"]) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+
+  return headers;
+}
+
 async function parseApiError(response: Response): Promise<ApiError> {
   let message = response.statusText;
   let code = "UNKNOWN_ERROR";
@@ -31,13 +66,11 @@ async function parseApiError(response: Response): Promise<ApiError> {
 
 export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
   const url = buildApiUrl(path);
+  const headers = await buildHeaders(init);
 
   const response = await fetch(url, {
     ...init,
-    headers: {
-      Accept: "application/json",
-      ...init?.headers,
-    },
+    headers,
     cache: "no-store",
   });
 
@@ -65,10 +98,23 @@ export function apiUpload<T>(
 ): Promise<T> {
   const url = buildApiUrl(path);
 
+  // Read JWT from localStorage (client-side uploads only)
+  let token: string | null = null;
+  if (typeof window !== "undefined") {
+    try {
+      token = localStorage.getItem("buildtwin_token");
+    } catch {
+      // localStorage may be blocked
+    }
+  }
+
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.open("POST", url);
     xhr.setRequestHeader("Accept", "application/json");
+    if (token) {
+      xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+    }
 
     xhr.upload.onprogress = (event) => {
       if (!onProgress || !event.lengthComputable) return;
