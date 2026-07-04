@@ -11,6 +11,11 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Demo mode: bypass auth so E2E tests and demos work without login
+  if (process.env.BUILDTWIN_DEMO_MODE !== "false") {
+    return NextResponse.next();
+  }
+
   // Check if auth cookie is present
   const authCookie = request.cookies.get("buildtwin_auth");
   if (!authCookie?.value) {
