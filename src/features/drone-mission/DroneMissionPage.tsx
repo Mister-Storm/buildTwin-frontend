@@ -6,6 +6,7 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DroneMissionMap } from "@/features/drone-mission/DroneMissionMap";
 import { planMission } from "@/features/drone-mission/drone-mission.service";
+import { getProject } from "@/services/projects.service";
 import type {
   GeoPoint,
   PlanMissionResponse,
@@ -17,17 +18,40 @@ type DroneMissionPageProps = {
 
 export default function DroneMissionPage({ params }: DroneMissionPageProps) {
   const [projectId, setProjectId] = useState<string>("");
+  const [projectCenter, setProjectCenter] = useState<{ lat: number; lon: number } | undefined>(undefined);
+  const [projectName, setProjectName] = useState("");
   const [boundary, setBoundary] = useState<GeoPoint[]>([]);
   const [mission, setMission] = useState<PlanMissionResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [photosPerM2, setPhotosPerM2] = useState(0.01);
-  const [altitudeM, setAltitudeM] = useState<number>(80);
+  const [altitudeM, setAltitudeM] = useState(80);
   const [autoAltitude, setAutoAltitude] = useState(true);
   const [speedMps, setSpeedMps] = useState(10);
+  const [flightDate, setFlightDate] = useState(() => {
+    const today = new Date();
+    const y = today.getFullYear();
+    const m = String(today.getMonth() + 1).padStart(2, "0");
+    const d = String(today.getDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
+  });
 
-  // Resolve projectId from params
+  // Resolve projectId and fetch project location
   useEffect(() => {
-    params.then((p) => setProjectId(p.projectId));
+    params.then(async (p) => {
+      setProjectId(p.projectId);
+      try {
+        const project = await getProject(p.projectId);
+        setProjectName(project.name ?? "");
+        const loc = project.location;
+        const lat = loc?.latitude;
+        const lon = loc?.longitude;
+        if (typeof lat === "number" && typeof lon === "number" && isFinite(lat) && isFinite(lon)) {
+          setProjectCenter({ lat, lon });
+        }
+      } catch {
+        // project fetch failed — map stays at default center
+      }
+    });
   }, [params]);
 
   const handlePlan = async () => {
@@ -69,8 +93,8 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
   return (
     <AppShell breadcrumbs={[{ label: "Navegação de Drone" }]}>
       <PageHeader
-        title="Navegação de Drone"
-        description="Planeje a rota de voo do drone para captura da área"
+        title={`Planejamento de Voo${projectName ? ` — ${projectName}` : ""}`}
+        description="Defina a área, configure os parâmetros e planeje a rota do drone"
       />
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
         {/* Map */}
@@ -79,6 +103,7 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
             onBoundaryChange={handleBoundaryChange}
             mission={mission}
             loading={loading}
+            {...(projectCenter ? { center: projectCenter } : {})}
           />
         </div>
 
@@ -89,6 +114,19 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
               <CardTitle className="text-lg">Parâmetros da Missão</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
+              {/* Flight date */}
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Data do Voo
+                </label>
+                <input
+                  type="date"
+                  value={flightDate}
+                  onChange={(e) => setFlightDate(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-lg text-sm"
+                />
+              </div>
+
               <div>
                 <label className="block text-sm font-medium mb-1">
                   Fotos por m²
@@ -185,6 +223,14 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
                   <span className="font-medium">{mission.stats.gsdCmPerPixel.toFixed(2)} cm/px</span>
                 </div>
                 <div className="flex justify-between">
+                  <span className="text-gray-500">Data do Voo</span>
+                  <span className="font-medium">
+                    {flightDate
+                      ? new Date(flightDate + "T12:00:00").toLocaleDateString("pt-BR")
+                      : "—"}
+                  </span>
+                </div>
+                <div className="flex justify-between">
                   <span className="text-gray-500">Câmera</span>
                   <span className="font-medium">{mission.camera.model}</span>
                 </div>
@@ -206,6 +252,10 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
                     📥 Exportar Waypoints (JSON)
                   </button>
                 </div>
+                <p className="text-xs text-gray-400 text-center pt-1">
+                  Para salvar a missão permanentemente, tire um print ou exporte o JSON.
+                  A funcionalidade de salvar no servidor estará disponível em breve.
+                </p>
               </CardContent>
             </Card>
           )}
