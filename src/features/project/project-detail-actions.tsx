@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { CreateCaptureSessionDialog } from "@/features/capture-session/create-capture-session-dialog";
 import { ArchiveProjectDialog } from "@/features/project/archive-project-dialog";
-import { GitCompareArrows, ImageIcon, TrendingUp } from "lucide-react";
+import { GitCompareArrows, ImageIcon, Navigation, TrendingUp } from "lucide-react";
 import type { OrthomosaicResolution } from "@/features/domain/models/orthomosaic";
 
 type ProjectDetailActionsProps = {
@@ -59,6 +59,13 @@ export function ProjectDetailActions({
           Comparar levantamentos
         </Link>
       ) : null}
+      <Link
+        href={`/projects/${projectId}/drone-mission`}
+        className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-border/60 px-3 text-sm font-medium transition-colors hover:bg-muted/50"
+      >
+        <Navigation className="size-4" />
+        Navegação Drone
+      </Link>
     </div>
   );
 }
