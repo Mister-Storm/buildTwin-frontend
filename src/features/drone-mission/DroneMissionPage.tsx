@@ -1,12 +1,19 @@
 "use client";
-
 import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
 import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DroneMissionMap } from "@/features/drone-mission/DroneMissionMap";
 import { planMission } from "@/features/drone-mission/drone-mission.service";
 import { getProject } from "@/services/projects.service";
+import { getStoredToken } from "@/services/auth.service";
+import {
+  saveMission,
+  listMissions,
+  updateMissionStatus,
+  type DroneMissionListItem,
+} from "@/features/drone-mission/drone-mission-persistence.service";
 import type {
   GeoPoint,
   PlanMissionResponse,
@@ -27,6 +34,9 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
   const [altitudeM, setAltitudeM] = useState(80);
   const [autoAltitude, setAutoAltitude] = useState(true);
   const [speedMps, setSpeedMps] = useState(10);
+  const [saving, setSaving] = useState(false);
+  const [missionName, setMissionName] = useState("");
+  const [savedMissions, setSavedMissions] = useState<DroneMissionListItem[]>([]);
   const [flightDate, setFlightDate] = useState(() => {
     const today = new Date();
     const y = today.getFullYear();
@@ -54,6 +64,13 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
     });
   }, [params]);
 
+  // Load saved missions
+  useEffect(() => {
+    if (!projectId) return;
+    if (!getStoredToken()) return; // skip in demo mode
+    listMissions(projectId).then(setSavedMissions).catch(() => {});
+  }, [projectId]);
+
   const handlePlan = async () => {
     if (boundary.length < 3) return;
     setLoading(true);
@@ -70,6 +87,41 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
       console.error("Failed to plan mission:", err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSaveMission = async () => {
+    if (!mission || !boundary.length) return;
+    if (!getStoredToken()) return;
+    setSaving(true);
+    try {
+      const saved = await saveMission({
+        projectId,
+        name: missionName || `Voo ${new Date().toLocaleDateString("pt-BR")}`,
+        flightDate,
+        boundary,
+        waypoints: mission.waypoints,
+        stats: mission.stats,
+        parameters: mission.parameters,
+        camera: mission.camera,
+      });
+      setSavedMissions((prev) => [saved, ...prev]);
+      setMission(null);
+      setMissionName("");
+    } catch (err) {
+      console.error("Failed to save mission:", err);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleCancelMission = async (id: string) => {
+    if (!getStoredToken()) return;
+    try {
+      const updated = await updateMissionStatus(id, "CANCELLED");
+      setSavedMissions((prev) => prev.map((m) => (m.id === id ? updated : m)));
+    } catch (err) {
+      console.error("Failed to cancel mission:", err);
     }
   };
 
@@ -234,7 +286,23 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
                   <span className="text-gray-500">Câmera</span>
                   <span className="font-medium">{mission.camera.model}</span>
                 </div>
-                <div className="pt-2 border-t mt-2">
+                <div className="pt-2 border-t mt-2 space-y-2">
+                  {/* Mission name input */}
+                  <input
+                    type="text"
+                    value={missionName}
+                    onChange={(e) => setMissionName(e.target.value)}
+                    placeholder="Nome da missão (opcional)"
+                    aria-label="Nome da missão"
+                    className="w-full px-3 py-2 border rounded-lg text-sm"
+                  />
+                  <button
+                    onClick={handleSaveMission}
+                    disabled={saving}
+                    className="w-full px-3 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors"
+                  >
+                    {saving ? "💾 Salvando..." : "💾 Salvar Missão"}
+                  </button>
                   <button
                     onClick={() => {
                       const blob = new Blob(
@@ -252,10 +320,62 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
                     📥 Exportar Waypoints (JSON)
                   </button>
                 </div>
-                <p className="text-xs text-gray-400 text-center pt-1">
-                  Para salvar a missão permanentemente, tire um print ou exporte o JSON.
-                  A funcionalidade de salvar no servidor estará disponível em breve.
-                </p>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Saved Missions */}
+          {savedMissions.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Missões Anteriores</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {savedMissions.map((m) => (
+                  <div
+                    key={m.id}
+                    className="flex items-center justify-between rounded-lg border p-3 text-sm"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <p className="font-medium truncate">{m.name}</p>
+                      <p className="text-xs text-gray-500 mt-0.5">
+                        {m.flightDate
+                          ? new Date(m.flightDate + "T12:00:00").toLocaleDateString("pt-BR")
+                          : "Sem data"}
+                        {" · "}
+                        {m.areaSquareMeters
+                          ? `${(m.areaSquareMeters / 10000).toFixed(2)} ha`
+                          : "—"}
+                        {" · "}
+                        {m.photoCount ?? "—"} fotos
+                      </p>
+                    </div>
+                    <span
+                      className={cn(
+                        "ml-3 shrink-0 rounded-full px-2 py-0.5 text-[11px] font-medium",
+                        m.status === "PLANNED"
+                          ? "bg-blue-100 text-blue-700"
+                          : m.status === "COMPLETED"
+                            ? "bg-green-100 text-green-700"
+                            : "bg-gray-100 text-gray-500",
+                      )}
+                    >
+                      {m.status === "PLANNED"
+                        ? "Planejado"
+                        : m.status === "COMPLETED"
+                          ? "Concluído"
+                          : "Cancelado"}
+                    </span>
+                    {m.status === "PLANNED" && (
+                      <button
+                        onClick={() => handleCancelMission(m.id)}
+                        className="ml-2 shrink-0 text-xs text-red-500 hover:text-red-700 transition-colors"
+                      >
+                        Cancelar
+                      </button>
+                    )}
+                  </div>
+                ))}
               </CardContent>
             </Card>
           )}
