@@ -8,20 +8,21 @@ type DroneMissionMapProps = {
   onBoundaryChange: (points: GeoPoint[]) => void;
   mission: PlanMissionResponse | null;
   loading: boolean;
+  center?: { lat: number; lon: number };
 };
 
 type MapInstance = {
   map: LeafletMap;
 };
 
-export function DroneMissionMap({ onBoundaryChange, mission, loading }: DroneMissionMapProps) {
+export function DroneMissionMap({ onBoundaryChange, mission, loading, center }: DroneMissionMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<MapInstance | null>(null);
   const drawnPolygonRef = useRef<Polygon | null>(null);
   const waypointLayerRef = useRef<Polyline | null>(null);
   const [mapReady, setMapReady] = useState(false);
 
-  // Initialize Leaflet map
+  // Initialize Leaflet map (one-time)
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return;
 
@@ -29,7 +30,6 @@ export function DroneMissionMap({ onBoundaryChange, mission, loading }: DroneMis
       const L = (await import("leaflet")).default;
       await import("leaflet/dist/leaflet.css");
 
-      // Fix default marker icon (Leaflet workaround)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       delete (L.Icon.Default.prototype as any)._getIconUrl;
       L.Icon.Default.mergeOptions({
@@ -38,7 +38,8 @@ export function DroneMissionMap({ onBoundaryChange, mission, loading }: DroneMis
         shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
       });
 
-      const map = L.map(mapRef.current!).setView([-23.5505, -46.6333], 15);
+      const defaultCenter: [number, number] = [-23.5505, -46.6333];
+      const map = L.map(mapRef.current!).setView(defaultCenter, 15);
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution: "&copy; OpenStreetMap contributors",
       }).addTo(map);
@@ -54,7 +55,14 @@ export function DroneMissionMap({ onBoundaryChange, mission, loading }: DroneMis
         mapInstanceRef.current = null;
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Recenter map when project center is fetched asynchronously
+  useEffect(() => {
+    if (!center || !mapInstanceRef.current) return;
+    mapInstanceRef.current.map.setView([center.lat, center.lon], 15);
+  }, [center]);
 
   // Handle polygon drawing
   const startDrawing = useCallback(() => {
