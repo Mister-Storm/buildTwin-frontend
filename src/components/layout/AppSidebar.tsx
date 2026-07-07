@@ -42,13 +42,13 @@ export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
   return (
     <aside
       className={cn(
-        "flex shrink-0 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground transition-all duration-200",
+        "relative flex shrink-0 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground transition-all duration-200",
         collapsed ? "w-16" : "w-64",
       )}
     >
-      {/* Logo / Brand */}
-      <div className={cn("border-b border-sidebar-border", collapsed ? "px-2 py-4" : "px-4 py-5")}>
-        <Link href="/demo" className="block">
+      {/* Logo / Brand + Toggle button */}
+      <div className={cn("flex items-center border-b border-sidebar-border", collapsed ? "px-2 py-3" : "px-4 py-4")}>
+        <Link href="/demo" className="flex-1">
           {logoError ? (
             <span
               className={cn(
@@ -72,21 +72,38 @@ export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
               />
             </div>
           )}
-          {!collapsed && (
-            <>
-              <p className="mt-3 text-xs text-sidebar-foreground/70">
-                See Your Construction Site Evolve
-              </p>
-              <p className="mt-1 text-[10px] uppercase tracking-widest text-brand-accent">
-                Construction Intelligence Platform
-              </p>
-            </>
-          )}
         </Link>
+
+        {/* Toggle button — always visible at top-right of sidebar */}
+        <button
+          onClick={onToggle}
+          className={cn(
+            "flex items-center justify-center rounded-lg transition-colors hover:bg-sidebar-accent/60 hover:text-white",
+            collapsed
+              ? "mx-auto mt-2 h-8 w-8 text-sidebar-foreground/60"
+              : "ml-2 h-7 w-7 shrink-0 text-sidebar-foreground/40 hover:text-sidebar-foreground/80",
+          )}
+          title={collapsed ? "Expandir menu" : "Recolher menu"}
+          aria-label={collapsed ? "Expandir menu" : "Recolher menu"}
+          aria-expanded={!collapsed}
+        >
+          {collapsed ? <ChevronRight className="size-4" /> : <ChevronLeft className="size-4" />}
+        </button>
       </div>
 
+      {!collapsed && (
+        <div className="px-4 pb-2 pt-3">
+          <p className="text-xs text-sidebar-foreground/70">
+            See Your Construction Site Evolve
+          </p>
+          <p className="mt-0.5 text-[10px] uppercase tracking-widest text-brand-accent">
+            Construction Intelligence Platform
+          </p>
+        </div>
+      )}
+
       {/* Navigation */}
-      <nav className={cn("flex-1 space-y-1", collapsed ? "p-2" : "p-4")}>
+      <nav className={cn("flex-1 space-y-1", collapsed ? "p-2" : "px-4 pb-4")}>
         {navItems.map(({ href, label, icon: Icon }) => {
           const active =
             href === "/"
@@ -112,25 +129,14 @@ export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
         })}
       </nav>
 
-      {/* Collapse toggle + footer */}
-      <div className={cn("border-t border-sidebar-border", collapsed ? "p-2" : "p-4")}>
-        <button
-          onClick={onToggle}
-          className={cn(
-            "flex w-full items-center gap-2 rounded-lg text-xs text-sidebar-foreground/60 transition-colors hover:text-sidebar-foreground/80",
-            collapsed ? "justify-center p-2" : "p-2",
-          )}
-          title={collapsed ? "Expandir menu" : "Recolher menu"}
-        >
-          {collapsed ? <ChevronRight className="size-4" /> : <ChevronLeft className="size-4" />}
-          {!collapsed && <span>Recolher</span>}
-        </button>
-        {!collapsed && (
-          <p className="mt-2 text-xs text-sidebar-foreground/60">
+      {/* Footer */}
+      {!collapsed && (
+        <div className="border-t border-sidebar-border p-4">
+          <p className="text-xs text-sidebar-foreground/60">
             Pilot Readiness · Sprint 6C
           </p>
-        )}
-      </div>
+        </div>
+      )}
     </aside>
   );
 }
