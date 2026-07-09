@@ -11,8 +11,9 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Demo mode: bypass auth so E2E tests and demos work without login
-  if (process.env.BUILDTWIN_DEMO_MODE !== "false") {
+  // Demo mode: bypass auth only when explicitly set to true
+  // In production (env var undefined), auth is enforced.
+  if (process.env.BUILDTWIN_DEMO_MODE === "true") {
     return NextResponse.next();
   }
 
