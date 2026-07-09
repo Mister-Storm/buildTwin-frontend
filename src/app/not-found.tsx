@@ -10,10 +10,10 @@ export default function NotFound() {
           O recurso solicitado não foi encontrado.
         </p>
         <Link
-          href="/projects"
+          href="/login"
           className="mt-6 inline-flex h-8 items-center rounded-lg bg-primary px-3 text-sm font-medium text-primary-foreground hover:bg-primary/90"
         >
-          Voltar aos Projetos
+          Ir para o Login
         </Link>
       </div>
     </AppShell>
