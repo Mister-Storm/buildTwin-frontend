@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { ErrorState } from "@/components/shared/States";
@@ -10,6 +11,7 @@ import type { PortfolioIntelligenceViewModel } from "@/features/portfolio-intell
 import { getStoredToken } from "@/services/auth.service";
 
 export default function PortfolioPage() {
+  const router = useRouter();
   const [state, setState] = useState<{
     status: "loading" | "success" | "error";
     viewModel?: PortfolioIntelligenceViewModel;
@@ -22,7 +24,7 @@ export default function PortfolioPage() {
     async function load() {
       const token = getStoredToken();
       if (!token) {
-        if (!cancelled) setState({ status: "error", message: "Autenticação necessária." });
+        if (!cancelled) router.replace("/login");
         return;
       }
 

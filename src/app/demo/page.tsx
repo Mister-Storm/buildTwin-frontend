@@ -62,10 +62,10 @@ export default async function DemoPage() {
               de demos e pilotos em obra.
             </p>
             <Link
-              href="/projects"
+              href="/login"
               className="mt-6 inline-flex items-center rounded-lg bg-brand-accent px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
             >
-              Gerenciar Obras
+              Acessar Plataforma
             </Link>
           </div>
         </section>
