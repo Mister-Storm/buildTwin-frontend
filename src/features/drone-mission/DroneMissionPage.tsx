@@ -95,6 +95,8 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
     const controller = new AbortController();
     params.then(async (p) => {
       setProjectId(p.projectId);
+      // Load saved missions
+      listMissions(p.projectId).then(setSavedMissions).catch(() => {});
       try {
         const project = await getProject(p.projectId);
         setProjectName(project.name ?? "");
@@ -125,14 +127,7 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
   // Load saved missions
   useEffect(() => {
     if (!projectId) return;
-    const token = getStoredToken();
-    if (!token) {
-      console.log("listMissions: skipped, no token");
-      return; // skip in demo mode
-    }
-    listMissions(projectId).then(setSavedMissions).catch((err) => {
-      console.error("listMissions: failed", err);
-    });
+    listMissions(projectId).then(setSavedMissions).catch(() => {});
   }, [projectId]);
 
   const handlePlan = async () => {
