@@ -216,7 +216,6 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
 
   const handleBoundaryChange = (points: GeoPoint[]) => {
     setBoundary(points);
-    setMission(null);
     setLoadedMission(null);
   };
 
@@ -487,73 +486,100 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
             </Card>
           )}
 
-          {/* Saved Missions */}
-          {savedMissions.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Missões Anteriores</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {savedMissions.map((m) => (
-                  <div
-                    key={m.id}
-                    className="flex items-center justify-between rounded-lg border p-3 text-sm"
-                  >
-                    <div className="min-w-0 flex-1">
-                      <p className="font-medium truncate">{m.name}</p>
-                      <p className="text-xs text-gray-500 mt-0.5">
-                        {m.flightDate
-                          ? new Date(m.flightDate + "T12:00:00").toLocaleDateString("pt-BR")
-                          : "Sem data"}
-                        {" · "}
-                        {m.areaSquareMeters
-                          ? `${(m.areaSquareMeters / 10000).toFixed(2)} ha`
-                          : "—"}
-                        {" · "}
-                        {m.photoCount ?? "—"} fotos
-                      </p>
-                    </div>
-                    <span
-                      className={cn(
-                        "ml-3 shrink-0 rounded-full px-2 py-0.5 text-[11px] font-medium",
-                        m.status === "PLANNED"
-                          ? "bg-blue-100 text-blue-700"
-                          : m.status === "COMPLETED"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-gray-100 text-gray-500",
-                      )}
-                    >
-                      {m.status === "PLANNED"
-                        ? "Planejado"
-                        : m.status === "COMPLETED"
-                          ? "Concluído"
-                          : "Cancelado"}
-                    </span>
-                    <button
-                      onClick={() => handleLoadMission(m.id)}
-                      disabled={loadingMission}
-                      type="button"
-                      aria-label="Carregar missão no mapa"
-                      className="ml-2 shrink-0 text-xs text-blue-600 hover:text-blue-800 transition-colors"
-                      title="Carregar missão no mapa"
-                    >
-                      📂
-                    </button>
-                    {m.status === "PLANNED" && (
-                      <button
-                        onClick={() => handleCancelMission(m.id)}
-                        className="ml-2 shrink-0 text-xs text-red-500 hover:text-red-700 transition-colors"
-                      >
-                        Cancelar
-                      </button>
-                    )}
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          )}
         </div>
       </div>
+
+      {/* Saved missions table below the map */}
+      <section className="mt-6">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold">Meus Voos</h3>
+          <span className="text-sm text-muted-foreground">
+            {savedMissions.length} missão(ns)
+          </span>
+        </div>
+        {savedMissions.length === 0 ? (
+          <div className="rounded-lg border border-dashed p-8 text-center text-sm text-muted-foreground">
+            Nenhum voo planejado ainda. Desenhe um polígono no mapa e clique em &quot;Planejar Rota&quot;.
+          </div>
+        ) : (
+          <div className="overflow-x-auto rounded-lg border">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b bg-muted/50">
+                  <th className="px-4 py-3 text-left font-medium">Nome</th>
+                  <th className="px-4 py-3 text-left font-medium">Data</th>
+                  <th className="px-4 py-3 text-left font-medium">Área</th>
+                  <th className="px-4 py-3 text-left font-medium">Fotos</th>
+                  <th className="px-4 py-3 text-left font-medium">Status</th>
+                  <th className="px-4 py-3 text-right font-medium">Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                {savedMissions.map((m) => (
+                  <tr key={m.id} className="border-b last:border-0 hover:bg-muted/30 transition-colors">
+                    <td className="px-4 py-3 font-medium">{m.name}</td>
+                    <td className="px-4 py-3 text-muted-foreground">
+                      {m.flightDate
+                        ? new Date(m.flightDate + "T12:00:00").toLocaleDateString("pt-BR")
+                        : "—"}
+                    </td>
+                    <td className="px-4 py-3 text-muted-foreground">
+                      {m.areaSquareMeters
+                        ? m.areaSquareMeters > 10000
+                          ? `${(m.areaSquareMeters / 10000).toFixed(2)} ha`
+                          : `${m.areaSquareMeters.toFixed(0)} m²`
+                        : "—"}
+                    </td>
+                    <td className="px-4 py-3 text-muted-foreground">
+                      {m.photoCount ?? "—"}
+                    </td>
+                    <td className="px-4 py-3">
+                      <span
+                        className={cn(
+                          "inline-block rounded-full px-2 py-0.5 text-[11px] font-medium",
+                          m.status === "PLANNED"
+                            ? "bg-blue-100 text-blue-700"
+                            : m.status === "COMPLETED"
+                              ? "bg-green-100 text-green-700"
+                              : "bg-gray-100 text-gray-500",
+                        )}
+                      >
+                        {m.status === "PLANNED"
+                          ? "Planejado"
+                          : m.status === "COMPLETED"
+                            ? "Concluído"
+                            : "Cancelado"}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          onClick={() => handleLoadMission(m.id)}
+                          disabled={loadingMission}
+                          type="button"
+                          aria-label="Carregar missão no mapa"
+                          className="text-xs text-blue-600 hover:text-blue-800 transition-colors"
+                          title="Carregar missão no mapa"
+                        >
+                          📂 Ver rota
+                        </button>
+                        {m.status === "PLANNED" && (
+                          <button
+                            onClick={() => handleCancelMission(m.id)}
+                            className="text-xs text-red-500 hover:text-red-700 transition-colors"
+                          >
+                            Cancelar
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
     </AppShell>
   );
 }
