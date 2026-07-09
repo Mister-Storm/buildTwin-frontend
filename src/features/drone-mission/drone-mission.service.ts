@@ -10,6 +10,7 @@ export async function planMission(
 ): Promise<PlanMissionResponse> {
   return apiFetch<PlanMissionResponse>(`/drone-mission/plan`, {
     method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(request),
   });
 }
