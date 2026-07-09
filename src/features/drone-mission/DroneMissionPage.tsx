@@ -125,8 +125,14 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
   // Load saved missions
   useEffect(() => {
     if (!projectId) return;
-    if (!getStoredToken()) return; // skip in demo mode
-    listMissions(projectId).then(setSavedMissions).catch(() => {});
+    const token = getStoredToken();
+    if (!token) {
+      console.log("listMissions: skipped, no token");
+      return; // skip in demo mode
+    }
+    listMissions(projectId).then(setSavedMissions).catch((err) => {
+      console.error("listMissions: failed", err);
+    });
   }, [projectId]);
 
   const handlePlan = async () => {
