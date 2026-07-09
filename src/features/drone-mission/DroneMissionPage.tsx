@@ -216,7 +216,6 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
 
   const handleBoundaryChange = (points: GeoPoint[]) => {
     setBoundary(points);
-    setMission(null);
     setLoadedMission(null);
   };
 
