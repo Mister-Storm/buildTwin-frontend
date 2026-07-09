@@ -30,6 +30,7 @@ export default defineConfig({
       env: {
         BUILDTWIN_API_URL: "http://localhost:8080",
         BUILDTWIN_DEMO_MODE: "true",
+        NEXT_PUBLIC_BUILDTWIN_DEMO_MODE: "true",
       },
     },
   ],
