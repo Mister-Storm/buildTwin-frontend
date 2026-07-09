@@ -221,7 +221,6 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
   const handleBoundaryChange = (points: GeoPoint[]) => {
     setBoundary(points);
     setLoadedMission(null);
-    setSavedBoundary([]);
   };
 
   const formatDuration = (seconds: number) => {
