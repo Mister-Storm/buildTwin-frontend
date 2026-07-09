@@ -256,11 +256,11 @@ export function DroneMissionMap({
     <div className="relative w-full h-[500px] rounded-lg overflow-hidden border">
       <div ref={mapRef} className="w-full h-full" />
       {mapReady && !mission && (
-        <div className="absolute top-3 left-3 z-[1000] flex flex-col gap-1.5">
+        <div className="absolute top-3 right-3 z-[1000] flex flex-col gap-1.5">
           {!isDrawing ? (
             <button
               onClick={startDrawing}
-              className="px-4 py-2 bg-white rounded-lg shadow text-sm font-medium hover:bg-gray-50 transition-colors"
+              className="px-4 py-2 bg-card text-foreground border border-border rounded-lg shadow-sm text-sm font-medium hover:bg-accent transition-colors"
             >
               ✏️ Desenhar polígono
             </button>

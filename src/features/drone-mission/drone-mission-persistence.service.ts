@@ -12,6 +12,21 @@ export type DroneMissionListItem = {
   createdAt: string;
 };
 
+export type DroneMissionDetail = {
+  id: string;
+  projectId: string;
+  name: string;
+  status: "PLANNED" | "COMPLETED" | "CANCELLED";
+  flightDate: string | null;
+  boundary: { lat: number; lon: number }[] | null;
+  waypoints: PlanMissionResponse["waypoints"];
+  stats: PlanMissionResponse["stats"];
+  parameters: PlanMissionResponse["parameters"];
+  camera: PlanMissionResponse["camera"];
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type SaveMissionBody = {
   projectId: string;
   name: string;
@@ -44,4 +59,8 @@ export async function updateMissionStatus(
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ status }),
   });
+}
+
+export async function getMissionById(id: string): Promise<DroneMissionDetail> {
+  return apiFetch<DroneMissionDetail>(`/drone-mission/${id}`);
 }
