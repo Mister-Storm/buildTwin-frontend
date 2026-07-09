@@ -25,6 +25,7 @@ async function geoCodeAddress(
   location: { address: string; city: string; state: string; country: string },
   signal: AbortSignal,
 ): Promise<{ lat: number; lon: number } | null> {
+  const TIMEOUT_MS = 3000;
   const queries = [
     [location.address, location.city, location.state, location.country].filter(Boolean).join(", "),
     [location.city, location.state, location.country].filter(Boolean).join(", "),
@@ -34,15 +35,27 @@ async function geoCodeAddress(
 
   for (const q of queries) {
     if (!q) continue;
+    const timeoutController = new AbortController();
+    const timeoutId = setTimeout(() => timeoutController.abort(), TIMEOUT_MS);
+    const combinedSignal: AbortSignal = signal.aborted
+      ? timeoutController.signal
+      : (() => {
+          const c = new AbortController();
+          signal.addEventListener("abort", () => c.abort(), { once: true });
+          timeoutController.signal.addEventListener("abort", () => c.abort(), { once: true });
+          return c.signal;
+        })();
     try {
       const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&limit=1`;
-      const res = await fetch(url, { signal });
+      const res = await fetch(url, { signal: combinedSignal });
+      clearTimeout(timeoutId);
       if (!res.ok) continue;
       const data = await res.json();
       if (data.length > 0) {
         return { lat: Number(data[0].lat), lon: Number(data[0].lon) };
       }
     } catch {
+      clearTimeout(timeoutId);
       continue;
     }
   }
@@ -166,10 +179,15 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
     try {
       const detail = await getMissionById(id);
       setLoadedMission(detail);
-      if (detail.boundary) {
+      if (detail.boundary && detail.boundary.length > 0) {
         setBoundary(detail.boundary);
+      } else {
+        setBoundary([]);
       }
-      if (detail.waypoints) {
+      if (detail.flightDate) {
+        setFlightDate(detail.flightDate);
+      }
+      if (detail.waypoints && detail.waypoints.length > 0) {
         setMission({
           waypoints: detail.waypoints,
           stats: detail.stats,
@@ -309,7 +327,7 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
           </Card>
 
           {/* Results */}
-          {mission && (
+          {mission && !loadedMission && (
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg">Resultados</CardTitle>
@@ -394,7 +412,7 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
           )}
 
           {/* Loaded mission details */}
-          {loadedMission && !mission && (
+          {loadedMission && (
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg">Missão Carregada: {loadedMission.name}</CardTitle>
@@ -511,6 +529,8 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
                     <button
                       onClick={() => handleLoadMission(m.id)}
                       disabled={loadingMission}
+                      type="button"
+                      aria-label="Carregar missão no mapa"
                       className="ml-2 shrink-0 text-xs text-blue-600 hover:text-blue-800 transition-colors"
                       title="Carregar missão no mapa"
                     >
