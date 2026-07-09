@@ -155,7 +155,6 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
   const handleSaveMission = async () => {
     if (!mission) return;
     if (!savedBoundary.length) return;
-    if (!getStoredToken()) return;
     setSaving(true);
     try {
       const saved = await saveMission({
@@ -172,6 +171,8 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
       setMission(null);
       setMissionName("");
     } catch (err) {
+      const message = err instanceof Error ? err.message : "Erro ao salvar missão";
+      alert(`Falha ao salvar: ${message}`);
       console.error("Failed to save mission:", err);
     } finally {
       setSaving(false);
