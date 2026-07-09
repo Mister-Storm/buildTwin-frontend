@@ -95,6 +95,8 @@ function ImageRow({ image, captureSessionId, onDeleted }: ImageRowProps) {
     setDeleting(true);
     try {
       await deleteCaptureImage(captureSessionId, image.id);
+      setConfirmOpen(false);
+      setDeleting(false);
       onDeleted();
     } catch {
       setDeleting(false);
