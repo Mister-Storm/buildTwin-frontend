@@ -68,7 +68,6 @@ jobs:
   e2e:
     runs-on: ubuntu-latest
     needs: build
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
     env:
       CI: true
       BUILDTWIN_API_URL: http://localhost:8080
@@ -84,7 +83,7 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
       - name: Run E2E tests
-        run: npm run test:e2e
+        run: BUILDTWIN_DEMO_MODE=true npm run test:e2e
       - name: Upload Playwright report
         uses: actions/upload-artifact@v4
         if: failure()
