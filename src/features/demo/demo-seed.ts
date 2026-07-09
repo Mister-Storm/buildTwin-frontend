@@ -12,7 +12,7 @@ export const DEMO_PREVIEW_ARTIFACT_ID =
 export const DEMO_ORTHOMOSAIC_PREVIEW_URL = "/demo/orthomosaic-preview.jpg";
 
 export const DEMO_ENABLED =
-  process.env.BUILDTWIN_DEMO_MODE !== "false";
+  process.env.BUILDTWIN_DEMO_MODE === "true";
 
 export function isDemoProject(projectId: string): boolean {
   return projectId === DEMO_PROJECT_ID;
