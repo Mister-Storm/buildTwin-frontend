@@ -132,6 +132,7 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
   const handlePlan = async () => {
     if (boundary.length < 3) return;
     setLoading(true);
+    setLoadedMission(null);
     try {
       const result = await planMission(projectId, {
         projectId,
@@ -215,6 +216,7 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
   const handleBoundaryChange = (points: GeoPoint[]) => {
     setBoundary(points);
     setMission(null);
+    setLoadedMission(null);
   };
 
   const formatDuration = (seconds: number) => {
