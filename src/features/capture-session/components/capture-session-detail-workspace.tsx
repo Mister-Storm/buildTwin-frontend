@@ -102,7 +102,11 @@ export function CaptureSessionDetailWorkspace({
   return (
     <div className="space-y-8">
       <CaptureSessionImageUpload captureSessionId={captureSession.captureSessionId} onUploaded={handleUploaded} />
-      <CaptureSessionImageList images={images} />
+      <CaptureSessionImageList
+        images={images}
+        captureSessionId={captureSession.captureSessionId}
+        onDeleted={handleUploaded}
+      />
       <CaptureSessionProcessPanel
         captureSessionId={captureSession.captureSessionId}
         imageCount={imageCount}

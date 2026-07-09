@@ -70,3 +70,13 @@ export async function uploadCaptureSessionImages(
     onProgress,
   );
 }
+
+export async function deleteCaptureImage(
+  captureSessionId: string,
+  imageId: string,
+): Promise<void> {
+  debugLog("deleteCaptureImage", { captureSessionId, imageId });
+  await apiFetch<void>(`/capture-sessions/${captureSessionId}/images/${imageId}`, {
+    method: "DELETE",
+  });
+}
