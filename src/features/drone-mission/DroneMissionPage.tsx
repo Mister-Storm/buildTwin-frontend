@@ -82,6 +82,7 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
   const [savedMissions, setSavedMissions] = useState<DroneMissionListItem[]>([]);
   const [loadedMission, setLoadedMission] = useState<DroneMissionDetail | null>(null);
   const [loadingMission, setLoadingMission] = useState(false);
+  const [savedBoundary, setSavedBoundary] = useState<GeoPoint[]>([]);
   const [flightDate, setFlightDate] = useState(() => {
     const today = new Date();
     const y = today.getFullYear();
@@ -143,6 +144,7 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
         speedMps,
       });
       setMission(result);
+      setSavedBoundary([...boundary]);
     } catch (err) {
       console.error("Failed to plan mission:", err);
     } finally {
@@ -151,7 +153,8 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
   };
 
   const handleSaveMission = async () => {
-    if (!mission || !boundary.length) return;
+    if (!mission) return;
+    if (!savedBoundary.length) return;
     if (!getStoredToken()) return;
     setSaving(true);
     try {
@@ -159,7 +162,7 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
         projectId,
         name: missionName || `Voo ${new Date().toLocaleDateString("pt-BR")}`,
         flightDate,
-        boundary,
+        boundary: savedBoundary,
         waypoints: mission.waypoints,
         stats: mission.stats,
         parameters: mission.parameters,
@@ -217,6 +220,7 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
   const handleBoundaryChange = (points: GeoPoint[]) => {
     setBoundary(points);
     setLoadedMission(null);
+    setSavedBoundary([]);
   };
 
   const formatDuration = (seconds: number) => {
