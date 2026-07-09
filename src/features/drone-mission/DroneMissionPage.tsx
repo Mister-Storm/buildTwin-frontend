@@ -12,12 +12,55 @@ import {
   saveMission,
   listMissions,
   updateMissionStatus,
+  getMissionById,
   type DroneMissionListItem,
+  type DroneMissionDetail,
 } from "@/features/drone-mission/drone-mission-persistence.service";
 import type {
   GeoPoint,
   PlanMissionResponse,
 } from "@/features/drone-mission/drone-mission.api";
+
+async function geoCodeAddress(
+  location: { address: string; city: string; state: string; country: string },
+  signal: AbortSignal,
+): Promise<{ lat: number; lon: number } | null> {
+  const TIMEOUT_MS = 3000;
+  const queries = [
+    [location.address, location.city, location.state, location.country].filter(Boolean).join(", "),
+    [location.city, location.state, location.country].filter(Boolean).join(", "),
+    [location.state, location.country].filter(Boolean).join(", "),
+    location.country,
+  ].filter(Boolean);
+
+  for (const q of queries) {
+    if (!q) continue;
+    const timeoutController = new AbortController();
+    const timeoutId = setTimeout(() => timeoutController.abort(), TIMEOUT_MS);
+    const combinedSignal: AbortSignal = signal.aborted
+      ? timeoutController.signal
+      : (() => {
+          const c = new AbortController();
+          signal.addEventListener("abort", () => c.abort(), { once: true });
+          timeoutController.signal.addEventListener("abort", () => c.abort(), { once: true });
+          return c.signal;
+        })();
+    try {
+      const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&limit=1`;
+      const res = await fetch(url, { signal: combinedSignal });
+      clearTimeout(timeoutId);
+      if (!res.ok) continue;
+      const data = await res.json();
+      if (data.length > 0) {
+        return { lat: Number(data[0].lat), lon: Number(data[0].lon) };
+      }
+    } catch {
+      clearTimeout(timeoutId);
+      continue;
+    }
+  }
+  return null;
+}
 
 type DroneMissionPageProps = {
   params: Promise<{ projectId: string }>;
@@ -37,6 +80,8 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
   const [saving, setSaving] = useState(false);
   const [missionName, setMissionName] = useState("");
   const [savedMissions, setSavedMissions] = useState<DroneMissionListItem[]>([]);
+  const [loadedMission, setLoadedMission] = useState<DroneMissionDetail | null>(null);
+  const [loadingMission, setLoadingMission] = useState(false);
   const [flightDate, setFlightDate] = useState(() => {
     const today = new Date();
     const y = today.getFullYear();
@@ -47,6 +92,7 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
 
   // Resolve projectId and fetch project location
   useEffect(() => {
+    const controller = new AbortController();
     params.then(async (p) => {
       setProjectId(p.projectId);
       try {
@@ -55,13 +101,25 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
         const loc = project.location;
         const lat = loc?.latitude;
         const lon = loc?.longitude;
-        if (typeof lat === "number" && typeof lon === "number" && isFinite(lat) && isFinite(lon)) {
+        const hasValidCoords =
+          typeof lat === "number" && typeof lon === "number" && isFinite(lat) && isFinite(lon) && (lat !== 0 || lon !== 0);
+        if (hasValidCoords) {
           setProjectCenter({ lat, lon });
+        } else if (loc) {
+          // Fallback: geoCode from address fields
+          const result = await geoCodeAddress(
+            { address: loc.address, city: loc.city, state: loc.state, country: loc.country },
+            controller.signal,
+          );
+          if (result) {
+            setProjectCenter(result);
+          }
         }
       } catch {
         // project fetch failed — map stays at default center
       }
     });
+    return () => controller.abort();
   }, [params]);
 
   // Load saved missions
@@ -112,6 +170,35 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
       console.error("Failed to save mission:", err);
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleLoadMission = async (id: string) => {
+    if (!getStoredToken()) return;
+    setLoadingMission(true);
+    try {
+      const detail = await getMissionById(id);
+      setLoadedMission(detail);
+      if (detail.boundary && detail.boundary.length > 0) {
+        setBoundary(detail.boundary);
+      } else {
+        setBoundary([]);
+      }
+      if (detail.flightDate) {
+        setFlightDate(detail.flightDate);
+      }
+      if (detail.waypoints && detail.waypoints.length > 0) {
+        setMission({
+          waypoints: detail.waypoints,
+          stats: detail.stats,
+          camera: detail.camera,
+          parameters: detail.parameters,
+        });
+      }
+    } catch (err) {
+      console.error("Failed to load mission:", err);
+    } finally {
+      setLoadingMission(false);
     }
   };
 
@@ -240,7 +327,7 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
           </Card>
 
           {/* Results */}
-          {mission && (
+          {mission && !loadedMission && (
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg">Resultados</CardTitle>
@@ -324,6 +411,79 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
             </Card>
           )}
 
+          {/* Loaded mission details */}
+          {loadedMission && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Missão Carregada: {loadedMission.name}</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Área</span>
+                  <span className="font-medium">{formatArea(loadedMission.stats.areaSquareMeters)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Altitude</span>
+                  <span className="font-medium">{loadedMission.stats.altitudeMeters.toFixed(0)} m</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Distância</span>
+                  <span className="font-medium">
+                    {(loadedMission.stats.totalDistanceMeters / 1000).toFixed(1)} km
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Duração</span>
+                  <span className="font-medium">
+                    {formatDuration(loadedMission.stats.estimatedTimeSeconds)}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Fotos</span>
+                  <span className="font-medium">{loadedMission.stats.photoCount.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">GSD</span>
+                  <span className="font-medium">{loadedMission.stats.gsdCmPerPixel.toFixed(2)} cm/px</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Data do Voo</span>
+                  <span className="font-medium">
+                    {loadedMission.flightDate
+                      ? new Date(loadedMission.flightDate + "T12:00:00").toLocaleDateString("pt-BR")
+                      : "—"}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Câmera</span>
+                  <span className="font-medium">{loadedMission.camera.model}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Overlap frontal</span>
+                  <span className="font-medium">{loadedMission.parameters.overlapFront * 100}%</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Overlap lateral</span>
+                  <span className="font-medium">{loadedMission.parameters.overlapSide * 100}%</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Margem</span>
+                  <span className="font-medium">{loadedMission.parameters.marginMeters} m</span>
+                </div>
+                <button
+                  onClick={() => {
+                    setLoadedMission(null);
+                    setMission(null);
+                    setBoundary([]);
+                  }}
+                  className="w-full mt-2 px-3 py-2 bg-gray-600 text-white rounded-lg text-sm font-medium hover:bg-gray-700 transition-colors"
+                >
+                  ✕ Limpar Missão Carregada
+                </button>
+              </CardContent>
+            </Card>
+          )}
+
           {/* Saved Missions */}
           {savedMissions.length > 0 && (
             <Card>
@@ -366,6 +526,16 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
                           ? "Concluído"
                           : "Cancelado"}
                     </span>
+                    <button
+                      onClick={() => handleLoadMission(m.id)}
+                      disabled={loadingMission}
+                      type="button"
+                      aria-label="Carregar missão no mapa"
+                      className="ml-2 shrink-0 text-xs text-blue-600 hover:text-blue-800 transition-colors"
+                      title="Carregar missão no mapa"
+                    >
+                      📂
+                    </button>
                     {m.status === "PLANNED" && (
                       <button
                         onClick={() => handleCancelMission(m.id)}

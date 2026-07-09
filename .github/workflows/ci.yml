@@ -53,6 +53,7 @@ jobs:
     needs: coverage
     env:
       BUILDTWIN_API_URL: http://localhost:8080
+      BUILDTWIN_DEMO_MODE: true
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -71,6 +72,7 @@ jobs:
     env:
       CI: true
       BUILDTWIN_API_URL: http://localhost:8080
+      BUILDTWIN_DEMO_MODE: true
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

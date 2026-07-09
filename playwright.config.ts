@@ -29,6 +29,7 @@ export default defineConfig({
       reuseExistingServer: !process.env.CI,
       env: {
         BUILDTWIN_API_URL: "http://localhost:8080",
+        BUILDTWIN_DEMO_MODE: "true",
       },
     },
   ],
