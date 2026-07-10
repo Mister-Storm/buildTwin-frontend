@@ -88,9 +88,18 @@ npm run test:e2e   # Playwright (demo mode, no backend)
 
 PRs must pass CI: lint → test → build → e2e (see `.github/workflows/ci.yml`).
 
-## Out of scope (current sprint)
+## Sprint workflow
 
-Auth, maps (Leaflet/Cesium), temporal comparison, backend changes.
+Skill: `~/.cursor/skills/buildtwin-sprint/SKILL.md`
+Canonical doc: `../BuildTwin/docs/SPRINT-WORKFLOW.md`
+Cursor rules: `.cursor/rules/sprint-implementation.mdc`, `.cursor/rules/definition-of-done.mdc`
+
+Conventions (all sprints):
+- English-only branches, commits, PRs, identifiers, test names
+- No code comments — self-documenting names
+- TDD: failing mapper/hook test → production code → refactor
+- Test subject always named `sut`; test name `should {outcome} when {condition}`
+- Branch pattern: `{type}/{english-kebab-slug}` from `main`
 
 ## E2E tests (Playwright)
 
@@ -110,4 +119,17 @@ npm run build      # production build
 npm run test:e2e   # 5 E2E tests passing (requires demo mode)
 ```
 
-Pipeline failure = tarefa não concluída.
+Pipeline failure = task not complete.
+
+## Sprint workflow
+
+Skill: `~/.cursor/skills/buildtwin-sprint/SKILL.md`
+Canonical doc: `../BuildTwin/docs/SPRINT-WORKFLOW.md`
+Cursor rules: `.cursor/rules/sprint-implementation.mdc`, `.cursor/rules/definition-of-done.mdc`
+
+Conventions (all sprints):
+- English-only branches, commits, PRs, identifiers, test names
+- No code comments — self-documenting names
+- TDD: failing mapper/hook test → production code → refactor
+- Test subject always named `sut`; test name `should {outcome} when {condition}`
+- Branch pattern: `{type}/{english-kebab-slug}` from `main`
