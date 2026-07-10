@@ -1,0 +1,29 @@
+---
+description: Sprint implementation standards — TDD, English-only, sut, should-when, no comments, domain-first
+alwaysApply: true
+---
+
+# sprint-implementation (frontend)
+
+MUST:
+- TDD: failing mapper/hook test before production code
+- test subject named `sut`
+- test name: `should {outcome} when {condition}` (Vitest it(...))
+- English-only: branches, commits, identifiers, test names
+- flow: Service(DTO) → Mapper → Domain Model → Component
+- domain models in UI from `src/features/domain/models/` only
+- `parseDateOnly()` for API `YYYY-MM-DD` strings
+- branch: `{type}/{english-kebab-slug}` from `main`
+
+NEVER:
+- code comments in production or test code
+- import `src/types/api/` in UI components
+- `any`, `dangerouslySetInnerHTML`, `eval`
+- non-English branch/commit/identifier names
+- edit existing test before classifying failure
+
+TEST_BROKEN:
+- IF existing test fails → fix implementation first
+- ONLY update test if requirement changed, test was wrong, or internal refactor without contract change
+
+REF: ../BuildTwin/docs/SPRINT-WORKFLOW.md

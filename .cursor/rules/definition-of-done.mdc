@@ -1,0 +1,25 @@
+---
+description: Definition of done for frontend tasks — lint, tests, build required before marking complete
+alwaysApply: true
+---
+
+# BuildTwin Frontend — Definition of Done
+
+See also: `.cursor/rules/sprint-implementation.mdc` | `../BuildTwin/docs/SPRINT-WORKFLOW.md`
+
+Do **not** mark a task complete until all applicable checks pass:
+
+## Frontend
+
+- `npm run lint` — ESLint zero errors
+- `npm test -- --run` — Vitest unit + component tests green
+- `npm run build` — production build compiles (same step as Docker build)
+- Mapper/date logic: use `parseDateOnly()` for API `YYYY-MM-DD` strings
+
+## User-facing features
+
+- `npm run test:e2e` — Playwright demo mode (when UI behavior changed)
+
+## Honest status
+
+Report: code done / tests pass / lint pass / build pass / E2E pass — separately.
