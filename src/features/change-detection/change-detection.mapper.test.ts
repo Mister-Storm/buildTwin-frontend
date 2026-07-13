@@ -27,7 +27,7 @@ describe("change-detection.mapper", () => {
     expect(viewModel.changePercentageLabel).toBe("16,4%");
     expect(viewModel.changedPixelsLabel).toBe("102.314");
     expect(viewModel.heatmapPreviewUrl).toBe(
-      "/api/artifacts/heatmap-1/preview",
+      "/preview/artifacts/heatmap-1",
     );
   });
 

@@ -133,7 +133,7 @@ describe("loadOrthomosaicViewModel", () => {
     expect(result.status).toBe("success");
     if (result.status === "success") {
       expect(result.viewModel.previewUrl).toBe(
-        `/api/artifacts/${previewArtifactId}/preview`,
+        `/preview/artifacts/${previewArtifactId}`,
       );
       expect(result.viewModel.downloadUrl).toBe(
         `/api/v1/artifacts/${downloadArtifactId}/download`,

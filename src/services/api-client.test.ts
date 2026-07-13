@@ -5,7 +5,7 @@ import { ApiError } from "@/types/api/common.api";
 describe("artifactPreviewUrl", () => {
   it("builds preview path for artifact id", () => {
     expect(artifactPreviewUrl("abc-123")).toBe(
-      "/api/artifacts/abc-123/preview",
+      "/preview/artifacts/abc-123",
     );
   });
 });

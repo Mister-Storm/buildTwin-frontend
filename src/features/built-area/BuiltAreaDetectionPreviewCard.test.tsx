@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import { BuiltAreaDetectionPreviewCard } from "@/features/built-area/BuiltAreaDetectionPreviewCard";
 
 vi.mock("@/services/api-client", () => ({
-  artifactPreviewUrl: (artifactId: string) => `/api/artifacts/${artifactId}/preview`,
+  artifactPreviewUrl: (artifactId: string) => `/preview/artifacts/${artifactId}`,
 }));
 
 describe("BuiltAreaDetectionPreviewCard", () => {
@@ -21,7 +21,7 @@ describe("BuiltAreaDetectionPreviewCard", () => {
     expect(screen.getByText(/82%/)).toBeInTheDocument();
     expect(screen.getByRole("img")).toHaveAttribute(
       "src",
-      "/api/artifacts/artifact-1/preview",
+      "/preview/artifacts/artifact-1",
     );
   });
 
