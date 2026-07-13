@@ -28,7 +28,7 @@ describe("timeline.mapper", () => {
 
     expect(item.areaSquareMeters).toBe(8000);
     expect(item.gsdLabel).toBe("2,2 cm/pixel");
-    expect(item.previewUrl).toBe("/api/v1/artifacts/preview-1/preview");
+    expect(item.previewUrl).toBe("/api/artifacts/preview-1/preview");
     expect(item.captureDateLabel).toBe("01 de mai. de 2026");
   });
 

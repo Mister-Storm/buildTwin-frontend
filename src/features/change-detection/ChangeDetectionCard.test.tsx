@@ -11,7 +11,7 @@ const baseViewModel: ChangeDetectionViewModel = {
   changedPixelsLabel: "102.314",
   changeLevel: "VERY_HIGH",
   comparisonQuality: "NORMAL",
-  heatmapPreviewUrl: "/api/v1/artifacts/heatmap-1/preview",
+  heatmapPreviewUrl: "/api/artifacts/heatmap-1/preview",
 };
 
 describe("ChangeDetectionCard", () => {
@@ -26,7 +26,7 @@ describe("ChangeDetectionCard", () => {
     expect(screen.getByText("Vermelho = região alterada")).toBeInTheDocument();
     expect(screen.getByAltText("Mapa de calor das mudanças detectadas")).toHaveAttribute(
       "src",
-      "/api/v1/artifacts/heatmap-1/preview",
+      "/api/artifacts/heatmap-1/preview",
     );
   });
 

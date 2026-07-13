@@ -173,7 +173,7 @@ export function apiUpload<T>(
 }
 
 export function artifactPreviewUrl(artifactId: string): string {
-  return `/api/v1/artifacts/${artifactId}/preview`;
+  return `/api/artifacts/${artifactId}/preview`;
 }
 
 export function artifactDownloadUrl(artifactId: string): string {
