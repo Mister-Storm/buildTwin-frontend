@@ -6,7 +6,7 @@ import {
 } from "@/features/vertical-construction/VerticalConstructionDetectionPreviewCard";
 
 vi.mock("@/services/api-client", () => ({
-  artifactPreviewUrl: (artifactId: string) => `/api/v1/artifacts/${artifactId}/preview`,
+  artifactPreviewUrl: (artifactId: string) => `/api/artifacts/${artifactId}/preview`,
 }));
 
 describe("VerticalConstructionDetectionPreviewCard", () => {
