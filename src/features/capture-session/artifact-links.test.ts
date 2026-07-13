@@ -49,7 +49,7 @@ describe("artifact-links", () => {
       },
     ]);
     expect(getArtifactPreviewLink(indexed, "MATERIAL_DETECTION_PREVIEW")).toBe(
-      "/api/artifacts/mat-preview-1/preview",
+      "/preview/artifacts/mat-preview-1",
     );
   });
 });

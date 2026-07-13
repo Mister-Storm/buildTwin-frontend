@@ -96,7 +96,7 @@ describe("ComparePage", () => {
         changedPixelsLabel: "102.314",
         changeLevel: "VERY_HIGH",
         comparisonQuality: "NORMAL",
-        heatmapPreviewUrl: "/api/artifacts/heatmap-1/preview",
+        heatmapPreviewUrl: "/preview/artifacts/heatmap-1",
       },
     });
     vi.mocked(loadProgressIntelligence).mockResolvedValue({
