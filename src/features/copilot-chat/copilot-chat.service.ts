@@ -10,6 +10,7 @@ export async function askProjectCopilot(
 ): Promise<CopilotAskResponseDto> {
   return apiFetch<CopilotAskResponseDto>(`/projects/${projectId}/copilot/ask`, {
     method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(request),
   });
 }
@@ -19,6 +20,7 @@ export async function askPortfolioCopilot(
 ): Promise<CopilotAskResponseDto> {
   return apiFetch<CopilotAskResponseDto>("/portfolio/copilot/ask", {
     method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(request),
   });
 }
