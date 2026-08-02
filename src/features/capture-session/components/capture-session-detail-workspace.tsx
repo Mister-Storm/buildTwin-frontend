@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { CaptureSessionImageList } from "@/features/capture-session/components/capture-session-image-list";
 import { CaptureSessionImageUpload } from "@/features/capture-session/components/capture-session-image-upload";
+import { CaptureGuidePanel } from "@/features/capture-session/components/capture-guide-panel";
 import { CaptureSessionProcessPanel } from "@/features/capture-session/components/capture-session-process-panel";
 import { CaptureSessionResultsPanel } from "@/features/capture-session/components/capture-session-results-panel";
 import { JobStatusPanel } from "@/features/capture-session/components/job-status-panel";
@@ -101,6 +102,7 @@ export function CaptureSessionDetailWorkspace({
 
   return (
     <div className="space-y-8">
+      <CaptureGuidePanel />
       <CaptureSessionImageUpload captureSessionId={captureSession.captureSessionId} onUploaded={handleUploaded} />
       <CaptureSessionImageList
         images={images}

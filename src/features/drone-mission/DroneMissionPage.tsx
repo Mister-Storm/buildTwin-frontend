@@ -5,6 +5,7 @@ import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DroneMissionMap } from "@/features/drone-mission/DroneMissionMap";
+import { buildMissionKml } from "@/features/drone-mission/kml";
 import { planMission } from "@/features/drone-mission/drone-mission.service";
 import { getProject } from "@/services/projects.service";
 import { getStoredToken } from "@/services/auth.service";
@@ -411,6 +412,25 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
                     className="w-full px-3 py-2 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700 transition-colors"
                   >
                     📥 Exportar Waypoints (JSON)
+                  </button>
+                  <button
+                    onClick={() => {
+                      const kml = buildMissionKml(mission.waypoints, {
+                        name: `Missão ${projectId}`,
+                        description: `Plano de voo BuildTwin — ${mission.waypoints.length} waypoints`,
+                      });
+                      const blob = new Blob([kml], {
+                        type: "application/vnd.google-earth.kml+xml",
+                      });
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement("a");
+                      a.href = url;
+                      a.download = `mission-${projectId}.kml`;
+                      a.click();
+                    }}
+                    className="w-full px-3 py-2 bg-amber-600 text-white rounded-lg text-sm font-medium hover:bg-amber-700 transition-colors"
+                  >
+                    🗺️ Exportar KML
                   </button>
                 </div>
               </CardContent>

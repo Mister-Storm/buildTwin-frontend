@@ -40,10 +40,10 @@ Service (DTO) → Mapper → Domain Model → Component
 | `/projects` | Project list |
 | `/projects/[id]` | Flight timeline + orthomosaic CTA |
 | `/projects/[id]/orthomosaic` | Preview viewer (hero demo) |
-| `/projects/[id]/capture-sessions/[id]` | Capture session details |
+| `/projects/[id]/capture-sessions/[id]` | Capture session details + inline capture guide (mobile-first protocol) |
 | `/projects/[id]/progress` | Project progress tracking |
 | `/projects/[id]/compare` | Temporal comparison |
-| `/projects/[id]/drone-mission` | Drone mission planning |
+| `/projects/[id]/drone-mission` | Drone mission planning + JSON/KML export |
 | `/admin` | Admin panel (users, roles, system health) — ADMIN only |
 | `/login` | Authentication (email + password) |
 | `/demo` | Commercial demo (public) |
