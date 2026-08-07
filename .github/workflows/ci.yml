@@ -46,7 +46,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Coverage
-        run: npm test -- --coverage --watchAll=false || echo "Coverage threshold not configured"
+        run: npx vitest run --coverage || echo "Coverage threshold not configured"
 
   build:
     runs-on: ubuntu-latest
