@@ -6,6 +6,11 @@ const PUBLIC_ROUTES = ["/login", "/demo", "/api", "/_next", "/favicon", "/brand"
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Root landing page is public
+  if (pathname === "/") {
+    return NextResponse.next();
+  }
+
   // Allow public routes and static assets
   if (PUBLIC_ROUTES.some((route) => pathname.startsWith(route))) {
     return NextResponse.next();
