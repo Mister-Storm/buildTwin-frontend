@@ -7,7 +7,7 @@ test.describe("Real API integration flow", () => {
   test("navigates dashboard → projects → detail → orthomosaic with API data", async ({
     page,
   }) => {
-    await page.goto("/");
+    await page.goto("/dashboard");
 
     await expect(
       page.getByRole("heading", { name: "See Your Construction Site Evolve" }),
@@ -55,7 +55,7 @@ test.describe("Real API integration flow", () => {
 
 test.describe("Theme toggle", () => {
   test("switches between light and dark themes", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/dashboard");
 
     const darkButton = page.getByRole("button", { name: "Dark" });
     await darkButton.click();
