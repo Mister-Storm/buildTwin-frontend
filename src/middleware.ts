@@ -22,9 +22,10 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Check if auth cookie is present
+  // Check if auth cookie or token cookie is present
   const authCookie = request.cookies.get("buildtwin_auth");
-  if (!authCookie?.value) {
+  const tokenCookie = request.cookies.get("buildtwin_token");
+  if (!authCookie?.value && !tokenCookie?.value) {
     // Try legacy token in query param (for client-side redirects)
     const url = new URL("/login", request.url);
     url.searchParams.set("redirect", pathname);

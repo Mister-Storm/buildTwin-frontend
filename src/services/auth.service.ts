@@ -26,18 +26,20 @@ const USER_KEY = "buildtwin_user";
 /** Set a non-httpOnly cookie so the Next.js middleware can detect auth state server-side. */
 function setAuthCookie(token: string) {
   if (typeof document === "undefined") return;
+  const secure = location.protocol === "https:" ? "; Secure" : "";
   document.cookie =
-    "buildtwin_auth=true; path=/; max-age=2592000; SameSite=Lax";
+    `buildtwin_auth=true; path=/; max-age=2592000; SameSite=Lax${secure}`;
   document.cookie =
-    `buildtwin_token=${token}; path=/; max-age=2592000; SameSite=Lax`;
+    `buildtwin_token=${token}; path=/; max-age=2592000; SameSite=Lax${secure}`;
 }
 
 function clearAuthCookie() {
   if (typeof document === "undefined") return;
+  const secure = location.protocol === "https:" ? "; Secure" : "";
   document.cookie =
-    "buildtwin_auth=; path=/; max-age=0; SameSite=Lax";
+    `buildtwin_auth=; path=/; max-age=0; SameSite=Lax${secure}`;
   document.cookie =
-    "buildtwin_token=; path=/; max-age=0; SameSite=Lax";
+    `buildtwin_token=; path=/; max-age=0; SameSite=Lax${secure}`;
 }
 
 /** MVP: tokens in localStorage (XSS-sensitive). Prefer httpOnly cookies when backend supports SSR auth. */
