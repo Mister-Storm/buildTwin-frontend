@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -96,14 +96,13 @@ function FeatureIcon({ icon }: { icon: string }) {
 }
 
 function useIsAuthenticated(): boolean {
-  const [authed, setAuthed] = useState(false);
-  useEffect(() => {
+  const [authed] = useState(() => {
     try {
-      setAuthed(!!localStorage.getItem("buildtwin_token"));
+      return !!localStorage.getItem("buildtwin_token");
     } catch {
-      // localStorage blocked
+      return false;
     }
-  }, []);
+  });
   return authed;
 }
 
@@ -115,8 +114,6 @@ const outlineLinkClass =
 
 export default function LandingPage() {
   const isAuthed = useIsAuthenticated();
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
 
   return (
     <div className="min-h-screen bg-background">
@@ -141,7 +138,7 @@ export default function LandingPage() {
               reporting — all in one platform.
             </p>
             <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-              {mounted && isAuthed ? (
+              {isAuthed ? (
                 <Link href="/dashboard" className={ctaLinkClass}>
                   Go to Dashboard
                 </Link>
@@ -204,7 +201,7 @@ export default function LandingPage() {
               issues, and deliver on time.
             </p>
             <div className="mt-8">
-              {mounted && isAuthed ? (
+              {isAuthed ? (
                 <Link href="/dashboard" className={ctaLinkClass}>
                   Go to Dashboard
                 </Link>
