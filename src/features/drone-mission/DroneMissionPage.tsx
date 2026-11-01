@@ -466,6 +466,12 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
                   <span className="text-gray-500">Margem</span>
                   <span className="font-medium">{loadedMission.parameters.marginMeters} m</span>
                 </div>
+                <div className="rounded-lg border-2 border-dashed border-amber-500 bg-amber-500/10 p-3 text-center text-xs font-bold tracking-wider text-amber-500 uppercase">
+                  ⚠️ NON-OPERATIONAL — NOT CERTIFIED FOR FLIGHT
+                </div>
+                <div className="rounded-lg border border-border bg-muted/40 p-2.5 text-center text-xs text-muted-foreground">
+                  🚫 Exportação operacional (KML/JSON) restrita pendente validação
+                </div>
                 <button
                   onClick={() => {
                     setLoadedMission(null);
