@@ -20,7 +20,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
         return;
       }
 
-      if (DEMO_ENABLED && pathname.startsWith("/demo")) {
+      if (DEMO_ENABLED) {
         setChecking(false);
         return;
       }

@@ -5,7 +5,6 @@ import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DroneMissionMap } from "@/features/drone-mission/DroneMissionMap";
-import { buildMissionKml } from "@/features/drone-mission/kml";
 import { planMission } from "@/features/drone-mission/drone-mission.service";
 import { getProject } from "@/services/projects.service";
 import { getStoredToken } from "@/services/auth.service";
