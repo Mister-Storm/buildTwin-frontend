@@ -20,7 +20,6 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
         return;
       }
 
-      // Demo mode: bypass auth so pages render without login
       if (DEMO_ENABLED) {
         setChecking(false);
         return;

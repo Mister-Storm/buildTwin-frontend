@@ -5,7 +5,6 @@ import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DroneMissionMap } from "@/features/drone-mission/DroneMissionMap";
-import { buildMissionKml } from "@/features/drone-mission/kml";
 import { planMission } from "@/features/drone-mission/drone-mission.service";
 import { getProject } from "@/services/projects.service";
 import { getStoredToken } from "@/services/auth.service";
@@ -397,41 +396,12 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
                   >
                     {saving ? "💾 Salvando..." : "💾 Salvar Missão"}
                   </button>
-                  <button
-                    onClick={() => {
-                      const blob = new Blob(
-                        [JSON.stringify(mission.waypoints, null, 2)],
-                        { type: "application/json" },
-                      );
-                      const url = URL.createObjectURL(blob);
-                      const a = document.createElement("a");
-                      a.href = url;
-                      a.download = `mission-${projectId}-waypoints.json`;
-                      a.click();
-                    }}
-                    className="w-full px-3 py-2 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700 transition-colors"
-                  >
-                    📥 Exportar Waypoints (JSON)
-                  </button>
-                  <button
-                    onClick={() => {
-                      const kml = buildMissionKml(mission.waypoints, {
-                        name: `Missão ${projectId}`,
-                        description: `Plano de voo BuildTwin — ${mission.waypoints.length} waypoints`,
-                      });
-                      const blob = new Blob([kml], {
-                        type: "application/vnd.google-earth.kml+xml",
-                      });
-                      const url = URL.createObjectURL(blob);
-                      const a = document.createElement("a");
-                      a.href = url;
-                      a.download = `mission-${projectId}.kml`;
-                      a.click();
-                    }}
-                    className="w-full px-3 py-2 bg-amber-600 text-white rounded-lg text-sm font-medium hover:bg-amber-700 transition-colors"
-                  >
-                    🗺️ Exportar KML
-                  </button>
+                  <div className="rounded-lg border-2 border-dashed border-amber-500 bg-amber-500/10 p-3 text-center text-xs font-bold tracking-wider text-amber-500 uppercase">
+                    ⚠️ NON-OPERATIONAL — NOT CERTIFIED FOR FLIGHT
+                  </div>
+                  <div className="rounded-lg border border-border bg-muted/40 p-2.5 text-center text-xs text-muted-foreground">
+                    🚫 Exportação operacional (KML/JSON) restrita pendente validação
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -495,6 +465,12 @@ export default function DroneMissionPage({ params }: DroneMissionPageProps) {
                 <div className="flex justify-between">
                   <span className="text-gray-500">Margem</span>
                   <span className="font-medium">{loadedMission.parameters.marginMeters} m</span>
+                </div>
+                <div className="rounded-lg border-2 border-dashed border-amber-500 bg-amber-500/10 p-3 text-center text-xs font-bold tracking-wider text-amber-500 uppercase">
+                  ⚠️ NON-OPERATIONAL — NOT CERTIFIED FOR FLIGHT
+                </div>
+                <div className="rounded-lg border border-border bg-muted/40 p-2.5 text-center text-xs text-muted-foreground">
+                  🚫 Exportação operacional (KML/JSON) restrita pendente validação
                 </div>
                 <button
                   onClick={() => {
