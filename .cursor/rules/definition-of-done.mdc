@@ -5,7 +5,11 @@ alwaysApply: true
 
 # BuildTwin Frontend — Definition of Done
 
-See also: `.cursor/rules/sprint-implementation.mdc` | `../BuildTwin/docs/SPRINT-WORKFLOW.md`
+Paths below resolve from the repository root. Read `AGENTS.md` and the canonical
+constitution at `../buildtwin/.specify/memory/constitution.md` before work. Follow its compatibility,
+test-first, data-preservation, and evidence rules; report conflicts and preserve unrelated changes.
+
+See also: `.cursor/rules/sprint-implementation.mdc` | `../buildtwin/docs/SPRINT-WORKFLOW.md`
 
 Do **not** mark a task complete until all applicable checks pass:
 
@@ -18,8 +22,15 @@ Do **not** mark a task complete until all applicable checks pass:
 
 ## User-facing features
 
-- `npm run test:e2e` — Playwright demo mode (when UI behavior changed)
+- `npm run test:e2e` — existing demo/mocked Playwright suite when UI behavior changes
+- Also exercise actual authenticated browser journeys against real services where required;
+  the demo suite is not a substitute. Missing browser/backend access is a blocked check
 
 ## Honest status
 
 Report: code done / tests pass / lint pass / build pass / E2E pass — separately.
+
+Required failed or blocked checks prevent a completion claim. Record actual commands, versions,
+configuration, results, evidence, and limitations; builds, health, mocks, and HTTP 200 alone are
+not journey acceptance. Apply the canonical workflow
+(`../buildtwin/docs/SPRINT-WORKFLOW.md`) for affected journeys and CI gaps.

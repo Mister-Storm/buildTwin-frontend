@@ -2,25 +2,48 @@
 
 Investor demo UI for the BuildTwin Construction Intelligence Platform.
 
+## Cross-agent requirements
+
+Every coding agent MUST read and follow the [canonical BuildTwin constitution](../buildtwin/.specify/memory/constitution.md)
+before work. Keep that file canonical; report conflicting guidance rather than inventing exceptions.
+Paths and commands below resolve from this repository root.
+
+- Before production edits, record affected journeys, contracts, permissions, data, workers, and
+  consumers; distinguish approved behavior, known defects, and unverified behavior.
+- Preserve approved legitimate behavior outside scope. Security defects and misleading analytical
+  results are not compatibility guarantees. Cite accepted requirements and affected consumers for
+  intentional behavior changes; obtain explicit approval for material changes outside scope.
+- Reproduce defects with meaningful failing tests where practical; record any reproduction limit.
+  Verify positive permitted-success and negative forbidden-action cases. Do not weaken tests to pass.
+- Run mandatory repository gates plus impact-appropriate regression, contract, and complete-journey
+  acceptance checks, including real browser interactions where required by the constitution.
+- Link requirements, implementation, tests, and evidence. Report actual commands, versions, config,
+  results, pre-existing failures, and blocked checks. A required blocked check prevents a completion
+  claim; builds, health checks, mocks, and HTTP 200 alone do not prove end-to-end correctness.
+- Preserve existing data, legitimate ownership, and unrelated working-tree changes. Never reset DBs,
+  delete volumes, broaden memberships, disable security, forge tokens, or rewrite job states to pass
+  validation. Correct applied migrations through auditable forward migrations.
+- Concise status styles must not reduce technical precision, evidence, or disclosure of limitations.
+
 ## Repositories
 
 | Repo | Path | Role |
 |------|------|------|
-| **Frontend** (this repo) | `/home/mister-storm/development/buildtwin-frontend` | Next.js 16 App Router, shadcn/ui |
-| **Backend API** | `/home/mister-storm/development/BuildTwin` | Kotlin monolith, port **8080**, `/api/v1` |
-| **Processor** | `/home/mister-storm/development/buildtwin-processor-python` | Photogrammetry only, port 8090 |
+| **Frontend** (this repo) | `.` | Next.js 16 App Router, shadcn/ui |
+| **Backend API** | `../buildtwin` | Kotlin monolith, port **8080**, `/api/v1` |
+| **Processor** | `../buildtwin-processor-python` | Photogrammetry only, port 8090 |
 
 ## Quick start
 
 ```bash
-cd /home/mister-storm/development/buildtwin-frontend
 npm install
 npm run prepare:brand   # logo from ~/Downloads/buildTwin.png
 cp .env.example .env.local
 npm run dev               # http://localhost:3000
 ```
 
-Backend (optional for demo): `docker compose up` in BuildTwin.
+Backend (optional only for isolated demo tests): run the stack from `../buildtwin`.
+Commercial acceptance requires the real backend with demo mode disabled.
 
 ## Architecture
 
@@ -30,7 +53,9 @@ Service (DTO) → Mapper → Domain Model → Component
 
 - DTOs: `src/types/api/` — never import in UI components
 - Domain: `src/features/domain/` — models, mappers, `OrthomosaicResolver`
-- Demo fallback: `BUILDTWIN_DEMO_MODE` (default on) — Riverside Tower + `/demo/orthomosaic-preview.jpg`
+- Legacy demo fallback: `BUILDTWIN_DEMO_MODE` (documented default on) — Riverside Tower +
+  `/demo/orthomosaic-preview.jpg`. This describes historical demo behavior, not commercial approval;
+  commercial checks require demo disabled and must never replace auth/API failures with demo data.
 
 ## Key routes
 
@@ -86,12 +111,13 @@ npm test           # Vitest unit + component
 npm run test:e2e   # Playwright (demo mode, no backend)
 ```
 
-PRs must pass CI: lint → test → build → e2e (see `.github/workflows/ci.yml`).
+PRs MUST pass existing CI. Its executable workflow runs lint, tests, build, and demo/mocked E2E
+(see `.github/workflows/ci.yml`); this does not prove real-stack acceptance or required-check settings.
 
 ## Sprint workflow
 
 Skill: `~/.cursor/skills/buildtwin-sprint/SKILL.md`
-Canonical doc: `../BuildTwin/docs/SPRINT-WORKFLOW.md`
+Canonical doc: `../buildtwin/docs/SPRINT-WORKFLOW.md`
 Cursor rules: `.cursor/rules/sprint-implementation.mdc`, `.cursor/rules/definition-of-done.mdc`
 
 Conventions (all sprints):
@@ -105,31 +131,23 @@ Conventions (all sprints):
 
 E2E tests run in **demo mode** (`BUILDTWIN_DEMO_MODE=true`) — no backend required. The CI spins up the Next.js dev server and Playwright runs against it.
 
-**Rules for E2E to pass:**
-1. Pages must have **demo fallback** data when API returns 401/5xx (see `projects/page.tsx` for pattern)
-2. `middleware.ts` must NOT redirect to `/login` when `BUILDTWIN_DEMO_MODE !== "false"`
-3. `AuthGuard` must skip auth check when `DEMO_ENABLED` is true
-4. The demo project ID must match `11111111-1111-4111-8111-111111111111` (hardcoded in E2E tests)
+**Conflict identified: historical demo test assumptions are not commercial requirements.**
+The previous guidance required fallback data on API 401/5xx, bypassed login redirects and
+`AuthGuard` in demo mode, and fixed the project ID to
+`11111111-1111-4111-8111-111111111111`. These assumptions apply only to isolated, labeled demo
+fixtures. Do not add authentication bypasses or weaken tests to keep them green. Commercial
+journeys must retain real authentication, explicit API failures, and honest result provenance.
+
+`playwright.config.ts` starts `e2e/mock-api-server.mjs` and enables demo mode. Its tests,
+including those named operational, do not certify login, revocation, upload, or downloads against
+real services. Record required real-browser checks separately; if unavailable, report them blocked.
 
 **Always verify before merging:**
 ```bash
 npm run lint      # 0 errors
-npm test           # 280 tests passing  
+npm test           # all current tests must pass
 npm run build      # production build
-npm run test:e2e   # 5 E2E tests passing (requires demo mode)
+npm run test:e2e   # isolated demo/mocked E2E; not real-stack acceptance
 ```
 
-Pipeline failure = task not complete.
-
-## Sprint workflow
-
-Skill: `~/.cursor/skills/buildtwin-sprint/SKILL.md`
-Canonical doc: `../BuildTwin/docs/SPRINT-WORKFLOW.md`
-Cursor rules: `.cursor/rules/sprint-implementation.mdc`, `.cursor/rules/definition-of-done.mdc`
-
-Conventions (all sprints):
-- English-only branches, commits, PRs, identifiers, test names
-- No code comments — self-documenting names
-- TDD: failing mapper/hook test → production code → refactor
-- Test subject always named `sut`; test name `should {outcome} when {condition}`
-- Branch pattern: `{type}/{english-kebab-slug}` from `main`
+Required failed or blocked checks prevent a completion claim; demo CI success alone is insufficient.

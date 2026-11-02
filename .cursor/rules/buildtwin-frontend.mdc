@@ -5,7 +5,8 @@ alwaysApply: true
 
 # BuildTwin Frontend
 
-Separate repo at `/home/mister-storm/development/buildtwin-frontend`. Backend is BuildTwin Kotlin at `:8080`.
+Paths resolve from the repository root. Read `AGENTS.md` and the canonical constitution at
+`../buildtwin/.specify/memory/constitution.md` before work. Backend: `../buildtwin`, port `8080`.
 
 ## Data flow
 
@@ -18,11 +19,17 @@ UI components consume **domain models** from `src/features/domain/models/`, neve
 
 ## OrthomosaicResolver
 
-Pages depend on `OrthomosaicResolver` interface only. Default: `MockOrthomosaicResolver` with demo mappings. Viewer always validates via real APIs when backend is up.
+Pages depend on `OrthomosaicResolver` interface only. Historical default guidance names
+`MockOrthomosaicResolver` with demo mappings; this does not establish commercial validity.
+Verify real API retrieval and authorization in commercial journeys, including API failure cases.
 
 ## Demo mode
 
-When backend offline, `DEMO_ENABLED` (default) serves Riverside Tower project. Orthomosaic preview: `/demo/orthomosaic-preview.jpg`.
+**Conflict identified:** historical offline/default-demo guidance can hide real API or auth failures.
+Demo assets such as `/demo/orthomosaic-preview.jpg` belong only to isolated, labeled demo checks.
+Commercial acceptance requires demo disabled, real authentication, and explicit failure states.
+Do not change app behavior or weaken tests merely to satisfy historical demo assumptions.
+The existing Playwright config starts a mock API; its success is not real-stack acceptance.
 
 ## Logo
 
