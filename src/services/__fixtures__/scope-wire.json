@@ -1,0 +1,134 @@
+{
+  "provenance" : {
+    "kind" : "Actual MockMvc security-enabled producer capture; PostgreSQL17/PostGIS; storage and NAV explicitly stubbed; not real-service certification",
+    "baseline" : "T021-scoped-producer-contract",
+    "producerBaseRevision" : "7efa2c2c9f300073da384915d96625208fb8c7ed"
+  },
+  "ownedProject" : {
+    "actualStatus" : 200,
+    "body" : {
+      "archivedAt" : null,
+      "boundary" : null,
+      "companyId" : "b1e2d324-e5d8-43c8-9dd4-8652af231fde",
+      "coordinateSource" : "MANUAL",
+      "createdAt" : "2026-11-04T19:44:26.260075Z",
+      "geometryLockedAt" : null,
+      "id" : "f266bd73-3169-4420-844c-ef3b641a2f22",
+      "location" : {
+        "address" : "Validation fixture",
+        "city" : "Sao Paulo",
+        "coordinate" : {
+          "latitude" : -23.55,
+          "longitude" : -46.63,
+          "dms" : null
+        },
+        "country" : "Brazil",
+        "state" : "SP"
+      },
+      "name" : "pilot-ca4856ee-4c42-4842-a27d-dc7b4141c843-Alpha",
+      "plannedAreaSquareMeters" : null,
+      "plannedCompletionDate" : null,
+      "plannedFloors" : null,
+      "projectType" : null,
+      "startDate" : "2026-11-04"
+    }
+  },
+  "foreignProject" : {
+    "actualStatus" : 404,
+    "requestedId" : "7485621e-22d9-432e-a47f-a62a26a274b2",
+    "body" : {
+      "timestamp" : "2026-11-04T19:44:27.917614124Z",
+      "status" : 404,
+      "error" : "NOT_FOUND",
+      "message" : "Project not found",
+      "path" : "/api/v1/projects/7485621e-22d9-432e-a47f-a62a26a274b2",
+      "traceId" : "2da01202-f7f4-4f93-af58-2bf188fdd25f"
+    }
+  },
+  "ownedMission" : {
+    "actualStatus" : 200,
+    "body" : {
+      "id" : "5efcf6ec-fba4-4bf3-b966-483c77191748",
+      "projectId" : "f266bd73-3169-4420-844c-ef3b641a2f22",
+      "name" : "Pilot diagnostic fixture",
+      "status" : "PLANNED",
+      "flightDate" : null,
+      "boundary" : null,
+      "waypoints" : null,
+      "stats" : null,
+      "parameters" : null,
+      "camera" : null,
+      "createdAt" : "2026-11-04T19:44:26.926914Z",
+      "updatedAt" : "2026-11-04T19:44:26.926914Z",
+      "watermark" : "NON-OPERATIONAL — NOT CERTIFIED FOR FLIGHT",
+      "operationalExportAllowed" : false
+    }
+  },
+  "readiness" : {
+    "actualStatus" : 200,
+    "body" : {
+      "status" : "DOWN"
+    }
+  },
+  "overview" : {
+    "actualStatus" : 200,
+    "expectedProjectIds" : [ "f266bd73-3169-4420-844c-ef3b641a2f22" ],
+    "body" : {
+      "timestamp" : "2026-11-04T19:44:28.068228311Z",
+      "overallStatus" : "DOWN",
+      "components" : {
+        "backend" : {
+          "status" : "UP",
+          "version" : "0.1.0-SNAPSHOT"
+        },
+        "postgres" : {
+          "status" : "UP"
+        },
+        "minio" : {
+          "status" : "UP"
+        },
+        "worker" : {
+          "status" : "DOWN",
+          "details" : "No worker heartbeat registered"
+        },
+        "processor" : {
+          "status" : "UP",
+          "version" : "0.1.0"
+        }
+      },
+      "operations" : {
+        "projects" : 1,
+        "captureSessions" : 3,
+        "jobs" : 2,
+        "processedJobs" : 2,
+        "pendingJobs" : 0,
+        "failedJobs" : 0,
+        "recentJobs" : [ {
+          "projectId" : "f266bd73-3169-4420-844c-ef3b641a2f22",
+          "projectName" : "pilot-ca4856ee-4c42-4842-a27d-dc7b4141c843-Alpha",
+          "captureSessionId" : "cd2774f6-a8e8-46bc-bc78-d5eef69dd21e",
+          "captureDate" : "2026-11-03",
+          "operatorName" : "Pilot scope fixture",
+          "status" : "NONE",
+          "jobId" : null
+        }, {
+          "projectId" : "f266bd73-3169-4420-844c-ef3b641a2f22",
+          "projectName" : "pilot-ca4856ee-4c42-4842-a27d-dc7b4141c843-Alpha",
+          "captureSessionId" : "3a250ddf-60d4-402c-a027-0c59c1e31124",
+          "captureDate" : "2026-11-02",
+          "operatorName" : "Pilot scope fixture",
+          "status" : "COMPLETED",
+          "jobId" : "9023d878-8ba0-4bd9-88f4-67597213c008"
+        }, {
+          "projectId" : "f266bd73-3169-4420-844c-ef3b641a2f22",
+          "projectName" : "pilot-ca4856ee-4c42-4842-a27d-dc7b4141c843-Alpha",
+          "captureSessionId" : "079985e4-1ed1-411a-92f2-8b132d8043d1",
+          "captureDate" : "2026-11-01",
+          "operatorName" : "Pilot scope fixture",
+          "status" : "COMPLETED",
+          "jobId" : "69a2f8d9-138d-46fc-a2f9-d61ccaad04ac"
+        } ]
+      }
+    }
+  }
+}

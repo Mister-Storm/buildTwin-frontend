@@ -1,0 +1,22 @@
+{
+  "response" : {
+    "token" : "redacted-access-token",
+    "refreshToken" : "redacted-refresh-token",
+    "user" : {
+      "id" : "d1c33890-2d30-4383-b558-e397cd292269",
+      "email" : "pilot-cde0aa49-732e-4935-8f48-a24035b5461d-viewer@example.invalid",
+      "displayName" : "viewer",
+      "roles" : [ "PROJECT_VIEWER" ],
+      "active" : true,
+      "currentTenantId" : "9bed8434-b2dd-4a85-8ade-64ce745f8572"
+    },
+    "currentTenantId" : "9bed8434-b2dd-4a85-8ade-64ce745f8572"
+  },
+  "credentialMetadata" : {
+    "currentGeneration" : 1793675784014,
+    "accessType" : "access",
+    "refreshType" : "refresh",
+    "accessGeneration" : 1793675784014,
+    "refreshGeneration" : 1793675784014
+  }
+}

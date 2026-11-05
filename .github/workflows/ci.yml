@@ -46,7 +46,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Coverage
-        run: npx vitest run --coverage || echo "Coverage threshold not configured"
+        run: npx vitest run --coverage
 
   build:
     runs-on: ubuntu-latest
@@ -93,3 +93,54 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 7
+
+  authorization:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      PILOT_BACKEND_REVISION: ${{ vars.PILOT_BACKEND_REVISION }}
+    steps:
+      - name: Require pinned producer revision and private checkout access
+        env:
+          PILOT_BACKEND_READ_TOKEN: ${{ secrets.PILOT_BACKEND_READ_TOKEN }}
+        run: |
+          python3 - <<'PY'
+          import os, re
+          assert re.fullmatch(r'[0-9a-f]{40}', os.environ.get('PILOT_BACKEND_REVISION', '')), 'Set PILOT_BACKEND_REVISION to the exact reviewed backend commit'
+          assert os.environ.get('PILOT_BACKEND_READ_TOKEN'), 'Set PILOT_BACKEND_READ_TOKEN with contents-read access to the private backend repository'
+          PY
+      - uses: actions/checkout@v4
+        with:
+          path: buildTwin-frontend
+      - uses: actions/checkout@v4
+        with:
+          repository: mister-storm/buildtwin
+          token: ${{ secrets.PILOT_BACKEND_READ_TOKEN }}
+          persist-credentials: false
+          ref: ${{ env.PILOT_BACKEND_REVISION }}
+          path: buildtwin
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: gradle
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: buildTwin-frontend/package-lock.json
+      - name: Install frontend dependencies
+        working-directory: buildTwin-frontend
+        run: npm ci
+      - name: Producer-consumer contracts and real auth browser
+        working-directory: buildtwin
+        run: python3 scripts/pilot-authorization-ci.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: authorization-${{ github.sha }}
+          path: buildtwin/.gradle/pilot-validation/authorization-ci/*.tar.gz
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14

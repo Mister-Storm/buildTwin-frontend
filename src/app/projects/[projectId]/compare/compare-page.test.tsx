@@ -1,6 +1,11 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
+vi.mock("@/services/auth.service", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/services/auth.service")>();
+  return { ...actual, isAuthenticated: () => true };
+});
+
 vi.mock("next/navigation", () => ({
   usePathname: () => "/projects/proj-1/compare",
   useRouter: () => ({ push: vi.fn(), replace: vi.fn(), refresh: vi.fn() }),
@@ -33,7 +38,7 @@ import { loadProjectProgress } from "@/features/construction-progress/load-proje
 import { loadProgressIntelligence } from "@/features/progress-intelligence/load-progress-intelligence";
 
 describe("ComparePage", () => {
-  it("renders side-by-side previews when comparison succeeds", async () => {
+  it("should render side-by-side previews when authenticated comparison succeeds", async () => {
     vi.mocked(loadComparisonViewModel).mockResolvedValue({
       status: "success",
       timeline: [],
@@ -129,11 +134,11 @@ describe("ComparePage", () => {
       },
     });
 
-    const ui = await ComparePage({
+    const sut = await ComparePage({
       params: Promise.resolve({ projectId: "proj-1" }),
       searchParams: Promise.resolve({}),
     });
-    render(ui);
+    render(sut);
 
     expect(screen.getByText("Comparação Temporal")).toBeInTheDocument();
     expect(screen.getByText("Comparativo")).toBeInTheDocument();
@@ -152,7 +157,7 @@ describe("ComparePage", () => {
     );
   });
 
-  it("renders insufficient state message", async () => {
+  it("should render insufficient state when an authenticated comparison lacks captures", async () => {
     vi.mocked(loadComparisonViewModel).mockResolvedValue({
       status: "insufficient",
       message:
@@ -173,11 +178,11 @@ describe("ComparePage", () => {
       ],
     });
 
-    const ui = await ComparePage({
+    const sut = await ComparePage({
       params: Promise.resolve({ projectId: "proj-1" }),
       searchParams: Promise.resolve({}),
     });
-    render(ui);
+    render(sut);
 
     expect(screen.getByText("Comparação indisponível")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Ver obra" })).toHaveAttribute(
