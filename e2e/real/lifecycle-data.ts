@@ -46,3 +46,23 @@ export function resolveLifecycleFixtures(environment: Record<string, string | un
     throw new Error("Identifiable disposable lifecycle fixtures are required; credentials redacted");
   }
 }
+
+
+const deliveryArtifact = z.object({ jobId: z.string().uuid(), id: z.string().uuid(), sha256: z.string().regex(/^[a-f0-9]{64}$/), byteLength: z.number().int().positive() }).strict();
+const delivery = scenario.extend({
+  platform: identity,
+  sessionId: z.string().uuid(),
+  imageBase64: z.string().min(1),
+  preview: deliveryArtifact,
+  raw: deliveryArtifact,
+  unassignedPreview: deliveryArtifact,
+  foreignPreview: deliveryArtifact,
+}).strict();
+
+export function resolveDeliveryFixtures(environment: Record<string, string | undefined>) {
+  try {
+    return delivery.parse(JSON.parse(environment.BUILDTWIN_REAL_DELIVERY_FIXTURES ?? ""));
+  } catch {
+    throw new Error("Identifiable disposable delivery fixtures are required; credentials redacted");
+  }
+}

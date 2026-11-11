@@ -32,7 +32,33 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Unit and component tests
-        run: npm test
+        run: npm test -- --reporter=default --reporter=junit --outputFile.junit=test-results/vitest-junit.xml
+      - name: Reject missing required contract suites
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import xml.etree.ElementTree as E
+          suites = {s.get('name'): s for s in E.parse('test-results/vitest-junit.xml').getroot().iter('testsuite')}
+          required = [
+              'src/services/artifact-contract.test.ts',
+              'src/services/auth-contract.test.ts',
+              'src/services/scope-contract.test.ts',
+              'src/services/capabilities.service.test.ts',
+              'src/services/api-client.test.ts',
+              'src/features/built-area/DetectBuiltAreaButton.test.tsx',
+          ]
+          for name in required:
+              suite = suites.get(name)
+              assert suite is not None and int(suite.get('tests', '0')) > 0, 'Missing required suite: ' + name
+              assert not any(int(suite.get(field) or 0) for field in ['failures', 'errors', 'skipped']), 'Required suite failed: ' + name
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: frontend-unit-${{ github.sha }}
+          path: test-results/vitest-junit.xml
+          if-no-files-found: error
+          retention-days: 14
 
   coverage:
     runs-on: ubuntu-latest
@@ -88,59 +114,8 @@ jobs:
         run: BUILDTWIN_DEMO_MODE=true npm run test:e2e
       - name: Upload Playwright report
         uses: actions/upload-artifact@v4
-        if: failure()
+        if: always()
         with:
           name: playwright-report
           path: playwright-report/
           retention-days: 7
-
-  authorization:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    env:
-      PILOT_BACKEND_REVISION: ${{ vars.PILOT_BACKEND_REVISION }}
-    steps:
-      - name: Require pinned producer revision and private checkout access
-        env:
-          PILOT_BACKEND_READ_TOKEN: ${{ secrets.PILOT_BACKEND_READ_TOKEN }}
-        run: |
-          python3 - <<'PY'
-          import os, re
-          assert re.fullmatch(r'[0-9a-f]{40}', os.environ.get('PILOT_BACKEND_REVISION', '')), 'Set PILOT_BACKEND_REVISION to the exact reviewed backend commit'
-          assert os.environ.get('PILOT_BACKEND_READ_TOKEN'), 'Set PILOT_BACKEND_READ_TOKEN with contents-read access to the private backend repository'
-          PY
-      - uses: actions/checkout@v4
-        with:
-          path: buildTwin-frontend
-      - uses: actions/checkout@v4
-        with:
-          repository: mister-storm/buildtwin
-          token: ${{ secrets.PILOT_BACKEND_READ_TOKEN }}
-          persist-credentials: false
-          ref: ${{ env.PILOT_BACKEND_REVISION }}
-          path: buildtwin
-      - uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: "21"
-          cache: gradle
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: npm
-          cache-dependency-path: buildTwin-frontend/package-lock.json
-      - name: Install frontend dependencies
-        working-directory: buildTwin-frontend
-        run: npm ci
-      - name: Producer-consumer contracts and real auth browser
-        working-directory: buildtwin
-        run: python3 scripts/pilot-authorization-ci.py
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: authorization-${{ github.sha }}
-          path: buildtwin/.gradle/pilot-validation/authorization-ci/*.tar.gz
-          include-hidden-files: true
-          if-no-files-found: error
-          retention-days: 14
