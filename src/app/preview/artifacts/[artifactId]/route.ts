@@ -5,6 +5,8 @@ const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ??
   "http://localhost:8080";
 
+const PROTECTED_CACHE_POLICY = "private, no-store";
+
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ artifactId: string }> },
@@ -42,18 +44,18 @@ export async function GET(
       );
     }
 
-    // Stream the image back to the client
     const contentType =
       response.headers.get("content-type") ?? "image/jpeg";
     const contentLength = response.headers.get("content-length");
-    const cacheControl = response.headers.get("cache-control") ?? "private, max-age=300";
+    const contentDisposition = response.headers.get("content-disposition");
 
     return new NextResponse(response.body, {
       status: 200,
       headers: {
         "Content-Type": contentType,
-        "Cache-Control": cacheControl,
+        "Cache-Control": PROTECTED_CACHE_POLICY,
         ...(contentLength ? { "Content-Length": contentLength } : {}),
+        ...(contentDisposition ? { "Content-Disposition": contentDisposition } : {}),
       },
     });
   } catch (error) {

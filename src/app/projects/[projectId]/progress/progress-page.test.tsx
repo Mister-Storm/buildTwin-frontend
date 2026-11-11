@@ -2,6 +2,11 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import type { ProjectResponseDto } from "@/types/api/project.api";
 
+vi.mock("@/services/auth.service", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/services/auth.service")>();
+  return { ...actual, isAuthenticated: () => true };
+});
+
 vi.mock("next/navigation", () => ({
   usePathname: () => "/projects/proj-1/progress",
   useRouter: () => ({ push: vi.fn(), replace: vi.fn(), refresh: vi.fn() }),
@@ -46,7 +51,7 @@ import { loadProjectProgressHistory } from "@/features/construction-progress/loa
 import { getProject } from "@/services/projects.service";
 
 describe("ProjectProgressPage", () => {
-  it("renders progress dashboard when data is available", async () => {
+  it("should render progress dashboard when authenticated data is available", async () => {
     vi.mocked(getProject).mockResolvedValue(mockProject);
     vi.mocked(loadProjectProgress).mockResolvedValue({
       status: "success",
@@ -77,10 +82,10 @@ describe("ProjectProgressPage", () => {
       ],
     });
 
-    const ui = await ProjectProgressPage({
+    const sut = await ProjectProgressPage({
       params: Promise.resolve({ projectId: "proj-1" }),
     });
-    render(ui);
+    render(sut);
 
     expect(
       screen.getByRole("heading", { level: 1, name: "Progresso da Obra" }),

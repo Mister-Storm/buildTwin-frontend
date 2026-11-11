@@ -6,6 +6,9 @@ import { Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { NativeSelect } from "@/components/shared/NativeSelect";
 import { detectBuiltArea } from "@/services/built-area.service";
+import { describeCapabilityFailure, type CapabilityNotice } from "@/services/capabilities.service";
+import { CapabilityNoticeMessage } from "@/features/capabilities/CapabilityNoticeMessage";
+import { useCapabilityNotice } from "@/features/capabilities/use-capability";
 import type { ProjectCaptureSessionListItemDto } from "@/types/api/capture-session.api";
 import { formatDate, parseDateOnly } from "@/lib/formatters";
 
@@ -24,8 +27,10 @@ export function DetectBuiltAreaButton({
 }: DetectBuiltAreaButtonProps) {
   const router = useRouter();
   const [selectedCaptureSessionId, setSelectedCaptureSessionId] = useState(captureSessions[0]?.captureSessionId ?? "");
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<CapabilityNotice | null>(null);
   const [isPending, startTransition] = useTransition();
+  const capabilityNotice = useCapabilityNotice("BUILT_AREA_DETECTION");
+  const notice = error ?? capabilityNotice;
 
   if (captureSessions.length === 0) {
     return null;
@@ -46,7 +51,7 @@ export function DetectBuiltAreaButton({
         });
         router.refresh();
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Falha na detecção de área construída");
+        setError(describeCapabilityFailure(err, "Falha na detecção de área construída"));
       }
     });
   };
@@ -66,12 +71,12 @@ export function DetectBuiltAreaButton({
             </option>
           ))}
         </NativeSelect>
-        <Button type="button" onClick={handleDetect} disabled={isPending || !selectedCaptureSessionId}>
+        <Button type="button" onClick={handleDetect} disabled={isPending || !selectedCaptureSessionId || capabilityNotice !== null}>
           <Sparkles className="mr-2 size-4" />
           {isPending ? "Detectando..." : "Detectar Área com IA"}
         </Button>
       </div>
-      {error ? <p className="text-sm text-destructive">{error}</p> : null}
+      {notice ? <CapabilityNoticeMessage notice={notice} /> : null}
     </div>
   );
 }

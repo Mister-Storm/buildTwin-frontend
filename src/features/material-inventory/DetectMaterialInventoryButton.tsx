@@ -6,6 +6,9 @@ import { Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { NativeSelect } from "@/components/shared/NativeSelect";
 import { detectMaterialInventory } from "@/services/material-inventory.service";
+import { describeCapabilityFailure, type CapabilityNotice } from "@/services/capabilities.service";
+import { CapabilityNoticeMessage } from "@/features/capabilities/CapabilityNoticeMessage";
+import { useCapabilityNotice } from "@/features/capabilities/use-capability";
 import type { ProjectCaptureSessionListItemDto } from "@/types/api/capture-session.api";
 import { formatDate, parseDateOnly } from "@/lib/formatters";
 
@@ -20,8 +23,10 @@ export function DetectMaterialInventoryButton({
 }: DetectMaterialInventoryButtonProps) {
   const router = useRouter();
   const [selectedCaptureSessionId, setSelectedCaptureSessionId] = useState(captureSessions[0]?.captureSessionId ?? "");
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<CapabilityNotice | null>(null);
   const [isPending, startTransition] = useTransition();
+  const capabilityNotice = useCapabilityNotice("MATERIAL_INVENTORY_DETECTION");
+  const notice = error ?? capabilityNotice;
 
   if (captureSessions.length === 0) {
     return null;
@@ -38,7 +43,7 @@ export function DetectMaterialInventoryButton({
         onDetected?.(result.previewArtifactId);
         router.refresh();
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Falha na detecção de materiais");
+        setError(describeCapabilityFailure(err, "Falha na detecção de materiais"));
       }
     });
   };
@@ -58,12 +63,12 @@ export function DetectMaterialInventoryButton({
             </option>
           ))}
         </NativeSelect>
-        <Button type="button" onClick={handleDetect} disabled={isPending || !selectedCaptureSessionId}>
+        <Button type="button" onClick={handleDetect} disabled={isPending || !selectedCaptureSessionId || capabilityNotice !== null}>
           <Sparkles className="mr-2 size-4" />
           {isPending ? "Detectando..." : "Detectar Materiais com IA"}
         </Button>
       </div>
-      {error ? <p className="text-sm text-destructive">{error}</p> : null}
+      {notice ? <CapabilityNoticeMessage notice={notice} /> : null}
     </div>
   );
 }
