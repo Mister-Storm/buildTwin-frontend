@@ -1,0 +1,224 @@
+{
+  "schema": "buildtwin.jobs-wire.v1",
+  "standardCompleted": {
+    "actualStatus": 200,
+    "body": {
+      "jobId": "00000000-0000-4000-8000-000000000104",
+      "captureSessionId": "00000000-0000-4000-8000-000000000103",
+      "jobType": "ORTHOMOSAIC_PROCESSING",
+      "status": "COMPLETED",
+      "createdAt": "2026-11-11T12:00:00Z",
+      "startedAt": "2026-11-11T12:00:01Z",
+      "completedAt": "2026-11-11T12:05:00Z",
+      "failureReason": null,
+      "artifacts": [
+        {
+          "artifactId": "00000000-0000-4000-8000-000000000201",
+          "artifactType": "ORTHOMOSAIC",
+          "artifactStatus": "GENERATED",
+          "storagePath": "companies/00000000-0000-4000-8000-000000000101/projects/00000000-0000-4000-8000-000000000102/capture-sessions/00000000-0000-4000-8000-000000000103/artifacts/00000000-0000-4000-8000-000000000104/orthomosaic.tif",
+          "fileSize": 2048,
+          "checksum": "0000000000000000000000000000000000000000000000000000000000000201",
+          "metadata": {
+            "processingProfile": "STANDARD",
+            "measurementReliability": "HIGH"
+          },
+          "createdAt": "2026-11-11T12:05:00Z"
+        },
+        {
+          "artifactId": "00000000-0000-4000-8000-000000000202",
+          "artifactType": "ORTHOMOSAIC_PREVIEW",
+          "artifactStatus": "GENERATED",
+          "storagePath": "companies/00000000-0000-4000-8000-000000000101/projects/00000000-0000-4000-8000-000000000102/capture-sessions/00000000-0000-4000-8000-000000000103/artifacts/00000000-0000-4000-8000-000000000104/preview.jpg",
+          "fileSize": 512,
+          "checksum": "0000000000000000000000000000000000000000000000000000000000000202",
+          "metadata": {},
+          "createdAt": "2026-11-11T12:05:00Z"
+        },
+        {
+          "artifactId": "00000000-0000-4000-8000-000000000203",
+          "artifactType": "ORTHOMOSAIC_THUMBNAIL",
+          "artifactStatus": "GENERATED",
+          "storagePath": "companies/00000000-0000-4000-8000-000000000101/projects/00000000-0000-4000-8000-000000000102/capture-sessions/00000000-0000-4000-8000-000000000103/artifacts/00000000-0000-4000-8000-000000000104/thumbnail.jpg",
+          "fileSize": 128,
+          "checksum": "0000000000000000000000000000000000000000000000000000000000000203",
+          "metadata": {},
+          "createdAt": "2026-11-11T12:05:00Z"
+        },
+        {
+          "artifactId": "00000000-0000-4000-8000-000000000204",
+          "artifactType": "REPORT",
+          "artifactStatus": "GENERATED",
+          "storagePath": "companies/00000000-0000-4000-8000-000000000101/projects/00000000-0000-4000-8000-000000000102/capture-sessions/00000000-0000-4000-8000-000000000103/artifacts/00000000-0000-4000-8000-000000000104/report.json",
+          "fileSize": 2,
+          "checksum": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+          "metadata": {},
+          "createdAt": "2026-11-11T12:05:00Z"
+        }
+      ],
+      "recoverable": null,
+      "recoveryCause": null,
+      "attempt": {
+        "attemptNumber": 1,
+        "state": "COMPLETED",
+        "startedAt": "2026-11-11T12:00:01Z",
+        "completedAt": "2026-11-11T12:05:00Z"
+      },
+      "stages": [
+        {
+          "stage": "ENGINE",
+          "outputPurpose": "ORTHOMOSAIC",
+          "required": true,
+          "status": "COMPLETED",
+          "failureCode": null,
+          "retryable": null,
+          "processingProfile": "STANDARD",
+          "sourceImageCount": 77,
+          "reconstructedImageCount": 77
+        },
+        {
+          "stage": "PREVIEW",
+          "outputPurpose": "ORTHOMOSAIC_PREVIEW",
+          "required": true,
+          "status": "COMPLETED",
+          "failureCode": null,
+          "retryable": null,
+          "processingProfile": "STANDARD",
+          "sourceImageCount": null,
+          "reconstructedImageCount": null
+        },
+        {
+          "stage": "THUMBNAIL",
+          "outputPurpose": "ORTHOMOSAIC_THUMBNAIL",
+          "required": true,
+          "status": "COMPLETED",
+          "failureCode": null,
+          "retryable": null,
+          "processingProfile": "STANDARD",
+          "sourceImageCount": null,
+          "reconstructedImageCount": null
+        },
+        {
+          "stage": "SESSION_REPORT",
+          "outputPurpose": "REPORT",
+          "required": true,
+          "status": "COMPLETED",
+          "failureCode": null,
+          "retryable": null,
+          "processingProfile": "STANDARD",
+          "sourceImageCount": null,
+          "reconstructedImageCount": null
+        },
+        {
+          "stage": "FINALIZATION",
+          "outputPurpose": "JOB_COMPLETION",
+          "required": true,
+          "status": "COMPLETED",
+          "failureCode": null,
+          "retryable": null,
+          "processingProfile": "STANDARD",
+          "sourceImageCount": null,
+          "reconstructedImageCount": null
+        }
+      ],
+      "stageEvidence": "RECORDED"
+    }
+  },
+  "legacyProfileOmitted": {
+    "actualStatus": 200,
+    "body": {
+      "jobId": "00000000-0000-4000-8000-000000000114",
+      "captureSessionId": "00000000-0000-4000-8000-000000000113",
+      "jobType": "ORTHOMOSAIC_PROCESSING",
+      "status": "COMPLETED",
+      "createdAt": "2026-11-11T12:00:00Z",
+      "startedAt": "2026-11-11T12:00:01Z",
+      "completedAt": "2026-11-11T12:03:00Z",
+      "failureReason": null,
+      "artifacts": [
+        {
+          "artifactId": "00000000-0000-4000-8000-000000000211",
+          "artifactType": "ORTHOMOSAIC",
+          "artifactStatus": "GENERATED",
+          "storagePath": "companies/00000000-0000-4000-8000-000000000101/projects/00000000-0000-4000-8000-000000000102/capture-sessions/00000000-0000-4000-8000-000000000113/artifacts/00000000-0000-4000-8000-000000000114/orthomosaic.tif",
+          "fileSize": 2048,
+          "checksum": "0000000000000000000000000000000000000000000000000000000000000211",
+          "metadata": {},
+          "createdAt": "2026-11-11T12:03:00Z"
+        }
+      ],
+      "recoverable": null,
+      "recoveryCause": null,
+      "attempt": null,
+      "stages": [],
+      "stageEvidence": "NOT_RECORDED"
+    }
+  },
+  "failedAfterEngine": {
+    "actualStatus": 200,
+    "body": {
+      "jobId": "00000000-0000-4000-8000-000000000124",
+      "captureSessionId": "00000000-0000-4000-8000-000000000123",
+      "jobType": "ORTHOMOSAIC_PROCESSING",
+      "status": "FAILED",
+      "createdAt": "2026-11-11T12:00:00Z",
+      "startedAt": "2026-11-11T12:00:01Z",
+      "completedAt": "2026-11-11T12:04:00Z",
+      "failureReason": "Required stage PREVIEW failed",
+      "artifacts": [],
+      "recoverable": null,
+      "recoveryCause": null,
+      "attempt": {
+        "attemptNumber": 1,
+        "state": "FAILED",
+        "startedAt": "2026-11-11T12:00:01Z",
+        "completedAt": "2026-11-11T12:04:00Z"
+      },
+      "stages": [],
+      "stageEvidence": "NOT_RECORDED"
+    }
+  },
+  "cancelledRestricted": {
+    "actualStatus": 200,
+    "body": {
+      "jobId": "00000000-0000-4000-8000-000000000134",
+      "captureSessionId": "00000000-0000-4000-8000-000000000133",
+      "jobType": "ORTHOMOSAIC_PROCESSING",
+      "status": "CANCELLED_RESTRICTED",
+      "createdAt": "2026-11-11T12:00:00Z",
+      "startedAt": null,
+      "completedAt": "2026-11-11T12:00:30Z",
+      "failureReason": "Processing restricted by capability policy",
+      "artifacts": [],
+      "recoverable": null,
+      "recoveryCause": null,
+      "attempt": null,
+      "stages": [],
+      "stageEvidence": "NOT_RECORDED"
+    }
+  },
+  "recoverableInterrupted": {
+    "actualStatus": 200,
+    "body": {
+      "jobId": "00000000-0000-4000-8000-000000000144",
+      "captureSessionId": "00000000-0000-4000-8000-000000000143",
+      "jobType": "ORTHOMOSAIC_PROCESSING",
+      "status": "FAILED",
+      "createdAt": "2026-11-11T12:00:00Z",
+      "startedAt": "2026-11-11T12:00:01Z",
+      "completedAt": "2026-11-11T12:14:00Z",
+      "failureReason": "Processing progress could not be verified",
+      "artifacts": [],
+      "recoverable": true,
+      "recoveryCause": "PROGRESS_UNVERIFIED",
+      "attempt": {
+        "attemptNumber": 1,
+        "state": "FAILED",
+        "startedAt": "2026-11-11T12:00:01Z",
+        "completedAt": "2026-11-11T12:14:00Z"
+      },
+      "stages": [],
+      "stageEvidence": "NOT_RECORDED"
+    }
+  }
+}

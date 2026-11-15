@@ -96,6 +96,17 @@ export function CaptureSessionDetailWorkspace({
     void refresh();
   }
 
+  function handleRecovered(recovered: ProcessingJobDetailResponseDto) {
+    setLocalJob(recovered);
+    setJob(recovered);
+    if (recovered.status === "COMPLETED") {
+      setJobDetail(recovered);
+      router.refresh();
+      return;
+    }
+    setJobDetail(null);
+  }
+
   const showResults =
     currentJob?.status === "COMPLETED" &&
     jobDetail?.status === "COMPLETED";
@@ -120,6 +131,7 @@ export function CaptureSessionDetailWorkspace({
         job={currentJob}
         isPolling={isPolling}
         error={error}
+        onRecovered={handleRecovered}
       />
       {showResults && jobDetail ? (
         <CaptureSessionResultsPanel

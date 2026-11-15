@@ -1,8 +1,8 @@
 import type { ProcessingArtifactResponseDto } from "@/types/api/processing.api";
 
-export type ProcessingProfileDto = "STANDARD" | "DEGRADED" | "FALLBACK";
+export type ProcessingProfileDto = "STANDARD" | "DEGRADED" | "FALLBACK" | "UNKNOWN";
 
-export type MeasurementReliabilityDto = "LOW" | "MEDIUM" | "HIGH";
+export type MeasurementReliabilityDto = "LOW" | "MEDIUM" | "HIGH" | "UNKNOWN";
 
 export type OrthomosaicQualityInfo = {
   processingProfile: ProcessingProfileDto;
@@ -21,19 +21,18 @@ export function getOrthomosaicQualityInfo(
     return null;
   }
 
-  const profile = asString(orthomosaic.metadata.processingProfile) as
-    | ProcessingProfileDto
-    | null;
-  if (!profile || profile === "STANDARD") {
+  const profile = (asString(orthomosaic.metadata.processingProfile) ??
+    "UNKNOWN") as ProcessingProfileDto;
+  if (profile === "STANDARD") {
     return null;
   }
 
   return {
     processingProfile: profile,
     qualityNotice: asString(orthomosaic.metadata.qualityNotice),
-    measurementReliability: asString(
+    measurementReliability: (asString(
       orthomosaic.metadata.measurementReliability,
-    ) as MeasurementReliabilityDto | null,
+    ) ?? "UNKNOWN") as MeasurementReliabilityDto,
   };
 }
 
@@ -42,6 +41,7 @@ export function shouldShowDegradedQualityBanner(
 ): boolean {
   return (
     quality?.processingProfile === "DEGRADED" ||
-    quality?.processingProfile === "FALLBACK"
+    quality?.processingProfile === "FALLBACK" ||
+    quality?.processingProfile === "UNKNOWN"
   );
 }

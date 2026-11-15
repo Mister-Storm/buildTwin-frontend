@@ -46,6 +46,9 @@ jobs:
               'src/services/capabilities.service.test.ts',
               'src/services/api-client.test.ts',
               'src/features/built-area/DetectBuiltAreaButton.test.tsx',
+              'src/services/jobs-contract.test.ts',
+              'src/features/capture-session/job-recovery.test.ts',
+              'src/features/capture-session/components/job-recovery-panel.test.tsx',
           ]
           for name in required:
               suite = suites.get(name)

@@ -14,6 +14,39 @@ describe("jobStatusFriendlyMessage", () => {
   it("maps RUNNING to friendly text", () => {
     expect(jobStatusFriendlyMessage("RUNNING")).toBe("Gerando ortomosaico");
   });
+
+  it("should describe a capability restriction when the job was cancelled by policy", () => {
+    expect(jobStatusFriendlyMessage("CANCELLED_RESTRICTED")).toBe(
+      "Cancelado por restrição de capacidade",
+    );
+  });
+});
+
+describe("buildProcessingSteps with recorded engine profile", () => {
+  it("should not mark full reconstruction as done when the engine stage fell back", () => {
+    const sut = buildProcessingSteps;
+
+    const steps = sut({
+      imageCount: 3,
+      jobStatus: "COMPLETED",
+      engineProfile: "FALLBACK",
+    });
+
+    const engine = steps.find((step) => step.id === "nodeodm-running");
+    expect(engine).toMatchObject({
+      label: "Reconstrução completa indisponível (modo simplificado)",
+      completed: false,
+    });
+  });
+
+  it("should mark a restricted cancellation as a created job without completed processing", () => {
+    const sut = buildProcessingSteps;
+
+    const steps = sut({ imageCount: 3, jobStatus: "CANCELLED_RESTRICTED" });
+
+    expect(steps.find((step) => step.id === "job-created")?.completed).toBe(true);
+    expect(steps.find((step) => step.id === "completed")?.completed).toBe(false);
+  });
 });
 
 describe("buildProcessingSteps", () => {

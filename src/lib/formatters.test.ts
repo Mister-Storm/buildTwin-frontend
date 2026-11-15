@@ -7,6 +7,7 @@ import {
   formatFileSize,
   formatGrowthRate,
   formatPercent,
+  jobStatusLabel,
   jobStatusVariant,
   parseDateOnly,
   projectStatusLabel,
@@ -69,6 +70,20 @@ describe("jobStatusVariant", () => {
 
   it("maps null to neutral", () => {
     expect(jobStatusVariant(null)).toBe("neutral");
+  });
+
+  it("should flag a terminal problem when the job was cancelled by capacity restriction", () => {
+    const sut = jobStatusVariant;
+
+    expect(sut("CANCELLED_RESTRICTED")).toBe("error");
+  });
+});
+
+describe("jobStatusLabel", () => {
+  it("should name the restricted cancellation when the job was cancelled by capacity restriction", () => {
+    const sut = jobStatusLabel;
+
+    expect(sut("CANCELLED_RESTRICTED")).toBe("Cancelado por restrição");
   });
 });
 

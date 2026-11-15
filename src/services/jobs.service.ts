@@ -8,3 +8,12 @@ export async function getJob(
   debugLog("getJob", { jobId });
   return apiFetch<ProcessingJobDetailResponseDto>(`/jobs/${jobId}`);
 }
+
+export async function recoverJob(
+  jobId: string,
+): Promise<ProcessingJobDetailResponseDto> {
+  debugLog("recoverJob", { jobId });
+  return apiFetch<ProcessingJobDetailResponseDto>(`/jobs/${jobId}/recover`, {
+    method: "POST",
+  });
+}

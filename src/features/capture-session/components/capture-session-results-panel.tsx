@@ -81,13 +81,17 @@ export function CaptureSessionResultsPanel({
             className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-950 dark:text-amber-100"
           >
             <p className="font-medium">
-              {orthomosaicQuality?.processingProfile === "FALLBACK"
-                ? "Ortomosaico disponível em modo simplificado"
-                : "Ortomosaico gerado com qualidade reduzida"}
+              {orthomosaicQuality?.processingProfile === "UNKNOWN"
+                ? "Qualidade do ortomosaico não informada"
+                : orthomosaicQuality?.processingProfile === "FALLBACK"
+                  ? "Ortomosaico disponível em modo simplificado"
+                  : "Ortomosaico gerado com qualidade reduzida"}
             </p>
             <p className="mt-1 text-amber-900/90 dark:text-amber-100/90">
               {orthomosaicQuality?.qualityNotice ??
-                "A reconstrução fotogramétrica completa não foi possível com este conjunto de imagens; a resolução e a precisão métrica estão reduzidas."}
+                (orthomosaicQuality?.processingProfile === "UNKNOWN"
+                  ? "Este processamento não registrou perfil nem confiabilidade de medição; não use o ortomosaico para medições precisas."
+                  : "A reconstrução fotogramétrica completa não foi possível com este conjunto de imagens; a resolução e a precisão métrica estão reduzidas.")}
             </p>
           </div>
         ) : null}
