@@ -10,11 +10,18 @@ export type ApiErrorResponse = {
 export class ApiError extends Error {
   readonly status: number;
   readonly code: string;
+  readonly traceId: string | null;
 
-  constructor(status: number, code: string, message: string) {
+  constructor(
+    status: number,
+    code: string,
+    message: string,
+    traceId: string | null = null,
+  ) {
     super(message);
     this.name = "ApiError";
     this.status = status;
     this.code = code;
+    this.traceId = traceId;
   }
 }

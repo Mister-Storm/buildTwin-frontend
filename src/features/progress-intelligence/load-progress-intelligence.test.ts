@@ -22,6 +22,8 @@ describe("loadProgressIntelligence", () => {
       classification: "MEDIUM",
       confidenceScore: 1.0,
       trend: "UNKNOWN",
+      evidenceStatus: "AVAILABLE",
+      unavailableReason: null,
     });
 
     const result = await loadProgressIntelligence("proj-1", "flight-a", "flight-b");
@@ -30,6 +32,29 @@ describe("loadProgressIntelligence", () => {
     if (result.status === "success") {
       expect(result.viewModel.changePercentageLabel).toBe("24,3%");
       expect(result.viewModel.classification).toBe("MEDIUM");
+    }
+  });
+
+  it("should return success with withheld figures when the producer reports unavailable evidence", async () => {
+    vi.mocked(getVisualProgressIntelligence).mockResolvedValue({
+      captureSessionA: "flight-a",
+      captureSessionB: "flight-b",
+      changePercentage: null,
+      deltaDays: 14,
+      averageDailyChange: null,
+      classification: "LOW",
+      confidenceScore: null,
+      trend: "UNKNOWN",
+      evidenceStatus: "UNAVAILABLE",
+      unavailableReason: "COMPARISON_QUALITY_LOW",
+    });
+
+    const sut = await loadProgressIntelligence("proj-1", "flight-a", "flight-b");
+
+    expect(sut.status).toBe("success");
+    if (sut.status === "success") {
+      expect(sut.viewModel.changePercentageLabel).toBe("Não disponível");
+      expect(sut.viewModel.insightEligible).toBe(false);
     }
   });
 

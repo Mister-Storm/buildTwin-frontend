@@ -38,6 +38,19 @@ export function ProgressOverviewCard({ viewModel }: ProgressOverviewCardProps) {
           <p className="text-muted-foreground">Cobertura de dados</p>
           <p className="font-medium">{viewModel.dataCoverageLabel}</p>
         </div>
+        <div className="sm:col-span-2 lg:col-span-4">
+          <p className="text-muted-foreground">Observação de área construída atual</p>
+          <p className="font-medium">
+            {viewModel.builtAreaObservationLabel ??
+              "Nenhuma área construída aprovada registrada."}
+          </p>
+        </div>
+        {viewModel.builtAreaBaselineLabel ? (
+          <div className="sm:col-span-2 lg:col-span-4">
+            <p className="text-muted-foreground">Linha de base de área construída</p>
+            <p className="font-medium">{viewModel.builtAreaBaselineLabel}</p>
+          </div>
+        ) : null}
       </CardContent>
     </Card>
   );

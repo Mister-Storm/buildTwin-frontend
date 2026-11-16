@@ -89,8 +89,13 @@ export function RegisterMaterialInventoryDialog({
 
     const items = rows.map((row) => {
       const parsedQuantity = Number(row.quantityInput.replace(",", "."));
-      if (!row.quantityInput.trim() || Number.isNaN(parsedQuantity) || parsedQuantity <= 0) {
-        errors[`quantity-${row.id}`] = "Informe uma quantidade maior que zero.";
+      if (
+        !row.quantityInput.trim() ||
+        Number.isNaN(parsedQuantity) ||
+        !Number.isFinite(parsedQuantity) ||
+        parsedQuantity < 0
+      ) {
+        errors[`quantity-${row.id}`] = "Informe uma quantidade finita maior ou igual a zero.";
       }
       return {
         materialType: row.materialType,

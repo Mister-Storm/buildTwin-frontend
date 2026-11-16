@@ -1,0 +1,83 @@
+{
+  "success" : {
+    "actualStatus" : 201,
+    "body" : [ {
+      "fileName" : "wire.jpg",
+      "imageId" : "00000000-0000-4000-8000-000000000001",
+      "storagePath" : "companies/00000000-0000-4000-8000-000000000002/projects/00000000-0000-4000-8000-000000000003/capture-sessions/00000000-0000-4000-8000-000000000004/images/00000000-0000-4000-8000-000000000001.jpg"
+    } ]
+  },
+  "listing" : {
+    "actualStatus" : 200,
+    "body" : [ {
+      "checksum" : "ba07a8bd542495fbbb1cc1ad561c5b9b98ae7a743cefb6ed5e434ff22e352f43",
+      "contentType" : "image/jpeg",
+      "fileName" : "wire.jpg",
+      "fileSize" : 925,
+      "id" : "00000000-0000-4000-8000-000000000001",
+      "metadata" : {
+        "altitude" : null,
+        "capturedAt" : null,
+        "latitude" : -23.55,
+        "longitude" : -46.63
+      },
+      "storagePath" : "companies/00000000-0000-4000-8000-000000000002/projects/00000000-0000-4000-8000-000000000003/capture-sessions/00000000-0000-4000-8000-000000000004/images/00000000-0000-4000-8000-000000000001.jpg",
+      "uploadedAt" : "2026-01-01T00:00:00Z"
+    } ]
+  },
+  "duplicate" : {
+    "actualStatus" : 409,
+    "body" : {
+      "timestamp" : "2026-01-01T00:00:00Z",
+      "status" : 409,
+      "error" : "CONFLICT",
+      "message" : "Duplicate image already uploaded for this flight",
+      "path" : "/api/v1/capture-sessions/00000000-0000-4000-8000-000000000004/images",
+      "traceId" : "redacted-trace-id"
+    }
+  },
+  "viewer" : {
+    "actualStatus" : 403,
+    "body" : {
+      "timestamp" : "2026-01-01T00:00:00Z",
+      "status" : 403,
+      "error" : "FORBIDDEN",
+      "message" : "Access is denied",
+      "path" : "/api/v1/capture-sessions/00000000-0000-4000-8000-000000000004/images",
+      "traceId" : "redacted-trace-id"
+    }
+  },
+  "missingSession" : {
+    "actualStatus" : 404,
+    "body" : {
+      "timestamp" : "2026-01-01T00:00:00Z",
+      "status" : 404,
+      "error" : "NOT_FOUND",
+      "message" : "Capture session not found",
+      "path" : "/api/v1/capture-sessions/00000000-0000-4000-8000-000000000005/images",
+      "traceId" : "redacted-trace-id"
+    }
+  },
+  "storageOutage" : {
+    "actualStatus" : 500,
+    "body" : {
+      "timestamp" : "2026-01-01T00:00:00Z",
+      "status" : 500,
+      "error" : "INTERNAL_ERROR",
+      "message" : "An unexpected error occurred",
+      "path" : "/api/v1/capture-sessions/00000000-0000-4000-8000-000000000004/images",
+      "traceId" : "redacted-trace-id"
+    }
+  },
+  "revoked" : {
+    "actualStatus" : 401,
+    "body" : {
+      "timestamp" : "2026-01-01T00:00:00Z",
+      "status" : 401,
+      "error" : "UNAUTHORIZED",
+      "message" : "Session revoked",
+      "path" : "/api/v1/capture-sessions/00000000-0000-4000-8000-000000000004/images",
+      "traceId" : "redacted-trace-id"
+    }
+  }
+}

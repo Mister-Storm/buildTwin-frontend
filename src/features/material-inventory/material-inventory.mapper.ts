@@ -66,25 +66,24 @@ export function mapMaterialInventoryViewModel(
 ): MaterialInventoryViewModel {
   const historyRows = dto.snapshots.map((snapshot) => {
     const isAiSource = snapshot.source === "AI_DETECTED";
-  return {
-    rowKey: `${snapshot.captureSessionId}-${snapshot.materialType}-${snapshot.source}-${snapshot.recordedAt}`,
-    captureDateLabel: formatDate(parseDateOnly(snapshot.captureDate)),
-    recordedAtLabel: formatDateTime(snapshot.recordedAt),
-    materialLabel: MATERIAL_TYPE_LABELS[snapshot.materialType],
-    metricLabel: isAiSource ? "Objetos detectados" : "Quantidade",
-    metricValueLabel: isAiSource
-      ? formatQuantity(snapshot.detectedObjects ?? 0)
-      : formatQuantity(snapshot.quantity ?? 0),
-    unitLabel: formatUnit(snapshot.unit),
-    confidenceLabel:
-      isAiSource && snapshot.confidenceScore != null
-        ? `${Math.round(snapshot.confidenceScore * 100)}%`
-        : null,
-    storageZoneLabel: snapshot.storageZone?.trim() ? snapshot.storageZone : "—",
-    movementTypeLabel: MOVEMENT_TYPE_LABELS[snapshot.movementType],
-    source: snapshot.source,
-    isAiSource,
-  };
+    const observedValue = observedSnapshotValue(snapshot);
+    return {
+      rowKey: `${snapshot.captureSessionId}-${snapshot.materialType}-${snapshot.source}-${snapshot.recordedAt}`,
+      captureDateLabel: formatDate(parseDateOnly(snapshot.captureDate)),
+      recordedAtLabel: formatDateTime(snapshot.recordedAt),
+      materialLabel: MATERIAL_TYPE_LABELS[snapshot.materialType],
+      metricLabel: isAiSource ? "Objetos detectados" : "Quantidade",
+      metricValueLabel: observedValue === null ? UNKNOWN_QUANTITY_LABEL : formatQuantity(observedValue),
+      unitLabel: observedValue === null ? "" : formatUnit(snapshot.unit),
+      confidenceLabel:
+        isAiSource && snapshot.confidenceScore != null
+          ? `${Math.round(snapshot.confidenceScore * 100)}%`
+          : null,
+      storageZoneLabel: snapshot.storageZone?.trim() ? snapshot.storageZone : "—",
+      movementTypeLabel: MOVEMENT_TYPE_LABELS[snapshot.movementType],
+      source: snapshot.source,
+      isAiSource,
+    };
   });
 
   const latestCaptureSessionDate =
@@ -103,20 +102,9 @@ export function mapMaterialInventoryViewModel(
             parseDateOnly(snapshot.captureDate).getTime() === latestCaptureSessionDate,
         );
 
-  const currentTotal = latestSnapshots.reduce((sum, snapshot) => {
-    const value =
-      snapshot.source === "AI_DETECTED"
-        ? snapshot.detectedObjects ?? 0
-        : snapshot.quantity ?? 0;
-    return sum + value;
-  }, 0);
-
   return {
     projectId: dto.projectId,
-    currentQuantityLabel:
-      latestSnapshots.length > 0
-        ? `${formatQuantity(currentTotal)} (${latestSnapshots.length} materiais)`
-        : "Não disponível",
+    currentQuantityLabel: formatCurrentQuantity(latestSnapshots),
     stockVariationLabel: "Selecione dois levantamentos para comparar",
     hasSnapshots: dto.snapshots.length > 0,
     historyRows,
@@ -128,9 +116,12 @@ export function mapCompareRows(
 ): MaterialInventoryCompareRow[] {
   return materials.map((item) => ({
     materialLabel: MATERIAL_TYPE_LABELS[item.materialType],
-    quantityAtCaptureSessionALabel: `${formatQuantity(item.quantityAtCaptureSessionA)} ${formatUnit(item.unit)}`,
-    quantityAtCaptureSessionBLabel: `${formatQuantity(item.quantityAtCaptureSessionB)} ${formatUnit(item.unit)}`,
-    inventoryDeltaLabel: formatSignedDelta(item.inventoryDelta, item.unit),
+    quantityAtCaptureSessionALabel: formatQuantityWithUnit(item.quantityAtCaptureSessionA, item.unit),
+    quantityAtCaptureSessionBLabel: formatQuantityWithUnit(item.quantityAtCaptureSessionB, item.unit),
+    inventoryDeltaLabel:
+      item.inventoryDelta === null
+        ? UNAVAILABLE_LABEL
+        : formatSignedDelta(item.inventoryDelta, item.unit),
     storageZoneAtCaptureSessionALabel: item.storageZoneAtCaptureSessionA?.trim() ? item.storageZoneAtCaptureSessionA : "—",
     storageZoneAtCaptureSessionBLabel: item.storageZoneAtCaptureSessionB?.trim() ? item.storageZoneAtCaptureSessionB : "—",
   }));
@@ -138,10 +129,56 @@ export function mapCompareRows(
 
 export function calculateStockVariation(materials: MaterialInventoryCompareItemDto[]): string {
   if (materials.length === 0) {
-    return "Não disponível";
+    return UNAVAILABLE_LABEL;
   }
-  const totalDelta = materials.reduce((sum, item) => sum + item.inventoryDelta, 0);
-  return formatSignedNumber(totalDelta);
+  const deltas: number[] = [];
+  for (const item of materials) {
+    if (item.inventoryDelta === null) {
+      return UNAVAILABLE_LABEL;
+    }
+    deltas.push(item.inventoryDelta);
+  }
+  if (new Set(materials.map((item) => item.unit)).size > 1) {
+    return UNAVAILABLE_LABEL;
+  }
+  return formatSignedNumber(deltas.reduce((sum, delta) => sum + delta, 0));
+}
+
+const UNAVAILABLE_LABEL = "Não disponível";
+const UNKNOWN_QUANTITY_LABEL = "Não informado";
+
+type InventorySnapshotItem = ProjectMaterialInventoryDto["snapshots"][number];
+
+function observedSnapshotValue(snapshot: InventorySnapshotItem): number | null {
+  const value = snapshot.source === "AI_DETECTED" ? snapshot.detectedObjects : snapshot.quantity;
+  return value === null || value === undefined || !Number.isFinite(value) ? null : value;
+}
+
+function formatCurrentQuantity(latestSnapshots: InventorySnapshotItem[]): string {
+  if (latestSnapshots.length === 0) {
+    return UNAVAILABLE_LABEL;
+  }
+  const known = latestSnapshots.flatMap((snapshot) => {
+    const value = observedSnapshotValue(snapshot);
+    return value === null ? [] : [{ value, unit: snapshot.unit }];
+  });
+  if (known.length === 0) {
+    return UNAVAILABLE_LABEL;
+  }
+  const unknownCount = latestSnapshots.length - known.length;
+  const materialsLabel =
+    unknownCount > 0
+      ? `${latestSnapshots.length} materiais, ${unknownCount} sem quantidade informada`
+      : `${latestSnapshots.length} materiais`;
+  if (new Set(known.map((entry) => entry.unit)).size > 1) {
+    return `Total indisponível: unidades distintas (${materialsLabel})`;
+  }
+  const total = known.reduce((sum, entry) => sum + entry.value, 0);
+  return `${formatQuantity(total)} ${formatUnit(known.at(0)?.unit ?? "UNIT")} (${materialsLabel})`;
+}
+
+function formatQuantityWithUnit(value: number | null, unit: string): string {
+  return value === null ? UNKNOWN_QUANTITY_LABEL : `${formatQuantity(value)} ${formatUnit(unit)}`;
 }
 
 function formatQuantity(value: number): string {

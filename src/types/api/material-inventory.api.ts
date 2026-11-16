@@ -92,9 +92,9 @@ export type ProjectMaterialInventoryDto = {
 
 export type MaterialInventoryCompareItemDto = {
   materialType: MaterialType;
-  quantityAtCaptureSessionA: number;
-  quantityAtCaptureSessionB: number;
-  inventoryDelta: number;
+  quantityAtCaptureSessionA: number | null;
+  quantityAtCaptureSessionB: number | null;
+  inventoryDelta: number | null;
   storageZoneAtCaptureSessionA: string | null;
   storageZoneAtCaptureSessionB: string | null;
   unit: InventoryUnit;

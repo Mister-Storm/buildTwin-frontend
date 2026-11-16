@@ -49,6 +49,16 @@ jobs:
               'src/services/jobs-contract.test.ts',
               'src/features/capture-session/job-recovery.test.ts',
               'src/features/capture-session/components/job-recovery-panel.test.tsx',
+              'src/features/material-inventory/material-inventory.mapper.test.ts',
+              'src/features/portfolio-intelligence/portfolio-intelligence.mapper.test.ts',
+              'src/features/progress-intelligence/progress-intelligence.mapper.test.ts',
+              'src/features/progress-intelligence/ProgressIntelligenceCard.test.tsx',
+              'src/features/progress-intelligence/load-progress-intelligence.test.ts',
+              'src/features/construction-progress/progress-metrics.mapper.test.ts',
+              'src/features/construction-progress/ProgressOverviewCard.test.tsx',
+              'src/services/upload-acceptance-contract.test.ts',
+              'src/services/input-error-contract.test.ts',
+              'src/features/capture-session/upload-error-message.test.ts',
           ]
           for name in required:
               suite = suites.get(name)

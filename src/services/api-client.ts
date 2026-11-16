@@ -51,17 +51,49 @@ async function buildHeaders(
   return headers;
 }
 
+const UNSAFE_ERROR_FRAGMENTS = [
+  "127.0.0.1",
+  "10.",
+  "192.168.",
+  "MinIO",
+  "secretKey",
+  "password=",
+  "jdbc:",
+];
+
+const SAFE_INTERNAL_MESSAGE =
+  "An unexpected error occurred. Contact support with the trace reference.";
+
+function toApiError(
+  status: number,
+  code: string,
+  message: string,
+  traceId: string | null,
+): ApiError {
+  const unsafe =
+    status >= 500 &&
+    UNSAFE_ERROR_FRAGMENTS.some((fragment) => message.includes(fragment));
+  return new ApiError(
+    status,
+    code,
+    unsafe ? SAFE_INTERNAL_MESSAGE : message,
+    traceId,
+  );
+}
+
 async function parseApiError(response: Response): Promise<ApiError> {
   let message = response.statusText;
   let code = "UNKNOWN_ERROR";
+  let traceId: string | null = null;
   try {
     const body = (await response.json()) as ApiErrorResponse;
     message = body.message;
     code = body.error;
+    traceId = body.traceId ?? null;
   } catch {
     // keep defaults
   }
-  return new ApiError(response.status, code, message);
+  return toApiError(response.status, code, message, traceId);
 }
 
 export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
@@ -156,7 +188,14 @@ export function apiUpload<T>(
       }
       try {
         const body = JSON.parse(xhr.responseText) as ApiErrorResponse;
-        reject(new ApiError(xhr.status, body.error, body.message));
+        reject(
+          toApiError(
+            xhr.status,
+            body.error,
+            body.message,
+            body.traceId ?? null,
+          ),
+        );
       } catch {
         reject(new ApiError(xhr.status, "UNKNOWN_ERROR", xhr.statusText));
       }

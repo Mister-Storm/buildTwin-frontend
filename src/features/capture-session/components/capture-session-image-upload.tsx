@@ -12,8 +12,8 @@ import {
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { validateImageFile } from "@/features/project/schemas/create-project.schema";
+import { formatCaptureUploadError } from "@/features/capture-session/upload-error-message";
 import { uploadCaptureSessionImages } from "@/services/capture-sessions.service";
-import { ApiError } from "@/types/api/common.api";
 import { cn } from "@/lib/utils";
 
 const BATCH_SIZE = 5;
@@ -125,10 +125,7 @@ export function CaptureSessionImageUpload({
           ),
         );
       } catch (error) {
-        const message =
-          error instanceof ApiError
-            ? error.message
-            : "Falha no upload.";
+        const message = formatCaptureUploadError(error);
         setQueue((prev) =>
           prev.map((item) =>
             batchIds.has(item.id)
@@ -145,9 +142,6 @@ export function CaptureSessionImageUpload({
     if (uploaded > 0) {
       setUploadMessage(`${uploaded} de ${total} imagens enviadas.`);
       onUploaded();
-    } else {
-      // Don't overwrite the error message already set in the catch block
-      // and don't trigger onUploaded — no images were actually stored
     }
   }
 

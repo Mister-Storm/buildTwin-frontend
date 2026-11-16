@@ -18,6 +18,7 @@ import {
   getOrthomosaicQualityInfo,
   shouldShowDegradedQualityBanner,
 } from "@/features/capture-session/orthomosaic-quality";
+import { describeReportPurpose } from "@/features/capture-session/report-purpose";
 import { formatDateTime } from "@/lib/formatters";
 import type { ProcessingJobDetailResponseDto } from "@/types/api/processing.api";
 import type { ProgressReportResponseDto } from "@/types/api/report.api";
@@ -44,6 +45,7 @@ export function CaptureSessionResultsPanel({
     "ORTHOMOSAIC_THUMBNAIL",
   );
 
+  const reportPurpose = report ? describeReportPurpose(report) : null;
   const downloads = [
     {
       label: "Baixar Ortomosaico",
@@ -58,7 +60,9 @@ export function CaptureSessionResultsPanel({
       href: getArtifactDownloadLink(artifacts, "ORTHOMOSAIC_THUMBNAIL"),
     },
     {
-      label: "Baixar Relatório",
+      label: reportPurpose
+        ? `Baixar ${reportPurpose.purposeLabel}`
+        : "Baixar Relatório",
       href: getArtifactDownloadLink(artifacts, "REPORT"),
     },
   ].filter((d) => d.href);
@@ -123,11 +127,24 @@ export function CaptureSessionResultsPanel({
           ) : null}
         </div>
 
-        {report ? (
-          <p className="text-sm text-muted-foreground">
-            Relatório gerado em{" "}
-            {formatDateTime(new Date(report.generatedAt))}.
-          </p>
+        {report && reportPurpose ? (
+          <div className="space-y-1 text-sm text-muted-foreground">
+            <p>
+              {reportPurpose.purposeLabel}
+              {reportPurpose.profileLabel
+                ? ` · perfil ${reportPurpose.profileLabel}`
+                : ""}
+              {" · gerado em "}
+              {formatDateTime(new Date(report.generatedAt))}.
+            </p>
+            {reportPurpose.limitationLabels.length > 0 ? (
+              <ul className="list-disc space-y-0.5 pl-5">
+                {reportPurpose.limitationLabels.map((limitation) => (
+                  <li key={limitation}>{limitation}</li>
+                ))}
+              </ul>
+            ) : null}
+          </div>
         ) : null}
 
         <div className="flex flex-wrap gap-2">
