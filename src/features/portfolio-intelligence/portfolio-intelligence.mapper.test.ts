@@ -119,4 +119,27 @@ describe("portfolio-intelligence.mapper", () => {
     expect(viewModel.benchmarkSummary.health.p50Label).toBe("72");
     expect(viewModel.benchmarkSummary.hasSufficientSample).toBe(true);
   });
+
+  it("should withhold combined averageProgressPercent with pending aggregation reason when averages are null", () => {
+    const viewModel = mapPortfolioIntelligenceViewModel({
+      ...fullDto,
+      overview: {
+        ...fullDto.overview,
+        averageProgressPercent: null,
+      },
+      benchmarks: {
+        ...fullDto.benchmarks,
+        averageProgressPercent: null,
+      },
+    });
+
+    const progressCard = viewModel.overviewCards.find((card) => card.label === "Progresso médio");
+    expect(progressCard).toBeDefined();
+    expect(progressCard?.value).toBe("—");
+    expect(progressCard?.value).not.toBe("0");
+    expect(progressCard?.value).not.toContain("48");
+    expect(progressCard?.subtitle?.toLowerCase()).toMatch(/pendente|pending|aggregation/);
+    expect(viewModel.attentionProjects[0]?.executiveAttentionScoreLabel).toBe("87");
+    expect(viewModel.attentionProjects[0]?.constructionHealthScoreLabel).toBe("42");
+  });
 });

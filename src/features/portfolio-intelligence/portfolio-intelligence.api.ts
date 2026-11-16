@@ -13,6 +13,8 @@ export type ExecutiveAttentionLevel = "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
 
 export type InsightSeverity = "INFO" | "WARNING" | "CRITICAL";
 
+export type AggregationUnavailableReason = "AGGREGATION_POLICY_PENDING_APPROVAL";
+
 export type PortfolioOverviewDto = {
   totalProjects: number;
   activeProjects: number;
@@ -21,6 +23,7 @@ export type PortfolioOverviewDto = {
   averageForecastConfidence: ForecastConfidence | null;
   averageWasteScore: number | null;
   averageProgressPercent: number | null;
+  averageProgressPercentReason?: AggregationUnavailableReason | null;
   generatedAt: string;
 };
 
@@ -28,6 +31,7 @@ export type PortfolioBenchmarksDto = {
   averageHealthScore: number | null;
   averageWasteScore: number | null;
   averageProgressPercent: number | null;
+  averageProgressPercentReason?: AggregationUnavailableReason | null;
 };
 
 export type ProjectRankingEntryDto = {

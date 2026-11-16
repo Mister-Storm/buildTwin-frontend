@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { formatDate, parseDateOnly } from "@/lib/formatters";
 import {
   mapConstructionProgress,
   mapConstructionProgressHistory,
@@ -44,6 +45,100 @@ describe("mapConstructionProgress", () => {
     });
 
     expect(viewModel.showEstimatedCompletion).toBe(false);
+  });
+});
+
+describe("mapConstructionProgress built-area lineage", () => {
+  const baseDto = {
+    projectId: "proj-1",
+    firstCaptureDate: "2026-05-01",
+    lastCaptureDate: "2026-06-15",
+    timelineSize: 2,
+    currentObservedAreaSquareMeters: null,
+    deltaAreaFromPreviousCapture: null,
+    deltaAreaFromFirstCapture: null,
+    averageGrowthPerDay: null,
+    estimatedCompletionPercent: null,
+    plannedAreaSquareMeters: 1000,
+    dataCoveragePercent: 100,
+  };
+
+  it("should describe the selected manual revision when the current observation carries lineage", () => {
+    const sut = mapConstructionProgress({
+      ...baseDto,
+      currentBuiltAreaSquareMeters: 250,
+      estimatedCompletionPercent: 25,
+      builtAreaObservation: {
+        observationId: "obs-1",
+        captureSessionId: "flight-2",
+        captureDate: "2026-06-15",
+        source: "MANUAL",
+        revisionId: "rev-2",
+        revisionNumber: 2,
+        recordedAt: "2026-06-16T12:30:00Z",
+        recordedBy: "engineer@example.com",
+      },
+      builtAreaBaselineObservation: {
+        observationId: "obs-0",
+        captureSessionId: "flight-1",
+        captureDate: "2026-05-01",
+        source: "MANUAL",
+        revisionId: null,
+        revisionNumber: null,
+        recordedAt: "2026-05-02T09:00:00Z",
+        recordedBy: null,
+      },
+      builtAreaDeltaFromFirstCaptureSquareMeters: 150,
+      builtAreaDeltaFromPreviousCaptureSquareMeters: 150,
+    });
+
+    expect(sut.builtAreaLabel).toBe("250 m²");
+    expect(sut.builtAreaObservationLabel).toContain("Manual");
+    expect(sut.builtAreaObservationLabel).toContain("revisão 2");
+    expect(sut.builtAreaObservationLabel).toContain(formatDate(parseDateOnly("2026-06-15")));
+    expect(sut.builtAreaObservationLabel).toContain("engineer@example.com");
+    expect(sut.builtAreaBaselineLabel).toContain("Manual");
+    expect(sut.builtAreaBaselineLabel).toContain(formatDate(parseDateOnly("2026-05-01")));
+    expect(sut.builtAreaBaselineLabel).not.toContain("revisão");
+    expect(sut.builtAreaDeltaFromFirstLabel).toBe("+150 m²");
+  });
+
+  it("should keep a manual observed zero built area distinct from an unknown built area", () => {
+    const observedZero = mapConstructionProgress({
+      ...baseDto,
+      currentBuiltAreaSquareMeters: 0,
+      estimatedCompletionPercent: 0,
+      builtAreaObservation: {
+        observationId: "obs-1",
+        captureSessionId: "flight-2",
+        captureDate: "2026-06-15",
+        source: "MANUAL",
+        revisionId: null,
+        revisionNumber: null,
+        recordedAt: "2026-06-16T12:30:00Z",
+        recordedBy: null,
+      },
+    });
+    const unknown = mapConstructionProgress({
+      ...baseDto,
+      currentBuiltAreaSquareMeters: null,
+      builtAreaObservation: null,
+    });
+
+    expect(observedZero.builtAreaLabel).toBe("0 m²");
+    expect(observedZero.showEstimatedCompletion).toBe(true);
+    expect(unknown.builtAreaLabel).toBe("Não disponível");
+    expect(unknown.builtAreaObservationLabel).toBeNull();
+    expect(unknown.builtAreaDeltaFromFirstLabel).toBe("Não disponível");
+    expect(unknown.showEstimatedCompletion).toBe(false);
+  });
+
+  it("should keep the legacy payload without lineage fields as unknown built area", () => {
+    const sut = mapConstructionProgress(baseDto);
+
+    expect(sut.builtAreaLabel).toBe("Não disponível");
+    expect(sut.builtAreaObservationLabel).toBeNull();
+    expect(sut.builtAreaBaselineLabel).toBeNull();
   });
 });
 

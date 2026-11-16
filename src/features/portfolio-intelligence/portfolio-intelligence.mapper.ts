@@ -168,11 +168,7 @@ export function mapPortfolioIntelligenceViewModel(
       {
         label: "Progresso médio",
         value: formatOptionalPercent(overview.averageProgressPercent),
-        ...(overview.averageForecastConfidence
-          ? {
-              subtitle: `Confiança média: ${CONFIDENCE_LABELS[overview.averageForecastConfidence]}`,
-            }
-          : {}),
+        ...progressAverageSubtitle(overview),
       },
     ],
     insights: dto.insights.map(mapInsight),
@@ -268,6 +264,22 @@ function mapDistributionChart(
       barWidthPercent: (bucket.count / maxCount) * 100,
     })),
   };
+}
+
+function progressAverageSubtitle(
+  overview: PortfolioIntelligenceDto["overview"],
+): { subtitle: string } | Record<string, never> {
+  if (overview.averageProgressPercent == null) {
+    return {
+      subtitle:
+        overview.averageProgressPercentReason === "AGGREGATION_POLICY_PENDING_APPROVAL"
+          ? "Agregação pendente de aprovação"
+          : "Agregação pendente",
+    };
+  }
+  return overview.averageForecastConfidence
+    ? { subtitle: `Confiança média: ${CONFIDENCE_LABELS[overview.averageForecastConfidence]}` }
+    : {};
 }
 
 function formatOptionalPercent(value: number | null): string {

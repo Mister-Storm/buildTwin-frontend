@@ -1,4 +1,58 @@
-export type JobStatusDto = "PENDING" | "RUNNING" | "COMPLETED" | "FAILED";
+export type JobStatusDto =
+  | "PENDING"
+  | "RUNNING"
+  | "COMPLETED"
+  | "FAILED"
+  | "CANCELLED_RESTRICTED";
+
+export type RecoveryCauseDto =
+  | "PROGRESS_UNVERIFIED"
+  | "CONTACT_LOST"
+  | "SUPERVISION_EXPIRED"
+  | "EXECUTION_DEADLINE_EXCEEDED";
+
+export type AttemptStateDto =
+  | "ACTIVE"
+  | "COMPLETED"
+  | "FAILED"
+  | "CANCELLED_RESTRICTED";
+
+export type StageStatusDto =
+  | "PENDING"
+  | "RUNNING"
+  | "COMPLETED"
+  | "FAILED"
+  | "SKIPPED"
+  | "UNKNOWN";
+
+export type StageEvidenceDto = "RECORDED" | "NOT_RECORDED";
+
+export type ProcessingAttemptSummaryDto = {
+  attemptNumber: number;
+  state: AttemptStateDto;
+  startedAt: string;
+  completedAt: string | null;
+};
+
+export type ProcessingStageSummaryDto = {
+  stage: string;
+  outputPurpose: string;
+  required: boolean;
+  status: StageStatusDto;
+  failureCode: string | null;
+  retryable: boolean | null;
+  processingProfile: string | null;
+  sourceImageCount: number | null;
+  reconstructedImageCount: number | null;
+};
+
+export type ProcessingJobRecoveryFieldsDto = {
+  recoverable?: boolean | null;
+  recoveryCause?: RecoveryCauseDto | null;
+  attempt?: ProcessingAttemptSummaryDto | null;
+  stages?: ProcessingStageSummaryDto[];
+  stageEvidence?: StageEvidenceDto;
+};
 
 export type JobTypeDto = "ORTHOMOSAIC_PROCESSING";
 
@@ -40,7 +94,7 @@ export type ProcessingJobDetailResponseDto = {
   completedAt: string | null;
   failureReason: string | null;
   artifacts: ProcessingArtifactResponseDto[];
-};
+} & ProcessingJobRecoveryFieldsDto;
 
 export type ProcessingArtifactDetailResponseDto = {
   artifactId: string;
@@ -61,7 +115,7 @@ export type LatestCaptureSessionJobResponseDto = {
   startedAt: string | null;
   completedAt: string | null;
   failureReason: string | null;
-};
+} & ProcessingJobRecoveryFieldsDto;
 
 export type StartProcessingJobResponseDto = {
   jobId: string;

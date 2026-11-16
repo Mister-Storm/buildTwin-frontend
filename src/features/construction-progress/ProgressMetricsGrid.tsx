@@ -1,6 +1,6 @@
 import type { ConstructionProgressViewModel } from "@/features/construction-progress/progress-metrics.mapper";
 import { MetricCard } from "@/components/shared/MetricCard";
-import { Activity, Calendar, MapPinned, Percent, TrendingUp } from "lucide-react";
+import { Activity, Building2, Calendar, MapPinned, Percent, TrendingUp } from "lucide-react";
 
 type ProgressMetricsGridProps = {
   viewModel: ConstructionProgressViewModel;
@@ -13,6 +13,11 @@ export function ProgressMetricsGrid({ viewModel }: ProgressMetricsGridProps) {
         icon={MapPinned}
         label="Área Observada Atual"
         value={viewModel.currentObservedAreaLabel}
+      />
+      <MetricCard
+        icon={Building2}
+        label="Área Construída Aprovada"
+        value={viewModel.builtAreaLabel}
       />
       <MetricCard
         icon={TrendingUp}

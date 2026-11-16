@@ -7,6 +7,19 @@ export type ProjectTypeDto =
   | "INDUSTRIAL"
   | "OTHER";
 
+export type BuiltAreaObservationSourceDto = "MANUAL" | "ESTIMATED" | "AI_DETECTED";
+
+export type BuiltAreaObservationLineageDto = {
+  observationId: string;
+  captureSessionId: string;
+  captureDate: string;
+  source: BuiltAreaObservationSourceDto;
+  revisionId: string | null;
+  revisionNumber: number | null;
+  recordedAt: string;
+  recordedBy: string | null;
+};
+
 export type ProjectConstructionProgressDto = {
   projectId: string;
   firstCaptureDate: string | null;
@@ -24,6 +37,10 @@ export type ProjectConstructionProgressDto = {
   plannedFloors?: number | null;
   averageAreaPerFloor?: number | null;
   verticalCompletionPercent?: number | null;
+  builtAreaObservation?: BuiltAreaObservationLineageDto | null;
+  builtAreaBaselineObservation?: BuiltAreaObservationLineageDto | null;
+  builtAreaDeltaFromFirstCaptureSquareMeters?: number | null;
+  builtAreaDeltaFromPreviousCaptureSquareMeters?: number | null;
 };
 
 export type ProjectProgressHistoryItemDto = {

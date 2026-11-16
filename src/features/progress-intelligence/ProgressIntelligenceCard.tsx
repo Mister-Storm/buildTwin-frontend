@@ -15,7 +15,9 @@ type ProgressIntelligenceCardProps = {
 };
 
 export function ProgressIntelligenceCard({ viewModel }: ProgressIntelligenceCardProps) {
-  const insight = generateProgressInsight(viewModel.classification);
+  const insight = viewModel.insightEligible
+    ? generateProgressInsight(viewModel.classification)
+    : null;
 
   return (
     <Card className="border-border/60">
@@ -25,14 +27,15 @@ export function ProgressIntelligenceCard({ viewModel }: ProgressIntelligenceCard
           Indicador de Progresso
         </CardTitle>
         <CardDescription>
-          Indicadores executivos de mudança visual entre os levantamentos
+          Indicadores de mudança visual entre os levantamentos. Não representa progresso físico
+          da obra.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <MetricCard
             icon={Activity}
-            label="Progresso observado"
+            label="Mudança visual observada"
             value={viewModel.changePercentageLabel}
           />
           <MetricCard
@@ -52,9 +55,20 @@ export function ProgressIntelligenceCard({ viewModel }: ProgressIntelligenceCard
           />
         </div>
 
-        <div className="rounded-lg border border-border/60 bg-muted/40 px-4 py-3">
-          <p className="text-sm leading-relaxed text-foreground">{insight}</p>
-        </div>
+        {viewModel.reasonLabel ? (
+          <div
+            role="status"
+            className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-3"
+          >
+            <p className="text-sm leading-relaxed text-foreground">{viewModel.reasonLabel}</p>
+          </div>
+        ) : null}
+
+        {insight ? (
+          <div className="rounded-lg border border-border/60 bg-muted/40 px-4 py-3">
+            <p className="text-sm leading-relaxed text-foreground">{insight}</p>
+          </div>
+        ) : null}
       </CardContent>
     </Card>
   );

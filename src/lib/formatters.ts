@@ -58,6 +58,7 @@ export function jobStatusVariant(status: string | null): StatusVariant {
     case "PENDING":
       return "warning";
     case "FAILED":
+    case "CANCELLED_RESTRICTED":
       return "error";
     default:
       return "neutral";
@@ -82,6 +83,7 @@ export function jobStatusLabel(status: string | null): string {
     RUNNING: "Em execução",
     COMPLETED: "Concluído",
     FAILED: "Falhou",
+    CANCELLED_RESTRICTED: "Cancelado por restrição",
   };
   return labels[status] ?? status;
 }

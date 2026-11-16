@@ -18,6 +18,7 @@ import {
   getOrthomosaicQualityInfo,
   shouldShowDegradedQualityBanner,
 } from "@/features/capture-session/orthomosaic-quality";
+import { describeReportPurpose } from "@/features/capture-session/report-purpose";
 import { formatDateTime } from "@/lib/formatters";
 import type { ProcessingJobDetailResponseDto } from "@/types/api/processing.api";
 import type { ProgressReportResponseDto } from "@/types/api/report.api";
@@ -44,6 +45,7 @@ export function CaptureSessionResultsPanel({
     "ORTHOMOSAIC_THUMBNAIL",
   );
 
+  const reportPurpose = report ? describeReportPurpose(report) : null;
   const downloads = [
     {
       label: "Baixar Ortomosaico",
@@ -58,7 +60,9 @@ export function CaptureSessionResultsPanel({
       href: getArtifactDownloadLink(artifacts, "ORTHOMOSAIC_THUMBNAIL"),
     },
     {
-      label: "Baixar Relatório",
+      label: reportPurpose
+        ? `Baixar ${reportPurpose.purposeLabel}`
+        : "Baixar Relatório",
       href: getArtifactDownloadLink(artifacts, "REPORT"),
     },
   ].filter((d) => d.href);
@@ -81,13 +85,17 @@ export function CaptureSessionResultsPanel({
             className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-950 dark:text-amber-100"
           >
             <p className="font-medium">
-              {orthomosaicQuality?.processingProfile === "FALLBACK"
-                ? "Ortomosaico disponível em modo simplificado"
-                : "Ortomosaico gerado com qualidade reduzida"}
+              {orthomosaicQuality?.processingProfile === "UNKNOWN"
+                ? "Qualidade do ortomosaico não informada"
+                : orthomosaicQuality?.processingProfile === "FALLBACK"
+                  ? "Ortomosaico disponível em modo simplificado"
+                  : "Ortomosaico gerado com qualidade reduzida"}
             </p>
             <p className="mt-1 text-amber-900/90 dark:text-amber-100/90">
               {orthomosaicQuality?.qualityNotice ??
-                "A reconstrução fotogramétrica completa não foi possível com este conjunto de imagens; a resolução e a precisão métrica estão reduzidas."}
+                (orthomosaicQuality?.processingProfile === "UNKNOWN"
+                  ? "Este processamento não registrou perfil nem confiabilidade de medição; não use o ortomosaico para medições precisas."
+                  : "A reconstrução fotogramétrica completa não foi possível com este conjunto de imagens; a resolução e a precisão métrica estão reduzidas.")}
             </p>
           </div>
         ) : null}
@@ -119,11 +127,24 @@ export function CaptureSessionResultsPanel({
           ) : null}
         </div>
 
-        {report ? (
-          <p className="text-sm text-muted-foreground">
-            Relatório gerado em{" "}
-            {formatDateTime(new Date(report.generatedAt))}.
-          </p>
+        {report && reportPurpose ? (
+          <div className="space-y-1 text-sm text-muted-foreground">
+            <p>
+              {reportPurpose.purposeLabel}
+              {reportPurpose.profileLabel
+                ? ` · perfil ${reportPurpose.profileLabel}`
+                : ""}
+              {" · gerado em "}
+              {formatDateTime(new Date(report.generatedAt))}.
+            </p>
+            {reportPurpose.limitationLabels.length > 0 ? (
+              <ul className="list-disc space-y-0.5 pl-5">
+                {reportPurpose.limitationLabels.map((limitation) => (
+                  <li key={limitation}>{limitation}</li>
+                ))}
+              </ul>
+            ) : null}
+          </div>
         ) : null}
 
         <div className="flex flex-wrap gap-2">

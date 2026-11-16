@@ -51,49 +51,79 @@ async function buildHeaders(
   return headers;
 }
 
+const UNSAFE_ERROR_FRAGMENTS = [
+  "127.0.0.1",
+  "10.",
+  "192.168.",
+  "MinIO",
+  "secretKey",
+  "password=",
+  "jdbc:",
+];
+
+const SAFE_INTERNAL_MESSAGE =
+  "An unexpected error occurred. Contact support with the trace reference.";
+
+function toApiError(
+  status: number,
+  code: string,
+  message: string,
+  traceId: string | null,
+): ApiError {
+  const unsafe =
+    status >= 500 &&
+    UNSAFE_ERROR_FRAGMENTS.some((fragment) => message.includes(fragment));
+  return new ApiError(
+    status,
+    code,
+    unsafe ? SAFE_INTERNAL_MESSAGE : message,
+    traceId,
+  );
+}
+
 async function parseApiError(response: Response): Promise<ApiError> {
   let message = response.statusText;
   let code = "UNKNOWN_ERROR";
+  let traceId: string | null = null;
   try {
     const body = (await response.json()) as ApiErrorResponse;
     message = body.message;
     code = body.error;
+    traceId = body.traceId ?? null;
   } catch {
     // keep defaults
   }
-  return new ApiError(response.status, code, message);
+  return toApiError(response.status, code, message, traceId);
 }
 
 export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
   const url = buildApiUrl(path);
   const headers = await buildHeaders(init);
 
-  const response = await fetch(url, {
+  let response = await fetch(url, {
     ...init,
     headers,
     cache: "no-store",
   });
 
-  // Auto-refresh on 401: try refreshing token once, then retry
   if (response.status === 401 && typeof window !== "undefined") {
-    const { refreshToken, getStoredToken } = await import("@/services/auth.service");
+    const { refreshToken, logout } = await import("@/services/auth.service");
     const newToken = await refreshToken();
     if (newToken) {
-      const retryHeaders = await buildHeaders(init);
-      const retryResponse = await fetch(url, {
+      const method = (init?.method ?? "GET").toUpperCase();
+      if (!["GET", "HEAD", "OPTIONS"].includes(method)) {
+        throw new ApiError(401, "REQUEST_RETRY_REQUIRED", "Sessão renovada. Envie a operação novamente.");
+      }
+      response = await fetch(url, {
         ...init,
-        headers: retryHeaders,
+        headers: await buildHeaders(init),
         cache: "no-store",
       });
-      if (retryResponse.ok) {
-        if (retryResponse.status === 204) return undefined as T;
-        return (await retryResponse.json()) as T;
-      }
     }
-    // Refresh failed or still 401: redirect to login
-    const { logout } = await import("@/services/auth.service");
-    logout();
-    throw new ApiError(401, "SESSION_EXPIRED", "Sessão expirada. Faça login novamente.");
+    if (!newToken || response.status === 401) {
+      logout();
+      throw new ApiError(401, "SESSION_EXPIRED", "Sessão expirada. Faça login novamente.");
+    }
   }
 
   if (!response.ok) {
@@ -158,7 +188,14 @@ export function apiUpload<T>(
       }
       try {
         const body = JSON.parse(xhr.responseText) as ApiErrorResponse;
-        reject(new ApiError(xhr.status, body.error, body.message));
+        reject(
+          toApiError(
+            xhr.status,
+            body.error,
+            body.message,
+            body.traceId ?? null,
+          ),
+        );
       } catch {
         reject(new ApiError(xhr.status, "UNKNOWN_ERROR", xhr.statusText));
       }

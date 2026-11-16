@@ -10,6 +10,8 @@ export function jobStatusFriendlyMessage(status: JobStatusDto | null): string {
       return "Processamento concluído";
     case "FAILED":
       return "Falha no processamento";
+    case "CANCELLED_RESTRICTED":
+      return "Cancelado por restrição de capacidade";
     default:
       return "Sem processamento";
   }
@@ -28,6 +30,7 @@ type BuildProcessingStepsInput = {
   createdAt?: string | null | undefined;
   startedAt?: string | null | undefined;
   completedAt?: string | null | undefined;
+  engineProfile?: string | null | undefined;
 };
 
 export function buildProcessingSteps({
@@ -36,12 +39,10 @@ export function buildProcessingSteps({
   createdAt,
   startedAt,
   completedAt,
+  engineProfile,
 }: BuildProcessingStepsInput): ProcessingStep[] {
-  const hasJob =
-    jobStatus === "PENDING" ||
-    jobStatus === "RUNNING" ||
-    jobStatus === "COMPLETED" ||
-    jobStatus === "FAILED";
+  const hasJob = jobStatus !== null;
+  const engineFellBack = engineProfile === "FALLBACK";
 
   const isRunningOrDone =
     jobStatus === "RUNNING" ||
@@ -74,8 +75,12 @@ export function buildProcessingSteps({
     },
     {
       id: "nodeodm-running",
-      label: "NodeODM executando",
-      completed: jobStatus === "RUNNING" || jobStatus === "COMPLETED",
+      label: engineFellBack
+        ? "Reconstrução completa indisponível (modo simplificado)"
+        : "NodeODM executando",
+      completed:
+        !engineFellBack &&
+        (jobStatus === "RUNNING" || jobStatus === "COMPLETED"),
       timestamp: startedAt,
     },
     {

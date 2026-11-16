@@ -8,20 +8,27 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { JobRecoveryPanel } from "@/features/capture-session/components/job-recovery-panel";
+import { JobStageList } from "@/features/capture-session/components/job-stage-list";
 import { ProcessingStepsBar } from "@/features/capture-session/components/processing-steps-bar";
+import { describeJobRecovery } from "@/features/capture-session/job-recovery";
 import {
   buildProcessingSteps,
   jobStatusFriendlyMessage,
 } from "@/features/capture-session/job-status-utils";
 import { mapFailureReasonToFriendlyMessage } from "@/features/system/failure-reason-mapper";
 import { formatDateTime, jobStatusVariant } from "@/lib/formatters";
-import type { LatestCaptureSessionJobResponseDto } from "@/types/api/processing.api";
+import type {
+  LatestCaptureSessionJobResponseDto,
+  ProcessingJobDetailResponseDto,
+} from "@/types/api/processing.api";
 
 type JobStatusPanelProps = {
   imageCount: number;
   job: LatestCaptureSessionJobResponseDto | null;
   isPolling?: boolean;
   error?: string | null;
+  onRecovered?: (job: ProcessingJobDetailResponseDto) => void;
 };
 
 export function JobStatusPanel({
@@ -29,14 +36,22 @@ export function JobStatusPanel({
   job,
   isPolling = false,
   error,
+  onRecovered,
 }: JobStatusPanelProps) {
+  const engineStage = job?.stages?.find((stage) => stage.stage === "ENGINE");
   const steps = buildProcessingSteps({
     imageCount,
     jobStatus: job?.status ?? null,
     createdAt: job?.createdAt,
     startedAt: job?.startedAt,
     completedAt: job?.completedAt,
+    engineProfile: engineStage?.processingProfile,
   });
+  const recoverable = job ? describeJobRecovery(job).canRecover : false;
+  const isTerminal =
+    job?.status === "COMPLETED" ||
+    job?.status === "FAILED" ||
+    job?.status === "CANCELLED_RESTRICTED";
 
   return (
     <Card className="border-border/60" id="job-status-panel">
@@ -76,10 +91,16 @@ export function JobStatusPanel({
                   <p className="mt-1 break-all">{job.failureReason}</p>
                 </details>
                 <p className="text-xs text-muted-foreground">
-                  Use &quot;Reprocessar Captura&quot; acima para tentar novamente.
+                  {recoverable
+                    ? "Recupere este processamento abaixo ou use \"Reprocessar Captura\" acima para iniciar um novo."
+                    : "Use \"Reprocessar Captura\" acima para tentar novamente."}
                 </p>
               </div>
             ) : null}
+            {onRecovered ? (
+              <JobRecoveryPanel job={job} onRecovered={onRecovered} />
+            ) : null}
+            {isTerminal ? <JobStageList job={job} /> : null}
           </>
         ) : (
           <p className="text-sm text-muted-foreground">

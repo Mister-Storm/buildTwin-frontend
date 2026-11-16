@@ -8,7 +8,7 @@ on:
 
 jobs:
   lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -21,7 +21,7 @@ jobs:
         run: npm run lint
 
   unit:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: lint
     steps:
       - uses: actions/checkout@v4
@@ -32,10 +32,49 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Unit and component tests
-        run: npm test
+        run: npm test -- --reporter=default --reporter=junit --outputFile.junit=test-results/vitest-junit.xml
+      - name: Reject missing required contract suites
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import xml.etree.ElementTree as E
+          suites = {s.get('name'): s for s in E.parse('test-results/vitest-junit.xml').getroot().iter('testsuite')}
+          required = [
+              'src/services/artifact-contract.test.ts',
+              'src/services/auth-contract.test.ts',
+              'src/services/scope-contract.test.ts',
+              'src/services/capabilities.service.test.ts',
+              'src/services/api-client.test.ts',
+              'src/features/built-area/DetectBuiltAreaButton.test.tsx',
+              'src/services/jobs-contract.test.ts',
+              'src/features/capture-session/job-recovery.test.ts',
+              'src/features/capture-session/components/job-recovery-panel.test.tsx',
+              'src/features/material-inventory/material-inventory.mapper.test.ts',
+              'src/features/portfolio-intelligence/portfolio-intelligence.mapper.test.ts',
+              'src/features/progress-intelligence/progress-intelligence.mapper.test.ts',
+              'src/features/progress-intelligence/ProgressIntelligenceCard.test.tsx',
+              'src/features/progress-intelligence/load-progress-intelligence.test.ts',
+              'src/features/construction-progress/progress-metrics.mapper.test.ts',
+              'src/features/construction-progress/ProgressOverviewCard.test.tsx',
+              'src/services/upload-acceptance-contract.test.ts',
+              'src/services/input-error-contract.test.ts',
+              'src/features/capture-session/upload-error-message.test.ts',
+          ]
+          for name in required:
+              suite = suites.get(name)
+              assert suite is not None and int(suite.get('tests', '0')) > 0, 'Missing required suite: ' + name
+              assert not any(int(suite.get(field) or 0) for field in ['failures', 'errors', 'skipped']), 'Required suite failed: ' + name
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: frontend-unit-${{ github.sha }}
+          path: test-results/vitest-junit.xml
+          if-no-files-found: error
+          retention-days: 14
 
   coverage:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: unit
     steps:
       - uses: actions/checkout@v4
@@ -46,10 +85,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Coverage
-        run: npx vitest run --coverage || echo "Coverage threshold not configured"
+        run: npx vitest run --coverage
 
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: coverage
     env:
       BUILDTWIN_API_URL: http://localhost:8080
@@ -67,7 +106,7 @@ jobs:
         run: npm run build
 
   e2e:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: build
     env:
       CI: true
@@ -88,7 +127,7 @@ jobs:
         run: BUILDTWIN_DEMO_MODE=true npm run test:e2e
       - name: Upload Playwright report
         uses: actions/upload-artifact@v4
-        if: failure()
+        if: always()
         with:
           name: playwright-report
           path: playwright-report/

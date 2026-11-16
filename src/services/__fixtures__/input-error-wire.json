@@ -1,0 +1,303 @@
+{
+  "uploadAccepted" : {
+    "actualStatus" : 201,
+    "traceHeader" : "t075-uploadAccepted",
+    "allow" : null,
+    "body" : [ {
+      "fileName" : "t075-genuine-gps.jpg",
+      "imageId" : "00000000-0000-4000-8000-000000000001",
+      "storagePath" : "companies/00000000-0000-4000-8000-000000000002/projects/00000000-0000-4000-8000-000000000003/capture-sessions/00000000-0000-4000-8000-000000000004/images/00000000-0000-4000-8000-000000000001.jpg"
+    } ]
+  },
+  "listing" : {
+    "actualStatus" : 200,
+    "traceHeader" : "t075-listing",
+    "allow" : null,
+    "body" : [ {
+      "checksum" : "ba07a8bd542495fbbb1cc1ad561c5b9b98ae7a743cefb6ed5e434ff22e352f43",
+      "contentType" : "image/jpeg",
+      "fileName" : "t075-genuine-gps.jpg",
+      "fileSize" : 925,
+      "id" : "00000000-0000-4000-8000-000000000001",
+      "metadata" : {
+        "altitude" : null,
+        "capturedAt" : null,
+        "latitude" : -23.55,
+        "longitude" : -46.63
+      },
+      "storagePath" : "companies/00000000-0000-4000-8000-000000000002/projects/00000000-0000-4000-8000-000000000003/capture-sessions/00000000-0000-4000-8000-000000000004/images/00000000-0000-4000-8000-000000000001.jpg",
+      "uploadedAt" : "2026-01-01T00:00:00Z"
+    } ]
+  },
+  "disguisedJpeg" : {
+    "actualStatus" : 400,
+    "traceHeader" : "t075-disguisedJpeg",
+    "allow" : null,
+    "body" : {
+      "timestamp" : "2026-01-01T00:00:00Z",
+      "status" : 400,
+      "error" : "VALIDATION_ERROR",
+      "message" : "Image content is not a valid JPEG or PNG",
+      "path" : "/api/v1/capture-sessions/00000000-0000-4000-8000-000000000005/images",
+      "traceId" : "t075-disguisedJpeg"
+    }
+  },
+  "missingFilesPart" : {
+    "actualStatus" : 400,
+    "traceHeader" : "t075-missingFilesPart",
+    "allow" : null,
+    "body" : {
+      "timestamp" : "2026-01-01T00:00:00Z",
+      "status" : 400,
+      "error" : "VALIDATION_ERROR",
+      "message" : "Required request part 'files' is missing",
+      "path" : "/api/v1/capture-sessions/00000000-0000-4000-8000-000000000005/images",
+      "traceId" : "t075-missingFilesPart"
+    }
+  },
+  "unsupportedMedia" : {
+    "actualStatus" : 415,
+    "traceHeader" : "t075-unsupportedMedia",
+    "allow" : null,
+    "body" : {
+      "timestamp" : "2026-01-01T00:00:00Z",
+      "status" : 415,
+      "error" : "UNSUPPORTED_MEDIA_TYPE",
+      "message" : "Content type is not supported",
+      "path" : "/api/v1/capture-sessions/00000000-0000-4000-8000-000000000005/images",
+      "traceId" : "t075-unsupportedMedia"
+    }
+  },
+  "unsupportedMethod" : {
+    "actualStatus" : 405,
+    "traceHeader" : "t075-unsupportedMethod",
+    "allow" : "GET, POST",
+    "body" : {
+      "timestamp" : "2026-01-01T00:00:00Z",
+      "status" : 405,
+      "error" : "METHOD_NOT_ALLOWED",
+      "message" : "Request method 'PUT' is not supported",
+      "path" : "/api/v1/capture-sessions/00000000-0000-4000-8000-000000000005/images",
+      "traceId" : "t075-unsupportedMethod"
+    }
+  },
+  "unauthenticated" : {
+    "actualStatus" : 401,
+    "traceHeader" : "t075-unauthenticated",
+    "allow" : null,
+    "body" : {
+      "timestamp" : "2026-01-01T00:00:00Z",
+      "status" : 401,
+      "error" : "UNAUTHORIZED",
+      "message" : "Authentication required",
+      "path" : "/api/v1/capture-sessions/00000000-0000-4000-8000-000000000005/images",
+      "traceId" : "t075-unauthenticated"
+    }
+  },
+  "viewerUpload" : {
+    "actualStatus" : 403,
+    "traceHeader" : "t075-viewerUpload",
+    "allow" : null,
+    "body" : {
+      "timestamp" : "2026-01-01T00:00:00Z",
+      "status" : 403,
+      "error" : "FORBIDDEN",
+      "message" : "Access is denied",
+      "path" : "/api/v1/capture-sessions/00000000-0000-4000-8000-000000000004/images",
+      "traceId" : "t075-viewerUpload"
+    }
+  },
+  "foreignSession" : {
+    "actualStatus" : 404,
+    "traceHeader" : "t075-foreignSession",
+    "allow" : null,
+    "body" : {
+      "timestamp" : "2026-01-01T00:00:00Z",
+      "status" : 404,
+      "error" : "NOT_FOUND",
+      "message" : "Capture session not found",
+      "path" : "/api/v1/capture-sessions/00000000-0000-4000-8000-000000000006/images",
+      "traceId" : "t075-foreignSession"
+    }
+  },
+  "missingSession" : {
+    "actualStatus" : 404,
+    "traceHeader" : "t075-missingSession",
+    "allow" : null,
+    "body" : {
+      "timestamp" : "2026-01-01T00:00:00Z",
+      "status" : 404,
+      "error" : "NOT_FOUND",
+      "message" : "Capture session not found",
+      "path" : "/api/v1/capture-sessions/00000000-0000-4000-8000-000000000007/images",
+      "traceId" : "t075-missingSession"
+    }
+  },
+  "duplicate" : {
+    "actualStatus" : 409,
+    "traceHeader" : "t075-duplicate",
+    "allow" : null,
+    "body" : {
+      "timestamp" : "2026-01-01T00:00:00Z",
+      "status" : 409,
+      "error" : "CONFLICT",
+      "message" : "Duplicate image already uploaded for this flight",
+      "path" : "/api/v1/capture-sessions/00000000-0000-4000-8000-000000000004/images",
+      "traceId" : "t075-duplicate"
+    }
+  },
+  "internalError" : {
+    "actualStatus" : 500,
+    "traceHeader" : "t075-internalError",
+    "allow" : null,
+    "body" : {
+      "timestamp" : "2026-01-01T00:00:00Z",
+      "status" : 500,
+      "error" : "INTERNAL_ERROR",
+      "message" : "An unexpected error occurred",
+      "path" : "/api/v1/capture-sessions/00000000-0000-4000-8000-000000000005/images",
+      "traceId" : "t075-internalError"
+    }
+  },
+  "staleAccess" : {
+    "actualStatus" : 401,
+    "traceHeader" : "t075-staleAccess",
+    "allow" : null,
+    "body" : {
+      "timestamp" : "2026-01-01T00:00:00Z",
+      "status" : 401,
+      "error" : "UNAUTHORIZED",
+      "message" : "Authentication required",
+      "path" : "/api/v1/capture-sessions/00000000-0000-4000-8000-000000000008/images",
+      "traceId" : "t075-staleAccess"
+    }
+  },
+  "refresh" : {
+    "actualStatus" : 200,
+    "traceHeader" : "t075-refresh",
+    "allow" : null,
+    "body" : {
+      "token" : "redacted-token",
+      "refreshToken" : "redacted-refreshToken",
+      "user" : {
+        "id" : "00000000-0000-4000-8000-000000000009",
+        "email" : "pilot-00000000-0000-4000-8000-000000000010-viewer@example.invalid",
+        "displayName" : "viewer",
+        "roles" : [ "PROJECT_VIEWER" ],
+        "active" : true,
+        "currentTenantId" : "00000000-0000-4000-8000-000000000002"
+      },
+      "currentTenantId" : "00000000-0000-4000-8000-000000000002"
+    }
+  },
+  "refreshedRoleForbidden" : {
+    "actualStatus" : 403,
+    "traceHeader" : "t075-refreshedRoleForbidden",
+    "allow" : null,
+    "body" : {
+      "timestamp" : "2026-01-01T00:00:00Z",
+      "status" : 403,
+      "error" : "FORBIDDEN",
+      "message" : "Access denied",
+      "path" : "/api/v1/admin/users",
+      "traceId" : "t075-refreshedRoleForbidden"
+    }
+  },
+  "refreshedForbiddenWrite" : {
+    "actualStatus" : 403,
+    "traceHeader" : "t075-refreshedForbiddenWrite",
+    "allow" : null,
+    "body" : {
+      "timestamp" : "2026-01-01T00:00:00Z",
+      "status" : 403,
+      "error" : "FORBIDDEN",
+      "message" : "Access is denied",
+      "path" : "/api/v1/projects/00000000-0000-4000-8000-000000000003/capture-sessions",
+      "traceId" : "t075-refreshedForbiddenWrite"
+    }
+  },
+  "refreshedPermittedListing" : {
+    "actualStatus" : 200,
+    "traceHeader" : "t075-refreshedPermittedListing",
+    "allow" : null,
+    "body" : [ {
+      "checksum" : "ba07a8bd542495fbbb1cc1ad561c5b9b98ae7a743cefb6ed5e434ff22e352f43",
+      "contentType" : "image/jpeg",
+      "fileName" : "t075-genuine-gps.jpg",
+      "fileSize" : 925,
+      "id" : "00000000-0000-4000-8000-000000000011",
+      "metadata" : {
+        "altitude" : null,
+        "capturedAt" : null,
+        "latitude" : -23.55,
+        "longitude" : -46.63
+      },
+      "storagePath" : "companies/00000000-0000-4000-8000-000000000002/projects/00000000-0000-4000-8000-000000000003/capture-sessions/00000000-0000-4000-8000-000000000008/images/00000000-0000-4000-8000-000000000011.jpg",
+      "uploadedAt" : "2026-01-01T00:00:00Z"
+    } ]
+  },
+  "revokedUpload" : {
+    "actualStatus" : 401,
+    "traceHeader" : "t075-revokedUpload",
+    "allow" : null,
+    "body" : {
+      "timestamp" : "2026-01-01T00:00:00Z",
+      "status" : 401,
+      "error" : "UNAUTHORIZED",
+      "message" : "Session revoked",
+      "path" : "/api/v1/capture-sessions/00000000-0000-4000-8000-000000000012/images",
+      "traceId" : "t075-revokedUpload"
+    }
+  },
+  "revokedRefresh" : {
+    "actualStatus" : 401,
+    "traceHeader" : "t075-revokedRefresh",
+    "allow" : null,
+    "body" : {
+      "timestamp" : "2026-01-01T00:00:00Z",
+      "status" : 401,
+      "error" : "UNAUTHORIZED",
+      "message" : "Session revoked",
+      "path" : "/api/v1/auth/refresh",
+      "traceId" : "t075-revokedRefresh"
+    }
+  },
+  "priorListing" : {
+    "actualStatus" : 200,
+    "traceHeader" : "t075-priorListing",
+    "allow" : null,
+    "body" : [ {
+      "checksum" : "25d807d32ea87d873dba364c18a13c2db79dfa5423d54d69651e2e812c8475e3",
+      "contentType" : "image/jpeg",
+      "fileName" : "t075-genuine-no-gps.jpg",
+      "fileSize" : 687,
+      "id" : "00000000-0000-4000-8000-000000000013",
+      "metadata" : null,
+      "storagePath" : "companies/00000000-0000-4000-8000-000000000002/projects/00000000-0000-4000-8000-000000000003/capture-sessions/00000000-0000-4000-8000-000000000012/images/00000000-0000-4000-8000-000000000013.jpg",
+      "uploadedAt" : "2026-01-01T00:00:00Z"
+    } ]
+  },
+  "remainingUpload" : {
+    "actualStatus" : 201,
+    "traceHeader" : "t075-remainingUpload",
+    "allow" : null,
+    "body" : [ {
+      "fileName" : "t075-genuine.png",
+      "imageId" : "00000000-0000-4000-8000-000000000014",
+      "storagePath" : "companies/00000000-0000-4000-8000-000000000002/projects/00000000-0000-4000-8000-000000000003/capture-sessions/00000000-0000-4000-8000-000000000012/images/00000000-0000-4000-8000-000000000014.png"
+    } ]
+  },
+  "duplicateAfterUnknown" : {
+    "actualStatus" : 409,
+    "traceHeader" : "t075-duplicateAfterUnknown",
+    "allow" : null,
+    "body" : {
+      "timestamp" : "2026-01-01T00:00:00Z",
+      "status" : 409,
+      "error" : "CONFLICT",
+      "message" : "Duplicate image already uploaded for this flight",
+      "path" : "/api/v1/capture-sessions/00000000-0000-4000-8000-000000000012/images",
+      "traceId" : "t075-duplicateAfterUnknown"
+    }
+  }
+}

@@ -28,6 +28,8 @@ export async function loadProgressIntelligence(
       classification: dto.classification,
       trend: dto.trend,
       confidenceScore: dto.confidenceScore,
+      evidenceStatus: dto.evidenceStatus,
+      unavailableReason: dto.unavailableReason,
     });
 
     return { status: "success", viewModel };
