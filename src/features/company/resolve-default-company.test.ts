@@ -1,44 +1,48 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import {
-  resetDefaultCompanyCache,
-  resolveDefaultCompany,
-} from "@/features/company/resolve-default-company";
+import { resolveDefaultCompany } from "@/features/company/resolve-default-company";
+import { ApiError } from "@/types/api/common.api";
 
 vi.mock("@/services/companies.service", () => ({
   listCompanies: vi.fn(),
-  createCompany: vi.fn(),
 }));
 
-import { createCompany, listCompanies } from "@/services/companies.service";
+import { listCompanies } from "@/services/companies.service";
 
 describe("resolveDefaultCompany", () => {
   afterEach(() => {
     vi.clearAllMocks();
-    resetDefaultCompanyCache();
   });
 
-  it("returns existing company id by name", async () => {
+  it("should return the authorized organization id regardless of its name", async () => {
     vi.mocked(listCompanies).mockResolvedValue([
-      { id: "company-1", name: "Construtora Parceira", createdAt: "" },
+      { id: "company-1", name: "exemplo1", createdAt: "" },
     ]);
 
-    const id = await resolveDefaultCompany();
+    const sut = await resolveDefaultCompany();
 
-    expect(id).toBe("company-1");
-    expect(createCompany).not.toHaveBeenCalled();
+    expect(sut).toBe("company-1");
   });
 
-  it("creates company when not found", async () => {
+  it("should reject with a clear message when the user has no organization", async () => {
     vi.mocked(listCompanies).mockResolvedValue([]);
-    vi.mocked(createCompany).mockResolvedValue({
-      id: "new-company",
-      name: "Construtora Parceira",
-      createdAt: "",
+
+    const sut = resolveDefaultCompany();
+
+    await expect(sut).rejects.toBeInstanceOf(ApiError);
+    await expect(sut).rejects.toMatchObject({
+      status: 403,
+      code: "NO_ORGANIZATION",
     });
+  });
 
-    const id = await resolveDefaultCompany();
+  it("should not reuse a previous user's organization on the next call", async () => {
+    vi.mocked(listCompanies)
+      .mockResolvedValueOnce([{ id: "company-1", name: "A", createdAt: "" }])
+      .mockResolvedValueOnce([{ id: "company-2", name: "B", createdAt: "" }]);
 
-    expect(id).toBe("new-company");
-    expect(createCompany).toHaveBeenCalledWith("Construtora Parceira");
+    await resolveDefaultCompany();
+    const sut = await resolveDefaultCompany();
+
+    expect(sut).toBe("company-2");
   });
 });
